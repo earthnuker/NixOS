@@ -41,6 +41,9 @@
       source = ./awesomewm;
     };
   };
+  services = {
+    ssh-agent.enable = true;
+  };
   programs = {
     lazygit.enable = true;
     topgrade.enable = true;
@@ -48,7 +51,6 @@
       enable = true;
       shellIntegration.enableZshIntegration = true;
     };
-
     fzf = {
       enable = true;
       enableZshIntegration = true;
@@ -87,6 +89,7 @@
       initExtra = ''
         export TERM="xterm-256color"
         bindkey -e
+        eval $(ssh-agent) > /dev/null
       '';
       antidote = {
         enable = true;
