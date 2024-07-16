@@ -27,6 +27,10 @@
       betterlockscreen
       eww
       neovide
+      tdesktop
+      xss-lock
+      python3Full
+      starship
     ];
 
     sessionVariables = {
@@ -35,10 +39,25 @@
       ZSH_CACHE_DIR = "/home/earthnuker/.cache/oh-my-zsh";
     };
   };
+
   xdg.configFile = {
     "awesome" = {
       recursive = true;
       source = ./awesomewm;
+    };
+  };
+  home.file = {
+    ".config/awesome/lain".source = pkgs.fetchFromGitHub {
+      owner = "lcpz";
+      repo = "lain";
+      rev = "88f5a8a";
+      sha256 = "sha256-MH/aiYfcO3lrcuNbnIu4QHqPq25LwzTprOhEJUJBJ7I=";
+    };
+    ".config/awesome/layout-machi".source = pkgs.fetchFromGitHub {
+      owner = "lcpz";
+      repo = "lain";
+      rev = "88f5a8a";
+      sha256 = "sha256-MH/aiYfcO3lrcuNbnIu4QHqPq25LwzTprOhEJUJBJ7I=";
     };
   };
   services = {
@@ -47,6 +66,7 @@
   programs = {
     lazygit.enable = true;
     topgrade.enable = true;
+    command-not-found.enable = true;
     kitty = {
       enable = true;
       shellIntegration.enableZshIntegration = true;
@@ -149,7 +169,6 @@
         lua = pkgs.luajit;
       };
       luaModules = [
-        pkgs.luajitPackages.vicious
         pkgs.luajitPackages.luarocks
       ];
     };
