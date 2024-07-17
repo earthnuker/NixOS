@@ -151,10 +151,7 @@
     git
     htop
     neovim
-    starship
-    vim
     wget
-    python3Full
     ripgrep
     direnv
     # Nix
