@@ -154,6 +154,7 @@
     wget
     ripgrep
     direnv
+    zoxide
     # Nix
     home-manager
     npins 
@@ -163,6 +164,7 @@
     nix-prefetch-github
     nixd
     nvd
+    nix-zsh-completions
   ];
 
   environment.variables = {
