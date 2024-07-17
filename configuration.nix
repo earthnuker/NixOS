@@ -156,7 +156,7 @@
     direnv
     # Nix
     home-manager
-    niv
+    npins 
     nix-output-monitor
     nix-prefetch
     nix-prefetch-git

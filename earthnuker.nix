@@ -1,4 +1,6 @@
-{
+let 
+  sources = import ./npins;
+in {
   config,
   pkgs,
   stylix,

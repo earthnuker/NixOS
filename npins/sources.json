@@ -1,0 +1,53 @@
+{
+  "pins": {
+    "awesomewm-machina": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "basaran",
+        "repo": "awesomewm-machina"
+      },
+      "branch": "master",
+      "revision": "684f92bff8fb7aee338a70738e61f28d6e63306f",
+      "url": "https://github.com/basaran/awesomewm-machina/archive/684f92bff8fb7aee338a70738e61f28d6e63306f.tar.gz",
+      "hash": "037zf9r04z6cpwrmljn1mh4wd3sc1ky87ybhzqpvd385fd4pyy3q"
+    },
+    "lain": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "lcpz",
+        "repo": "lain"
+      },
+      "branch": "master",
+      "revision": "88f5a8abd2649b348ffec433a24a263b37f122c0",
+      "url": "https://github.com/lcpz/lain/archive/88f5a8abd2649b348ffec433a24a263b37f122c0.tar.gz",
+      "hash": "1ci78512ai78mklk9hsbdsmqyyj0p25rqnz3f9mpjfywhy4xlzrh"
+    },
+    "layout-machi": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "xinhaoyuan",
+        "repo": "layout-machi"
+      },
+      "branch": "master",
+      "revision": "497d076903e6f5375c0456593f24adcca3db07e6",
+      "url": "https://github.com/xinhaoyuan/layout-machi/archive/497d076903e6f5375c0456593f24adcca3db07e6.tar.gz",
+      "hash": "1l583gmk4j5fk4hc2jhz3mdw1glwpvv1m2kzpbzfd1ww91f6vc79"
+    },
+    "nixos-unstable": {
+      "type": "Channel",
+      "name": "nixos-unstable",
+      "url": "https://releases.nixos.org/nixos/unstable/nixos-24.11pre652902.693bc46d169f/nixexprs.tar.xz",
+      "hash": "1s8is34i3kkhyxjgi1j9k7ld5x7h2gz4al64cl3sldmlfq47irsd"
+    },
+    "nixpkgs": {
+      "type": "Channel",
+      "name": "nixpkgs-unstable",
+      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-24.11pre653845.9355fa86e6f2/nixexprs.tar.xz",
+      "hash": "1gvnxs10qx98jb5xpv96v9q98l1jsaxpmxgqvdmzgaj0rss6lm4x"
+    }
+  },
+  "version": 3
+}
