@@ -49,18 +49,8 @@ in {
     };
   };
   home.file = {
-    ".config/awesome/lain".source = pkgs.fetchFromGitHub {
-      owner = "lcpz";
-      repo = "lain";
-      rev = "88f5a8a";
-      sha256 = "sha256-MH/aiYfcO3lrcuNbnIu4QHqPq25LwzTprOhEJUJBJ7I=";
-    };
-    ".config/awesome/layout-machi".source = pkgs.fetchFromGitHub {
-      owner = "lcpz";
-      repo = "lain";
-      rev = "88f5a8a";
-      sha256 = "sha256-MH/aiYfcO3lrcuNbnIu4QHqPq25LwzTprOhEJUJBJ7I=";
-    };
+    ".config/awesome/lain".source = sources.lain.outPath;
+    ".config/awesome/layout-machi".source = sources."layout-machi".outPath;
   };
   services = {
     ssh-agent.enable = true;
