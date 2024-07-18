@@ -221,22 +221,25 @@
           pkgs.luajitPackages.luarocks
         ];
       };
-    };
-    displayManager = {
-      defaultSession = "none+awesome";
-      lightdm = {
-        enable = true;
-        greeters.mini = {
+      displayManager = {
+        lightdm = {
           enable = true;
-          user = "earthnuker";
-          extraConfig = ''
-            [greeter]
-            show-password-label = false
-            [greeter-theme]
-            background-image = ${config.stylix.image}
-          '';
+          greeters.mini = {
+            enable = true;
+            user = "earthnuker";
+            extraConfig = ''
+              [greeter]
+              show-password-label = false
+              [greeter-theme]
+              background-image = ${config.stylix.image}
+            '';
+          };
         };
       };
+    };
+
+    displayManager = {
+      defaultSession = "none+awesome";
     };
   };
 
