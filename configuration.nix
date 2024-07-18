@@ -155,6 +155,7 @@
     ripgrep
     direnv
     zoxide
+    ncdu
     # Nix
     home-manager
     npins 
