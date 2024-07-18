@@ -172,7 +172,7 @@
     nh = {
       enable = true;
       clean.enable = true;
-      clean.extraArgs = "--keep-since 1w --keep 3";
+      clean.extraArgs = "-K 1w";
       flake = "${config.users.users.earthnuker.home}/nixos";
     };
     mosh.enable = true;
