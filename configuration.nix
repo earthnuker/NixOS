@@ -55,7 +55,7 @@
   hardware = {
     bluetooth.enable = true;
     enableAllFirmware = true;
-    opengl = {
+    graphics = {
       enable = true;
     };
   };
@@ -125,13 +125,6 @@
   # Trusted users
   nix.settings.trusted-users = ["@wheel"];
 
-  # Perform garbage collection weekly to maintain low disk usage
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
-  };
-
   nix.optimise = {
     automatic = true;
     dates = ["09:00"];
@@ -158,7 +151,7 @@
     ncdu
     # Nix
     home-manager
-    npins 
+    npins
     nix-output-monitor
     nix-prefetch
     nix-prefetch-git
@@ -228,20 +221,20 @@
           pkgs.luajitPackages.luarocks
         ];
       };
-      displayManager = {
-        defaultSession = "none+awesome";
-        lightdm = {
+    };
+    displayManager = {
+      defaultSession = "none+awesome";
+      lightdm = {
+        enable = true;
+        greeters.mini = {
           enable = true;
-          greeters.mini = {
-            enable = true;
-            user = "earthnuker";
-            extraConfig = ''
-              [greeter]
-              show-password-label = false
-              [greeter-theme]
-              background-image = ${config.stylix.image}
-            '';
-          };
+          user = "earthnuker";
+          extraConfig = ''
+            [greeter]
+            show-password-label = false
+            [greeter-theme]
+            background-image = ${config.stylix.image}
+          '';
         };
       };
     };
