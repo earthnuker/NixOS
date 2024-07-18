@@ -171,8 +171,8 @@
     nix-ld.enable = true;
     nh = {
       enable = true;
-      clean.enable = true;
-      clean.extraArgs = "-K 1w";
+      #clean.enable = true;
+      clean.extraArgs = "-k 10 -K 1w";
       flake = "${config.users.users.earthnuker.home}/nixos";
     };
     mosh.enable = true;
