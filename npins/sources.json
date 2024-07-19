@@ -39,14 +39,14 @@
     "nixos-unstable": {
       "type": "Channel",
       "name": "nixos-unstable",
-      "url": "https://releases.nixos.org/nixos/unstable/nixos-24.11pre652902.693bc46d169f/nixexprs.tar.xz",
-      "hash": "1s8is34i3kkhyxjgi1j9k7ld5x7h2gz4al64cl3sldmlfq47irsd"
+      "url": "https://releases.nixos.org/nixos/unstable/nixos-24.11pre654036.ad0b5eed1b60/nixexprs.tar.xz",
+      "hash": "0clai822r5lsf14rq0xccn6di2kpkbav1ck7v92q3a7y4i5p55y8"
     },
     "nixpkgs": {
       "type": "Channel",
       "name": "nixpkgs-unstable",
-      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-24.11pre653845.9355fa86e6f2/nixexprs.tar.xz",
-      "hash": "1gvnxs10qx98jb5xpv96v9q98l1jsaxpmxgqvdmzgaj0rss6lm4x"
+      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-24.11pre654854.7e2fb8e0eb80/nixexprs.tar.xz",
+      "hash": "15g88lz7d33a4ggm72f8zm6aqzsk9lx1pbq2a6idgk9fw53m7hpz"
     }
   },
   "version": 3
