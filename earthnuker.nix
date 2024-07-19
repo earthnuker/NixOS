@@ -105,9 +105,10 @@ in
         autocd = true;
         history.extended = true;
         initExtra = ''
-          export TERM="xterm-256color"
-          bindkey -e
-          eval $(ssh-agent) > /dev/null
+        export TERM="xterm-256color"
+        bindkey -e
+        eval $(ssh-agent) > /dev/null
+        zstyle ':completion:*:descriptions' format '[%d]'
         '';
         antidote = {
           enable = true;
@@ -133,6 +134,7 @@ in
             "MichaelAquilina/zsh-autoswitch-virtualenv"
             "chisui/zsh-nix-shell"
             "nix-community/nix-zsh-completions"
+            "Aloxaf/fzf-tab"
           ];
         };
         shellAliases = {
