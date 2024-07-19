@@ -34,6 +34,7 @@ in
         xss-lock
         python3Full
         starship
+        yazi
       ];
 
       sessionVariables = {
