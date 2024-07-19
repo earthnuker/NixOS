@@ -134,6 +134,7 @@ in
         shellAliases = {
           "lg" = "lazygit";
           "nxt" = "nh os test -u -a";
+          "nxb" = "nh os build -u -a";
           "nxs" = "nh os switch -u -a";
           "nxgc" = "nh clean all -k 10 -K 1w";
           "neofetch" = "fastfetch";
