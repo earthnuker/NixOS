@@ -59,7 +59,7 @@ in
     programs = {
       lazygit.enable = true;
       topgrade.enable = true;
-      command-not-found.enable = true;
+      nix-index.enable = true;
       kitty = {
         enable = true;
         shellIntegration.enableZshIntegration = true;
