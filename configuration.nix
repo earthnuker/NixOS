@@ -149,6 +149,7 @@
     direnv
     zoxide
     ncdu
+    sbctl
     # Nix
     home-manager
     npins
