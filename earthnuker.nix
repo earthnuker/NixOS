@@ -61,6 +61,10 @@ in
       lazygit.enable = true;
       topgrade.enable = true;
       nix-index.enable = true;
+      ssh = {
+        enable = true;
+        addKeysToAgent = "yes";
+      };
       kitty = {
         enable = true;
         shellIntegration.enableZshIntegration = true;
