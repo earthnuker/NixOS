@@ -163,6 +163,7 @@ in
       nvd
       nix-zsh-completions
       nurl
+      comma
     ];
 
     environment.variables = {
