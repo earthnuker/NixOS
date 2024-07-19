@@ -18,16 +18,12 @@
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";
     };
-    nur = {
-      url = "github:nix-community/NUR";
-    };
   };
 
   outputs = {
     nixpkgs,
     nixos-hardware,
     stylix,
-    nur,
     ...
   } @ inputs: {
     nixosConfigurations.godwaker = nixpkgs.lib.nixosSystem {
@@ -37,7 +33,6 @@
         ./configuration.nix
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         stylix.nixosModules.stylix
-        nur.nixosModules.nur
       ];
     };
   };
