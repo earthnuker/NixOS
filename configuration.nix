@@ -162,6 +162,7 @@ in
       nixd
       nvd
       nix-zsh-completions
+      nurl
     ];
 
     environment.variables = {
