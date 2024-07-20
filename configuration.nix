@@ -154,6 +154,7 @@ in
       direnv
       zoxide
       ncdu
+      file
       # Nix
       home-manager
       npins
