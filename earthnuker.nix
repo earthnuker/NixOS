@@ -41,6 +41,7 @@ in
         EDITOR = "nvim";
         VISUAL = "code -n -w";
         ZSH_CACHE_DIR = "/home/earthnuker/.cache/oh-my-zsh";
+        TERM = "xterm-256color";
       };
     };
 
@@ -104,11 +105,18 @@ in
         syntaxHighlighting.enable = true;
         autocd = true;
         history.extended = true;
+
         initExtra = ''
-        export TERM="xterm-256color"
-        bindkey -e
-        eval $(ssh-agent) > /dev/null
-        zstyle ':completion:*:descriptions' format '[%d]'
+          setopt extendedglob
+          setopt autocd
+          setopt append_history share_history histignorealldups
+          bindkey -e
+          eval $(ssh-agent) > /dev/null
+          zstyle ':completion:*:descriptions' format '[%d]'
+          zstyle ':completion:*' rehash true
+          zstyle ':completion:*:descriptions' format '[%d]'
+          zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+          zstyle ':fzf-tab:*' switch-group ',' '.'
         '';
         antidote = {
           enable = true;
