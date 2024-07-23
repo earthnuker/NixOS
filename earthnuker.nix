@@ -35,6 +35,7 @@ in
         python3Full
         starship
         yazi
+        rofi
       ];
 
       sessionVariables = {
