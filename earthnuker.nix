@@ -162,6 +162,12 @@ in
           aws.disabled = true;
           gcloud.disabled = true;
           line_break.disabled = true;
+          nix_shell = {
+            impure_msg = "[impure shell](bold red)";
+            pure_msg = "[pure shell](bold green)";
+            unknown_msg = "[unknown shell](bold yellow)";
+            heuristic = true;
+          };
         };
       };
     };
