@@ -131,7 +131,7 @@ in
             "ohmyzsh/ohmyzsh path:plugins/extract"
             "ohmyzsh/ohmyzsh path:plugins/git"
             "ohmyzsh/ohmyzsh path:plugins/git-extras"
-            "ohmyzsh/ohmyzsh path:plugins/magic-enter"
+            #"ohmyzsh/ohmyzsh path:plugins/magic-enter"
             "ohmyzsh/ohmyzsh path:plugins/npm"
             "ohmyzsh/ohmyzsh path:plugins/pyenv"
             "ohmyzsh/ohmyzsh path:plugins/python"
