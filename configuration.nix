@@ -220,16 +220,19 @@
       desktopManager = {
         xterm.enable = true;
       };
-      windowManager.awesome = {
-        enable = true;
-        noArgb = true;
-        package = pkgs.awesome.override {
-          lua = pkgs.luajit;
+      windowManager = {
+        awesome = {
+          enable = false;
+          noArgb = true;
+          package = pkgs.awesome.override {
+            lua = pkgs.luajit;
+          };
+          luaModules = [
+            pkgs.luajitPackages.vicious
+            pkgs.luajitPackages.luarocks
+          ];
         };
-        luaModules = [
-          pkgs.luajitPackages.vicious
-          pkgs.luajitPackages.luarocks
-        ];
+        i3.enable = true;
       };
       displayManager = {
         lightdm = {
@@ -249,7 +252,7 @@
     };
 
     displayManager = {
-      defaultSession = "none+awesome";
+      defaultSession = "none+i3";
     };
   };
 

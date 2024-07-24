@@ -225,7 +225,7 @@ in
         "${pkgs.dex}/bin/dex" -a
       '';
       windowManager.awesome = {
-        enable = true;
+        enable = false;
         noArgb = true;
         package = pkgs.awesome.override {
           lua = pkgs.luajit;
