@@ -194,9 +194,9 @@ in
         };
         shellAliases = {
           "lg" = "lazygit";
-          "nxt" = "nh os test -u -a -D 'nix-diff --character-oriented'";
-          "nxb" = "nh os build -u -a -D 'nix-diff --character-oriented'";
-          "nxs" = "nh os switch -u -a -D 'nix-diff --character-oriented'";
+          "nxt" = "nh os test -u -a -D 'nix-diff --word-oriented'";
+          "nxb" = "nh os build -u -a -D 'nix-diff --word-oriented'";
+          "nxs" = "nh os switch -u -a -D 'nix-diff --word-oriented'";
           "nxgc" = "nh clean all -k 10 -K 1w";
           "neofetch" = "fastfetch";
         };
