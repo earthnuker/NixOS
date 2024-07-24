@@ -31,7 +31,7 @@
       system = "x86_64-linux";
       specialArgs = {inherit inputs nixpkgs;};
       modules = [
-        (_ : {
+        (_: {
           system.configurationRevision =
             if self ? rev
             then self.rev

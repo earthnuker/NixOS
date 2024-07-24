@@ -127,7 +127,7 @@
 
   # Trusted users
   nix.settings.trusted-users = ["@wheel"];
-  nix.nixPath = [ "nixpkgs=${nixpkgs.outPath}" ]; 
+  nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
 
   nix.optimise = {
     automatic = true;
@@ -175,7 +175,7 @@
     EDITOR = "nvim";
   };
 
-  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
+  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications" "/libexec"];
 
   programs = {
     nix-ld.enable = true;
@@ -257,7 +257,7 @@
   virtualisation.docker.enable = true;
 
   security.sudo.wheelNeedsPassword = true;
-  
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
