@@ -165,6 +165,8 @@
     nix-zsh-completions
     nurl
     comma
+    statix
+    deadnix
   ];
 
   environment.variables = {
