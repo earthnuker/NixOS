@@ -29,9 +29,9 @@
   } @ inputs: {
     nixosConfigurations.godwaker = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = {inherit inputs;};
+      specialArgs = {inherit inputs nixpkgs;};
       modules = [
-        ({pkgs, ...}: {
+        (_ : {
           system.configurationRevision =
             if self ? rev
             then self.rev

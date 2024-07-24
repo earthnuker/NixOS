@@ -5,6 +5,7 @@
   pkgs,
   inputs,
   config,
+  nixpkgs,
   ...
 }: {
   imports = [
@@ -126,6 +127,7 @@
 
   # Trusted users
   nix.settings.trusted-users = ["@wheel"];
+  nix.nixPath = [ "nixpkgs=${nixpkgs.outPath}" ]; 
 
   nix.optimise = {
     automatic = true;
@@ -255,7 +257,7 @@
   virtualisation.docker.enable = true;
 
   security.sudo.wheelNeedsPassword = true;
-
+  
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
