@@ -17,7 +17,7 @@ in
         btop
         dex
         eza
-        ffmpeg_7-full
+        ffmpeg_7
         firefox
         iftop
         iotop
