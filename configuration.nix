@@ -178,6 +178,7 @@
     zoxide
     ncdu
     file
+    linuxPackages.acpi_call
     # Nix
     home-manager
     npins
