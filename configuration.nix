@@ -246,6 +246,9 @@
         layout = "de";
         variant = "nodeadkeys";
       };
+      libinput.enable = false;
+      synaptics.enable = true;
+      synaptics.twoFingerScroll = true;
       desktopManager = {
         xterm.enable = true;
       };
