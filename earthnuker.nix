@@ -36,6 +36,11 @@ in
         starship
         yazi
         rofi
+        (writeShellScriptBin "nixdiff" ''
+          set -euxo pipefail
+          nix-diff --word-oriented $1 $2
+          nvd diff $1 $2
+        '')
       ];
 
       sessionVariables = {
@@ -194,9 +199,9 @@ in
         };
         shellAliases = {
           "lg" = "lazygit";
-          "nxt" = "nh os test -u -a -D 'nix-diff --word-oriented'";
-          "nxb" = "nh os build -u -a -D 'nix-diff --word-oriented'";
-          "nxs" = "nh os switch -u -a -D 'nix-diff --word-oriented'";
+          "nxt" = "nh os test -u -a -D nixdiff";
+          "nxb" = "nh os build -u -a -D nixdiff";
+          "nxs" = "nh os switch -u -a -D nixdiff";
           "nxgc" = "nh clean all -k 10 -K 1w";
           "neofetch" = "fastfetch";
         };
