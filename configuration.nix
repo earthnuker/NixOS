@@ -235,6 +235,8 @@
     fwupd.enable = true;
     openssh.enable = true;
     upower.enable = true;
+    picom.enable = true;
+    devmon.enable = true;
     xrdp = {
       enable = true;
       defaultWindowManager = "i3";
