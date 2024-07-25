@@ -157,6 +157,11 @@
 
   systemd.services.NetworkManager-wait-online.enable = false;
 
+  systemd.sockets.nix-web = {
+    socketConfig.ListenStream = "0.0.0.0:8649"; # 8649 = 8000 + "NIX".
+    wantedBy = ["sockets.target"];
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -184,6 +189,7 @@
     comma
     statix
     deadnix
+    nix-web
   ];
 
   environment.variables = {
