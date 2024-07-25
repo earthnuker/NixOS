@@ -52,7 +52,7 @@
     };
   };
 
-  boot.initrd.luks.devices."luks-a95a5c26-c015-44eb-bc0c-6529e1e4bdfb".device = "/dev/disk/by-uuid/a95a5c26-c015-44eb-bc0c-6529e1e4bdfb";
+  # boot.initrd.luks.devices."luks-a95a5c26-c015-44eb-bc0c-6529e1e4bdfb".device = "/dev/disk/by-uuid/a95a5c26-c015-44eb-bc0c-6529e1e4bdfb";
   networking.hostName = "godwaker"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
