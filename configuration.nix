@@ -19,6 +19,7 @@
     kernelPackages = pkgs.linuxPackages_latest;
     kernel.sysctl."net.ipv4.ip_forward" = 1;
     kernel.sysctl."net.ipv6.conf.all.forwarding" = 1;
+    kernelModules = [ "rt2800usb" ];
     plymouth = {
       enable = true;
     };
