@@ -116,6 +116,7 @@
   programs = {
     zsh.enable = true;
     ssh.startAgent = true;
+    light.enable = true;
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
