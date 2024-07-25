@@ -49,6 +49,10 @@
       systemd.enable = true;
       # https://github.com/NixOS/nixpkgs/pull/108294
       verbose = false;
+      availableKernelModules = [
+        "aesni_intel"
+        "cryptd"
+      ];
     };
   };
 
