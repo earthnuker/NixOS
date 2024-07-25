@@ -155,6 +155,8 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  systemd.services.NetworkManager-wait-online.enable = false;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
