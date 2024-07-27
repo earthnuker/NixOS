@@ -69,13 +69,12 @@
     enableRedistributableFirmware = true;
     graphics = {
       enable = true;
-    };
-    opengl = {
+
       extraPackages = with pkgs; [
         intel-ocl
         intel-compute-runtime
         intel-media-driver
-
+        vpl-gpu-rt
         vaapiVdpau
         libvdpau-va-gl
         vaapiIntel
