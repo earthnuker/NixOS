@@ -160,6 +160,10 @@
     image = ./wallpaper.jpg;
   };
 
+  fonts.packages = with pkgs; [
+    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+  ];
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
