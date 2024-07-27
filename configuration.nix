@@ -222,14 +222,17 @@
   # List services that you want to enable:
 
   services = {
-    # kmscon = {
-    #  enable = true;
-    #  hwRender = true;
-    #  extraConfig = ''
-    #    xkb-layout=de
-    #	xkb-variant=nodeadkeys
-    #  '';
-    #};
+    kmscon = {
+      enable = true;
+      hwRender = true;
+      useXkbConfig = true;
+      fonts = [
+        {
+          name = "FiraCode";
+          package = pkgs.nerdfonts;
+        }
+      ];
+    };
     pipewire = {
       enable = true;
       alsa.enable = true;
