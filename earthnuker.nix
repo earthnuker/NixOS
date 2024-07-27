@@ -8,6 +8,8 @@ in
     nixpkgs,
     ...
   }: {
+    nixpkgs.config = import ./nixpkgs-config.nix;
+    xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
     home = {
       username = "earthnuker";
       homeDirectory = "/home/earthnuker";
