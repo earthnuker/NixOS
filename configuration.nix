@@ -142,11 +142,14 @@
     };
   };
 
-  # Enable flake support
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-
-  # Trusted users
-  nix.settings.trusted-users = ["@wheel"];
+  nix.settings = {
+    warn-dirty = false;
+    trusted-users = ["@wheel"];
+    # keep-derivations = true;
+    # keep-outputs = true;
+    max-jobs = "auto";
+    experimental-features = ["nix-command" "flakes"];
+  };
   nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
 
   nix.optimise = {
