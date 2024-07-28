@@ -38,6 +38,7 @@ in
         starship
         yazi
         rofi
+        pavucontrol
         (writeShellScriptBin "nixdiff" ''
           set -euxo pipefail
           nix-diff --word-oriented $1 $2
