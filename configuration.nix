@@ -253,7 +253,7 @@
       openFirewall = true;
     };
     logind = {
-      lidSwitch = "hybrid-sleep";
+      lidSwitch = "ignore";
       lidSwitchDocked = "ignore";
       lidSwitchExternalPower = "ignore";
     };
