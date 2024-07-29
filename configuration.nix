@@ -229,6 +229,7 @@
   # List services that you want to enable:
 
   services = {
+    libinput.enable = false;
     kmscon = {
       enable = true;
       hwRender = true;
@@ -272,7 +273,6 @@
         layout = "de";
         variant = "nodeadkeys";
       };
-      libinput.enable = false;
       synaptics.enable = true;
       synaptics.twoFingerScroll = true;
       desktopManager = {
