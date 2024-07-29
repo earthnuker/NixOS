@@ -206,6 +206,7 @@
     statix
     deadnix
     nix-web
+    nix-tree
   ];
 
   environment.variables = {
