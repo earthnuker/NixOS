@@ -29,7 +29,7 @@ in
         rustup
         tmux
         vscode
-        betterlockscreen
+        i3lock-fancy
         eww
         neovide
         tdesktop
