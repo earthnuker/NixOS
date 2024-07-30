@@ -198,8 +198,6 @@
     nix-prefetch-git
     nix-prefetch-github
     nixd
-    nix-diff
-    nvd
     nix-zsh-completions
     nurl
     comma

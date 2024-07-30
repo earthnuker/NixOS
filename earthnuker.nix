@@ -39,11 +39,15 @@ in
         yazi
         rofi
         pavucontrol
-        (writeShellScriptBin "nixdiff" ''
-          set -euxo pipefail
-          nix-diff --word-oriented $1 $2
-          nvd diff $1 $2
-        '')
+        (writeShellApplication {
+          name = "nixdiff";
+          runtimeInputs = [nvd nix-diff];
+          text = ''
+            set -euxo pipefail
+            nix-diff --word-oriented "$1" "$2"
+            nvd diff "$1" "$2"
+          '';
+        })
       ];
 
       sessionVariables = {
@@ -72,7 +76,7 @@ in
       topgrade.enable = true;
       nix-index.enable = true;
       direnv = {
-        enable=true;
+        enable = true;
         nix-direnv.enable = true;
       };
       ssh = {
