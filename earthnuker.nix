@@ -39,6 +39,7 @@ in
         yazi
         rofi
         pavucontrol
+        qemu_full
         (writeShellApplication {
           name = "nixdiff";
           runtimeInputs = [nvd nix-diff];
