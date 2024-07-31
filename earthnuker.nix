@@ -40,6 +40,7 @@ in
         rofi
         pavucontrol
         qemu_full
+        quickemu
         (writeShellApplication {
           name = "nixdiff";
           runtimeInputs = [nvd nix-diff];
