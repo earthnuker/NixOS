@@ -46,7 +46,7 @@ in
           runtimeInputs = [nvd nix-diff];
           text = ''
             set -euxo pipefail
-            nix-diff --word-oriented "$1" "$2"
+            nix-diff --environment --context 5 --squash-text-diff --word-oriented "$1" "$2"
             nvd diff "$1" "$2"
           '';
         })
