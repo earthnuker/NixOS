@@ -230,7 +230,7 @@ in
           nix_shell = {
             impure_msg = "[impure shell](bold red)";
             pure_msg = "[pure shell](bold green)";
-            unknown_msg = "[unknown shell](bold yellow)";
+            unknown_msg = "[shell](bold yellow)";
             heuristic = true;
           };
         };
