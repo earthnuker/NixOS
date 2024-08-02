@@ -18,6 +18,9 @@
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";
     };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
+    };
   };
 
   outputs = {
@@ -25,6 +28,7 @@
     nixpkgs,
     nixos-hardware,
     stylix,
+    lanzaboote,
     ...
   } @ inputs: {
     nixosConfigurations.godwaker = nixpkgs.lib.nixosSystem {
@@ -40,6 +44,7 @@
         ./configuration.nix
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         stylix.nixosModules.stylix
+        lanzaboote.nixosModules.lanzaboote
       ];
     };
   };

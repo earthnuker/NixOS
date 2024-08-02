@@ -6,6 +6,7 @@
   inputs,
   config,
   nixpkgs,
+  lib,
   ...
 }: {
   imports = [
@@ -26,7 +27,7 @@
     loader = {
       efi.canTouchEfiVariables = true;
       systemd-boot = {
-        enable = true;
+        enable = lib.mkForce false;
         configurationLimit = 120;
         consoleMode = "auto";
         editor = false;
@@ -34,6 +35,12 @@
         # netbootxyz.enable = true;
       };
     };
+
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/etc/secureboot";
+    };
+
     tmp.cleanOnBoot = true;
     # Silent Boot
     kernelParams = [
@@ -190,6 +197,7 @@
     ncdu
     file
     linuxPackages.acpi_call
+    sbctl
     # Nix
     home-manager
     npins
