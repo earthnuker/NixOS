@@ -31,8 +31,8 @@
         configurationLimit = 120;
         consoleMode = "auto";
         editor = false;
-        # memtest86.enable = true;
-        # netbootxyz.enable = true;
+        memtest86.enable = true;
+        netbootxyz.enable = true;
       };
     };
 
