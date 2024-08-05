@@ -43,6 +43,7 @@ in
         qemu_full
         quickemu
         networkmanager_dmenu
+        fd
         (writeShellApplication {
           name = "nixdiff";
           runtimeInputs = [nvd nix-diff];
