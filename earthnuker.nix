@@ -42,6 +42,7 @@ in
         pavucontrol
         qemu_full
         quickemu
+        networkmanager_dmenu
         (writeShellApplication {
           name = "nixdiff";
           runtimeInputs = [nvd nix-diff];
