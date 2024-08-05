@@ -27,6 +27,7 @@ in
         fastfetch
         pandoc
         rustup
+        cargo-binstall
         tmux
         vscode
         i3lock-fancy
