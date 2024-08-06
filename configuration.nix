@@ -202,6 +202,7 @@
     file
     linuxPackages.acpi_call
     sbctl
+    iw
     # Nix
     home-manager
     npins
