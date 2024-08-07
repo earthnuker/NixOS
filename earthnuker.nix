@@ -28,7 +28,7 @@ in
         pandoc
         rustup
         cargo-binstall
-        tmux
+        zellij
         vscode
         i3lock-fancy
         eww
@@ -95,7 +95,10 @@ in
       fzf = {
         enable = true;
         enableZshIntegration = true;
-        tmux.enableShellIntegration = true;
+      };
+      zellij = {
+        enable = true;
+        enableZshIntegration = true;
       };
       git = {
         enable = true;
@@ -202,7 +205,7 @@ in
             "ohmyzsh/ohmyzsh path:plugins/npm"
             "ohmyzsh/ohmyzsh path:plugins/pyenv"
             "ohmyzsh/ohmyzsh path:plugins/python"
-            "ohmyzsh/ohmyzsh path:plugins/tmux"
+            #"ohmyzsh/ohmyzsh path:plugins/tmux"
             "ohmyzsh/ohmyzsh path:plugins/rust"
             "djui/alias-tips"
             "dim-an/cod"
