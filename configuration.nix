@@ -203,6 +203,10 @@
     linuxPackages.acpi_call
     sbctl
     iw
+    dive
+    podman-tui
+    podman-compose
+    docker-compose
     # Nix
     home-manager
     npins
@@ -333,7 +337,11 @@
   };
 
   # Virtualisation
-  virtualisation.docker.enable = true;
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    defaultNetwork.settings.dns_enabled = true;
+  };
 
   security.sudo.wheelNeedsPassword = true;
   security.rtkit.enable = true;
