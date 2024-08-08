@@ -98,7 +98,7 @@ in
       };
       zellij = {
         enable = true;
-        enableZshIntegration = true;
+        enableZshIntegration = false;
       };
       git = {
         enable = true;
