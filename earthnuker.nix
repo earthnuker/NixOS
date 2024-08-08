@@ -29,6 +29,7 @@ in
         rustup
         cargo-binstall
         zellij
+        tmux
         vscode
         i3lock-fancy
         eww
