@@ -41,8 +41,7 @@ in
         yazi
         rofi
         pavucontrol
-        qemu_full
-        quickemu
+        qemu
         networkmanager_dmenu
         fd
         (writeShellApplication {
