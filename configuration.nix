@@ -208,7 +208,7 @@
     podman-compose
     docker-compose
     # Nix
-    home-manager
+    # home-manager
     npins
     nix-output-monitor
     nix-prefetch
