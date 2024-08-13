@@ -6,6 +6,7 @@ in
     pkgs,
     stylix,
     nixpkgs,
+    inputs,
     ...
   }: {
     nixpkgs.config = import ./nixpkgs-config.nix;
@@ -44,6 +45,7 @@ in
         qemu
         networkmanager_dmenu
         fd
+        inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
           runtimeInputs = [nvd nix-diff];
