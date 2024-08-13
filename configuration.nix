@@ -15,6 +15,17 @@
     inputs.home-manager.nixosModules.home-manager
   ];
 
+  system.nixos.label =
+    nixpkgs.lib.strings.concatStringsSep "-"
+    ((nixpkgs.lib.sort (x: y: x < y) config.system.nixos.tags)
+      ++ [
+        "${config.system.nixos.version}:${(
+          if inputs.self.sourceInfo ? dirtyShortRev
+          then inputs.self.sourceInfo.dirtyShortRev
+          else inputs.self.sourceInfo.shortRev
+        )}"
+      ]);
+
   # Bootloader.
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
