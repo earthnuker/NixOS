@@ -60,6 +60,7 @@ in
         VISUAL = "code -n -w";
         ZSH_CACHE_DIR = "/home/earthnuker/.cache/oh-my-zsh";
         TERM = "xterm-256color";
+        DIRENV_WARN_TIMEOUT = 0;
       };
     };
 
