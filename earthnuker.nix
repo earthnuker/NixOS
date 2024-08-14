@@ -20,6 +20,7 @@ in
         btop
         dex
         eza
+        dconf
         ffmpeg_7-full
         firefox
         iftop
@@ -45,7 +46,7 @@ in
         qemu
         networkmanager_dmenu
         nixpacks
-	nix-inspect
+        nix-inspect
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
