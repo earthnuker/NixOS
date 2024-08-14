@@ -139,6 +139,7 @@ in
         syntaxHighlighting.enable = true;
         autocd = true;
         history.extended = true;
+        enableVteIntegration = true;
 
         initExtra = ''
           setopt extendedglob
