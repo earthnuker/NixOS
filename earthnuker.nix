@@ -45,6 +45,7 @@ in
         qemu
         networkmanager_dmenu
         nixpacks
+	nix-inspect
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
