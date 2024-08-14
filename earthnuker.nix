@@ -44,7 +44,6 @@ in
         pavucontrol
         qemu
         networkmanager_dmenu
-        fd
         nixpacks
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
@@ -85,6 +84,7 @@ in
       lazygit.enable = true;
       topgrade.enable = true;
       nix-index.enable = true;
+      fd.enable = true;
       direnv = {
         enable = true;
         nix-direnv.enable = true;
