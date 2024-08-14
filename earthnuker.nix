@@ -101,6 +101,10 @@ in
         enable = true;
         enableZshIntegration = true;
       };
+      atuin = {
+        enable = true;
+        enableZshIntegration = true;
+      };
       zellij = {
         enable = true;
         enableZshIntegration = false;
