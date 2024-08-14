@@ -64,6 +64,7 @@ in
         ZSH_CACHE_DIR = "/home/earthnuker/.cache/oh-my-zsh";
         TERM = "xterm-256color";
         DIRENV_WARN_TIMEOUT = 0;
+        NSEARCH_FZF_CMD = "fzf --multi";
       };
     };
 
