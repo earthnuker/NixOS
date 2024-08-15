@@ -40,7 +40,10 @@
       system = system;
       specialArgs = {
         inherit inputs nixpkgs;
-        revision = self.rev or self.dirtyRev or "dirty";
+        revision =
+          if self.sourceInfo ? dirtyShortRev
+          then self.sourceInfo.dirtyShortRev
+          else self.sourceInfo.shortRev or "dirty";
       };
       modules = [
         ./configuration.nix
