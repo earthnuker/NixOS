@@ -47,6 +47,7 @@ in
         networkmanager_dmenu
         nixpacks
         nix-inspect
+        vim.xxd
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
