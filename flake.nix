@@ -23,6 +23,10 @@
       url = "github:niksingh710/nsearch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.0.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -31,6 +35,7 @@
     nixos-hardware,
     stylix,
     lanzaboote,
+    lix-module,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -50,6 +55,7 @@
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         stylix.nixosModules.stylix
         lanzaboote.nixosModules.lanzaboote
+	lix-module.nixosModules.default
       ];
     };
   };
