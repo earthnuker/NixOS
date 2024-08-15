@@ -41,7 +41,10 @@
     formatter."${system}" = nixpkgs.legacyPackages.${system}.alejandra;
     nixosConfigurations.godwaker = nixpkgs.lib.nixosSystem {
       system = system;
-      specialArgs = {inherit inputs nixpkgs;};
+      specialArgs = {
+        inherit inputs nixpkgs;
+        revision = self.rev or self.dirtyRev or "dirty";
+      };
       modules = [
         ./configuration.nix
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s

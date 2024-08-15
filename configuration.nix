@@ -7,6 +7,7 @@
   config,
   nixpkgs,
   lib,
+  revision,
   ...
 }: {
   imports = [
@@ -14,7 +15,7 @@
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.home-manager
   ];
-
+  system.configurationRevision = revision;
   system.nixos.label =
     nixpkgs.lib.strings.concatStringsSep "-"
     ((nixpkgs.lib.sort (x: y: x < y) config.system.nixos.tags)
