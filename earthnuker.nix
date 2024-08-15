@@ -233,7 +233,7 @@ in
           "nxt" = "nh os test -u -a -D nixdiff";
           "nxb" = "nh os build -u -a -D nixdiff";
           "nxs" = "nh os switch -u -a -D nixdiff";
-          "nxgc" = "nh clean all -k 10 -K 1w";
+          "nxgc" = "nh clean all -k 10 -K 1w; nix-store --optimize";
           "neofetch" = "fastfetch";
         };
       };
