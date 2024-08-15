@@ -35,9 +35,12 @@
     stylix,
     lanzaboote,
     ...
-  } @ inputs: {
+  } @ inputs: let
+    system = "x86_64-linux";
+  in {
+    formatter."${system}" = nixpkgs.legacyPackages.${system}.alejandra;
     nixosConfigurations.godwaker = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      system = system;
       specialArgs = {inherit inputs nixpkgs;};
       modules = [
         ./configuration.nix
