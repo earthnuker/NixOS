@@ -166,6 +166,7 @@
 
   nix.settings = {
     warn-dirty = false;
+    allow-dirty = false;
     trusted-users = ["@wheel"];
     max-jobs = "auto";
     experimental-features = ["nix-command" "flakes" "repl-flake"];

@@ -40,12 +40,6 @@
       system = "x86_64-linux";
       specialArgs = {inherit inputs nixpkgs;};
       modules = [
-        (_: {
-          system.configurationRevision =
-            if self ? rev
-            then self.rev
-            else throw "Refusing to build from a dirty Git tree!";
-        })
         ./configuration.nix
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         stylix.nixosModules.stylix
