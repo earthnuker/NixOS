@@ -134,6 +134,10 @@ in
           :imap jk <Esc>
           :set number
         '';
+        plugins = with pkgs.vimPlugins; [
+          nvim-treesitter.withAllGrammars
+          vim-nix
+        ];
       };
       zsh = {
         enable = true;

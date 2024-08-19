@@ -55,7 +55,7 @@
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         stylix.nixosModules.stylix
         lanzaboote.nixosModules.lanzaboote
-	lix-module.nixosModules.default
+        lix-module.nixosModules.default
       ];
     };
   };
