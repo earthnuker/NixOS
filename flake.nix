@@ -53,6 +53,7 @@
       modules = [
         ./configuration.nix
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
+        nixos-hardware.nixosModules.common-pc-laptop-ssd
         stylix.nixosModules.stylix
         lanzaboote.nixosModules.lanzaboote
         lix-module.nixosModules.default
