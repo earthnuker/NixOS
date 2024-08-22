@@ -110,6 +110,7 @@
     enable = true;
     wifi = {
       macAddress = "stable";
+      backend = "iwd";
     };
   };
   # Set your time zone.
