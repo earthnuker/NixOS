@@ -265,6 +265,7 @@
 
   services = {
     libinput.enable = false;
+    fstrim.enable = true;
     kmscon = {
       enable = true;
       hwRender = true;
