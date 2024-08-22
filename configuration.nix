@@ -52,8 +52,11 @@
       enable = true;
       pkiBundle = "/etc/secureboot";
     };
+    tmp = {
+      useTmpfs = true;
 
-    tmp.cleanOnBoot = true;
+      cleanOnBoot = true;
+    };
     # Silent Boot
     kernelParams = [
       "quiet"
@@ -200,7 +203,12 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  systemd.services.NetworkManager-wait-online.enable = false;
+  systemd.services = {
+    NetworkManager-wait-online.enable = false;
+    nix-daemon = {
+      environment.TMPDIR = "/var/tmp";
+    };
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
