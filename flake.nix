@@ -27,6 +27,10 @@
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -36,6 +40,7 @@
     stylix,
     lanzaboote,
     lix-module,
+    nix-index-database,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -57,6 +62,8 @@
         stylix.nixosModules.stylix
         lanzaboote.nixosModules.lanzaboote
         lix-module.nixosModules.default
+        nix-index-database.nixosModules.nix-index
+        {programs.nix-index-database.comma.enable = true;}
       ];
     };
   };

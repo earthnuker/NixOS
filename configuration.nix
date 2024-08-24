@@ -237,7 +237,6 @@
     nixd
     nix-zsh-completions
     nurl
-    comma
     statix
     deadnix
     nix-web
