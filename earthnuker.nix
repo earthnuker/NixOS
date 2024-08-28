@@ -49,6 +49,7 @@ in
         nix-inspect
         vim.xxd
         devenv
+        nnn
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
