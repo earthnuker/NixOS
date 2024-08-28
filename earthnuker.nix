@@ -155,6 +155,7 @@ in
           setopt extendedglob
           setopt autocd
           setopt append_history share_history histignorealldups
+          setopt interactive_comments
           bindkey -e
           eval $(ssh-agent) > /dev/null
           zstyle ':completion:*:descriptions' format '[%d]'
