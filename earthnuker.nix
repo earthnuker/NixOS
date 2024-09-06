@@ -30,6 +30,7 @@ in
         pandoc
         rustup
         cargo-binstall
+        cargo-update
         zellij
         tmux
         vscode
