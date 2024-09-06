@@ -276,6 +276,9 @@
         }
       ];
     };
+    hardware = {
+      bolt.enable = true;
+    };
     tlp = {
       enable = true;
       settings = {
