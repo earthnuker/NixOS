@@ -367,6 +367,7 @@
 
   security.sudo.wheelNeedsPassword = true;
   security.rtkit.enable = true;
+  security.polkit.enable = true;
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
