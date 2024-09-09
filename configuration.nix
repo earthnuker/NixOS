@@ -154,7 +154,7 @@
   users.users.earthnuker = {
     isNormalUser = true;
     description = "Earthnuker";
-    extraGroups = ["networkmanager" "wheel" "docker" "dialout" "xrdp"];
+    extraGroups = ["networkmanager" "wheel" "docker" "dialout" "xrdp" "video"];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCKtzQrqXob0eQDx9HHr0rEH3Ble4LnIuur670PYPt1EhAws597AD7RoUDGNTqGCWQw6amW0Bk8AJXKhxQmZw3H4MueRooQ+YBTMQBxeqCipOZCqh7ff98xo1l8fQUXOOQWq6hPw8CmRmf/TVzfybFAjGmNx2/AvoUgdzuQz5CL3Q=="
