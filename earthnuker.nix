@@ -52,6 +52,7 @@ in
         devenv
         devbox
         nnn
+        just
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
