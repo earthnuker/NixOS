@@ -36,7 +36,7 @@
     plymouth = {
       enable = true;
     };
-    binfmt.emulatedSystems = [ "aarch64-linux" ];
+    binfmt.emulatedSystems = ["aarch64-linux"];
     loader = {
       efi.canTouchEfiVariables = true;
       systemd-boot = {
