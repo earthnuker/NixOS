@@ -53,6 +53,8 @@ in
         devbox
         nnn
         just
+        mitmproxy
+        bettercap
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
