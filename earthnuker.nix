@@ -49,7 +49,7 @@ in
         nixpacks
         nix-inspect
         vim.xxd
-        devenv
+        #devenv
         devbox
         nnn
         just
