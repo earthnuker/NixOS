@@ -106,14 +106,17 @@ in
       kitty = {
         enable = true;
         shellIntegration.enableZshIntegration = true;
+        shellIntegration.enableFishIntegration = true;
       };
       fzf = {
         enable = true;
         enableZshIntegration = true;
+        enableFishIntegration = true;
       };
       atuin = {
         enable = true;
         enableZshIntegration = true;
+        enableFishIntegration = true;
       };
       zellij = {
         enable = true;
@@ -144,6 +147,12 @@ in
         plugins = with pkgs.vimPlugins; [
           nvim-treesitter.withAllGrammars
           vim-nix
+        ];
+      };
+      fish = {
+        enable=true;
+        plugins = [
+          { name = "grc"; src = pkgs.fishPlugins.grc.src; }
         ];
       };
       zsh = {
@@ -256,6 +265,7 @@ in
       starship = {
         enable = true;
         enableZshIntegration = true;
+        enableFishIntegration = true;
         settings = {
           add_newline = true;
           aws.disabled = true;
