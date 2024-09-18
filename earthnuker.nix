@@ -156,7 +156,7 @@ in
         enableVteIntegration = true;
 
         initExtra = ''
-          setopt extendedglob
+          unsetopt extendedGlob
           setopt autocd
           setopt append_history share_history histignorealldups
           setopt interactive_comments
