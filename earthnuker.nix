@@ -150,9 +150,12 @@ in
         ];
       };
       fish = {
-        enable=true;
+        enable = true;
         plugins = [
-          { name = "grc"; src = pkgs.fishPlugins.grc.src; }
+          {
+            name = "grc";
+            src = pkgs.fishPlugins.grc.src;
+          }
         ];
       };
       zsh = {
