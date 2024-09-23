@@ -58,14 +58,16 @@
 
       cleanOnBoot = true;
     };
-    # Silent Boot
     kernelParams = [
+      # Silent Boot
       "quiet"
       "splash"
       "vga=current"
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
       "udev.log_priority=3"
+      # Audit
+      "audit=1"
     ];
     consoleLogLevel = 0;
     initrd = {
@@ -365,9 +367,17 @@
     enable = true;
   };
 
-  security.sudo.wheelNeedsPassword = true;
-  security.rtkit.enable = true;
-  security.polkit.enable = true;
+  security = {
+    sudo.wheelNeedsPassword = true;
+    rtkit.enable = true;
+    polkit.enable = true;
+    auditd.enable = true;
+    audit.enable = true;
+    audit.rules = [
+      "-a exit,always -F arch=b64 -S execve"
+      "-a exit,always -F arch=b32 -S execve"
+    ];
+  };
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
