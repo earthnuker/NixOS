@@ -55,6 +55,7 @@ in
         just
         mitmproxy
         bettercap
+        sd
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
