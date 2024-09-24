@@ -67,7 +67,7 @@
       "rd.udev.log_level=3"
       "udev.log_priority=3"
       # Audit
-      "audit=1"
+      # "audit=1"
     ];
     consoleLogLevel = 0;
     initrd = {
@@ -371,8 +371,8 @@
     sudo.wheelNeedsPassword = true;
     rtkit.enable = true;
     polkit.enable = true;
-    auditd.enable = true;
-    audit.enable = true;
+    auditd.enable = false;
+    audit.enable = false;
     audit.rules = [
       "-a exit,always -F arch=b64 -S execve"
       "-a exit,always -F arch=b32 -S execve"
