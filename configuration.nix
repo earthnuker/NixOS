@@ -250,6 +250,8 @@
     EDITOR = "nvim";
   };
 
+  environment.localBinInPath = true;
+
   environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications" "/libexec"];
 
   programs = {
