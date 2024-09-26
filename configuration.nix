@@ -39,6 +39,7 @@
     binfmt.emulatedSystems = ["aarch64-linux"];
     loader = {
       efi.canTouchEfiVariables = true;
+      timeout = 0;
       systemd-boot = {
         enable = lib.mkForce false;
         configurationLimit = 120;
