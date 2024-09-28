@@ -341,7 +341,8 @@
             pkgs.luajitPackages.luarocks
           ];
         };
-        i3.enable = true;
+        i3.enable = false;
+        qtile.enable = true;
       };
       displayManager = {
         lightdm = {
@@ -361,7 +362,7 @@
     };
 
     displayManager = {
-      defaultSession = "none+i3";
+      defaultSession = "qtile";
     };
   };
 
