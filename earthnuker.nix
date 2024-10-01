@@ -56,6 +56,7 @@ in
         mitmproxy
         bettercap
         sd
+        rsync
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
@@ -264,6 +265,7 @@ in
           "lxs" = "nh os switch --no-nom -u -a -D nixdiff -- --log-format multiline";
           "nxgc" = "nh clean all -k 10 -K 1w; nix-store --optimize";
           "neofetch" = "fastfetch";
+          "cp+" = "rsync -ah --progress";
         };
       };
       starship = {
