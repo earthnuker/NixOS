@@ -173,6 +173,8 @@
     };
   };
 
+  nix.channel.enable = false;
+
   nix.settings = {
     warn-dirty = false;
     allow-dirty = false;
