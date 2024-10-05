@@ -307,12 +307,14 @@ in
         package = pkgs.i3-gaps;
       };
     };
+    /*
     stylix = {
       enable = false;
       image = ./wallpaper.jpg;
       polarity = "dark";
       base16Scheme = "${pkgs.base16-schemes}/share/themes/pico.yaml";
     };
+    */
     home.stateVersion = "24.05";
     programs.home-manager.enable = true;
   }

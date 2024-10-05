@@ -7,26 +7,32 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    /*
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    */
     nixos-hardware = {
       url = "github:NixOS/nixos-hardware/master";
     };
+    /*
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    */
     nsearch = {
       url = "github:niksingh710/nsearch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    /*
     lix-module = {
       url = "git+https://git.lix.systems/lix-project/nixos-module";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    */
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,9 +43,9 @@
     self,
     nixpkgs,
     nixos-hardware,
-    stylix,
-    lanzaboote,
-    lix-module,
+    #stylix,
+    #lanzaboote,
+    #lix-module,
     nix-index-database,
     ...
   } @ inputs: let
@@ -59,9 +65,9 @@
         ./configuration.nix
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         nixos-hardware.nixosModules.common-pc-laptop-ssd
-        stylix.nixosModules.stylix
-        lanzaboote.nixosModules.lanzaboote
-        lix-module.nixosModules.default
+        #stylix.nixosModules.stylix
+        #lanzaboote.nixosModules.lanzaboote
+        #lix-module.nixosModules.default
         nix-index-database.nixosModules.nix-index
         {programs.nix-index-database.comma.enable = true;}
       ];

@@ -41,7 +41,8 @@
       efi.canTouchEfiVariables = true;
       timeout = 0;
       systemd-boot = {
-        enable = lib.mkForce false;
+        #enable = lib.mkForce false;
+        enable = true;
         configurationLimit = 120;
         consoleMode = "auto";
         editor = false;
@@ -49,11 +50,12 @@
         netbootxyz.enable = true;
       };
     };
-
+    /*
     lanzaboote = {
       enable = true;
       pkiBundle = "/etc/secureboot";
     };
+    */
     tmp = {
       useTmpfs = true;
 
@@ -194,11 +196,12 @@
     automatic = true;
     dates = ["09:00"];
   };
-
+  /*
   stylix = {
     enable = false;
     image = ./wallpaper.jpg;
   };
+  */
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
@@ -355,8 +358,6 @@
             extraConfig = ''
               [greeter]
               show-password-label = false
-              [greeter-theme]
-              background-image = ${config.stylix.image}
             '';
           };
         };
