@@ -47,7 +47,7 @@
   in {
     formatter."${system}" = nixpkgs.legacyPackages.${system}.alejandra;
     nixosConfigurations.godwaker = nixpkgs.lib.nixosSystem {
-      system = system;
+      inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
         revision =
