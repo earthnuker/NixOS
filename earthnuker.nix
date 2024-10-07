@@ -257,13 +257,6 @@ in
         };
         shellAliases = {
           "lg" = "lazygit";
-          "nxt" = "nh os test -u -a -D nixdiff";
-          "lxt" = "nh os test --no-nom -u -a -D nixdiff -- --log-format multiline";
-          "nxb" = "nh os build -u -a -D nixdiff";
-          "lxb" = "nh os build --no-nom -u -a -D nixdiff -- --log-format multiline";
-          "nxs" = "nh os switch -u -a -D nixdiff";
-          "lxs" = "nh os switch --no-nom -u -a -D nixdiff -- --log-format multiline";
-          "nxgc" = "nh clean all -k 10 -K 1w; nix-store --optimize";
           "neofetch" = "fastfetch";
           "cp+" = "rsync -ah --progress";
         };
