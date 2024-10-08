@@ -177,7 +177,7 @@
   };
 
   nix.channel.enable = false;
-
+  nix.registry.nixpkgs.flake = inputs.nixpkgs;
   nix.settings = {
     warn-dirty = false;
     allow-dirty = false;
@@ -213,6 +213,7 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate = _: true;
 
   systemd.services = {
     NetworkManager-wait-online.enable = false;
