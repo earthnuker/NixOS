@@ -78,6 +78,7 @@
       availableKernelModules = [
         "aesni_intel"
         "cryptd"
+        "tpm_tis"
       ];
     };
   };
@@ -379,6 +380,10 @@
   };
 
   security = {
+    tpm2 = {
+      enable = true;
+      tctiEnvironment.enable = true;
+    };
     sudo.wheelNeedsPassword = true;
     rtkit.enable = true;
     polkit.enable = true;
