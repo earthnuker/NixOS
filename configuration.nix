@@ -237,6 +237,7 @@
     iw
     dive
     docker-compose
+    tpm2-tss
     # Nix
     # home-manager
     npins
