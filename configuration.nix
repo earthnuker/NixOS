@@ -307,7 +307,10 @@
       alsa.support32Bit = true;
       pulse.enable = true;
     };
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      useRoutingFeatures = "both";
+    };
     fwupd.enable = true;
     openssh.enable = true;
     upower.enable = true;
