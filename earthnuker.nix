@@ -259,6 +259,7 @@ in
           "lg" = "lazygit";
           "neofetch" = "fastfetch";
           "cp+" = "rsync -ah --progress";
+          "sys" = "~/nixos/sys";
         };
       };
       starship = {
