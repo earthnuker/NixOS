@@ -8,12 +8,14 @@
   nixpkgs,
   lib,
   revision,
+  modulesPath,
   ...
 }: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.home-manager
+    "${modulesPath}/installer/cd-dvd/iso-image.nix"
   ];
   system.configurationRevision = revision;
   system.nixos.label =
@@ -39,7 +41,7 @@
     #binfmt.emulatedSystems = ["aarch64-linux"];
     loader = {
       efi.canTouchEfiVariables = true;
-      timeout = 0;
+      timeout = lib.mkForce 0;
       systemd-boot = {
         enable = lib.mkForce false;
         configurationLimit = 120;
