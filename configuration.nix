@@ -332,7 +332,7 @@
       enable = true;
     };
     xserver = {
-      enable = true;
+      enable = false;
       videoDrivers = ["modesetting"];
       xkb = {
         layout = "de";
@@ -356,11 +356,11 @@
           ];
         };
         i3.enable = false;
-        qtile.enable = true;
+        qtile.enable = false;
       };
       displayManager = {
         lightdm = {
-          enable = true;
+          enable = false;
           greeters.mini = {
             enable = true;
             user = "earthnuker";

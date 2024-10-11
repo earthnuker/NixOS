@@ -284,7 +284,7 @@ in
     };
 
     xsession = {
-      enable = true;
+      enable = false;
       initExtra = ''
         "${pkgs.dex}/bin/dex" -a
       '';
