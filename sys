@@ -9,12 +9,12 @@ alias c := check
 alias h := history
 
 _default:
-    @just --list --justfile {{justfile()}} 
+    @just --list --justfile {{ justfile() }} 
 
 # Build and switch
-switch: && archive
+switch: && archive push
     nix flake update --commit-lock-file
-    just --justfile {{justfile()}} status
+    just --justfile {{ justfile() }} status
     nh os switch -a -D nixdiff 
 
 # Flake check
@@ -32,10 +32,13 @@ gc:
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
 
+@push:
+    git push
+
 # Git status
 @status:
-   git diff -U0 @{push} -- ':(exclude)*.lock'
-   git status -s --renames
+    git diff -U0 @{push} -- ':(exclude)*.lock'
+    git status -s --renames
 
 # Archive flake inputs
 archive:
