@@ -54,6 +54,7 @@ in
         bettercap
         sd
         rsync
+        grc
         inputs.nsearch.packages.${pkgs.system}.default
         (writeShellApplication {
           name = "nixdiff";
