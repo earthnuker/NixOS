@@ -127,7 +127,7 @@ in
         lfs.enable = true;
         userName = "earthnuker";
         userEmail = "earthnuker@gmail.com";
-        difftastic.enable = true;
+        #difftastic.enable = true;
         extraConfig = {
           init.defaultBranch = "main";
           push.autoSetupRemote = true;
