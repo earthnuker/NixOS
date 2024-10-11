@@ -25,5 +25,11 @@ gc:
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
 
+# Git status
+@status:
+   git diff -U0 @{push} -- ':(exclude)*.lock'
+   git status -s --renames
+
+# Archive flake inputs
 archive:
     nix flake archive
