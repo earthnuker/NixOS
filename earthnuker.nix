@@ -31,11 +31,10 @@ in
         zellij
         tmux
         vscode
-        i3lock-fancy
+        hyprlock
         eww
         neovide
         tdesktop
-        xss-lock
         python3Full
         starship
         yazi
@@ -282,7 +281,18 @@ in
         };
       };
     };
+    wayland.windowManager.hyprland = {
+      enable = true;
+      xwayland.enable = true;
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      systemd.enable = true;
+      plugins = with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
+        hyprbars
+      ];
+      settings = {
 
+      };
+    };
     xsession = {
       enable = false;
       initExtra = ''
