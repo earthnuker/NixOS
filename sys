@@ -2,6 +2,12 @@
 #! nix-shell -i "just --justfile" --quiet
 #! nix-shell -p just nh git
 
+alias rebuild := switch
+alias b := switch
+alias s := status
+alias c := check
+alias h := history
+
 _default:
     @just --list --justfile {{justfile()}} 
 
