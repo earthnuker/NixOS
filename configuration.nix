@@ -15,7 +15,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.home-manager
-    "${modulesPath}/installer/cd-dvd/iso-image.nix"
+    #"${modulesPath}/installer/cd-dvd/iso-image.nix"
   ];
   system.configurationRevision = revision;
   system.nixos.label =
