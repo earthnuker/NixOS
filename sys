@@ -7,12 +7,13 @@ alias b := switch
 alias s := status
 alias c := check
 alias h := history
+alias p := push
 
 _default:
     @just --list --justfile {{ justfile() }} 
 
 # Build and switch
-switch: && archive push
+switch: && archive 
     nix flake update --commit-lock-file
     just --justfile {{ justfile() }} status
     nh os switch -a -D nixdiff 
