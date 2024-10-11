@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just nh git
+#! nix-shell -p just nh git jq
 
 alias rebuild := switch
 alias b := switch
@@ -38,7 +38,8 @@ push:
 
 # Git status
 status:
-    git diff -U0 @{push} -- ':(exclude)*.lock'
+    git diff -U0 $(nixos-version --configuration-revision).. -- ':(exclude)*.lock'
+    #git diff -U0 @{push} -- ':(exclude)*.lock'
     git status -s --renames
 
 # Archive flake inputs
