@@ -8,18 +8,21 @@ alias s := status
 alias c := check
 alias h := history
 alias p := push
+alias u := update
 
 _default:
     @just --list --justfile {{ justfile() }} 
 
-# Build and switch
-switch: && archive 
+update:
     nix flake update --commit-lock-file
+
+# Build and switch
+switch: check && archive 
     just --justfile {{ justfile() }} status
     nh os switch -a -D nixdiff 
 
 # Flake check
-check:
+check: update
     nix flake check --log-format multiline-with-logs
 
 # show profile history
