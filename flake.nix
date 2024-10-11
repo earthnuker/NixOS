@@ -50,12 +50,9 @@
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
-        revision =
-          if self.sourceInfo ? dirtyShortRev
-          then self.sourceInfo.dirtyShortRev
-          else self.sourceInfo.shortRev or "dirty";
       };
       modules = [
+        ./revision.nix
         ./configuration.nix
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         nixos-hardware.nixosModules.common-pc-laptop-ssd

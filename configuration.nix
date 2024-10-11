@@ -7,8 +7,6 @@
   config,
   nixpkgs,
   lib,
-  revision,
-  modulesPath,
   ...
 }: {
   imports = [
@@ -17,18 +15,6 @@
     inputs.home-manager.nixosModules.home-manager
     #"${modulesPath}/installer/cd-dvd/iso-image.nix"
   ];
-  system.configurationRevision = revision;
-  system.nixos.label =
-    nixpkgs.lib.strings.concatStringsSep "-"
-    ((nixpkgs.lib.sort (x: y: x < y) config.system.nixos.tags)
-      ++ [
-        "${config.system.nixos.version}:${(
-          if inputs.self.sourceInfo ? dirtyShortRev
-          then inputs.self.sourceInfo.dirtyShortRev
-          else inputs.self.sourceInfo.shortRev
-        )}"
-      ]);
-
   # Bootloader.
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
