@@ -32,11 +32,11 @@ gc:
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
 
-@push:
+push:
     git push
 
 # Git status
-@status:
+status:
     git diff -U0 @{push} -- ':(exclude)*.lock'
     git status -s --renames
 
