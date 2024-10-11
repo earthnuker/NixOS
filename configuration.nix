@@ -333,7 +333,7 @@
     };
     xserver = {
       enable = true;
-      videoDrivers = ["intel"];
+      videoDrivers = ["modesetting"];
       xkb = {
         layout = "de";
         variant = "nodeadkeys";
