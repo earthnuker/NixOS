@@ -159,6 +159,7 @@
     extraSpecialArgs = {inherit inputs;};
     useGlobalPkgs = true;
     useUserPackages = true;
+    backupFileExtension = "hm_bak";
     users = {
       earthnuker = import ./earthnuker.nix;
     };
