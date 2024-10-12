@@ -4,6 +4,7 @@ in
   {
     pkgs,
     inputs,
+    nixosConfig,
     ...
   }: {
     nixpkgs.config = import ./nixpkgs-config.nix;
@@ -304,10 +305,10 @@ in
       };
     };
     stylix = {
-      enable = false;
+      enable = true;
       image = ./wallpaper.jpg;
       polarity = "dark";
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/pico.yaml";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/spacemacs.yaml";
     };
     home.stateVersion = "24.05";
     programs.home-manager.enable = true;

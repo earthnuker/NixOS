@@ -206,11 +206,6 @@
       ];
     };
   };
-
-  stylix = {
-    enable = false;
-    image = ./wallpaper.jpg;
-  };
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
