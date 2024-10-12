@@ -144,6 +144,11 @@
     light.enable = true;
     hyprland.enable = true;
     dconf.enable = true;
+    xdg.portal = {
+        enable = true;
+        extraPortals = [pkgs.xdg-desktop-portal-gtk];
+        config.commmon.default = "*";
+    };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
