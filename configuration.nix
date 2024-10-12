@@ -143,6 +143,7 @@
     ssh.startAgent = true;
     light.enable = true;
     hyprland.enable = true;
+    dconf.enable = true;
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -330,6 +331,10 @@
     };
     autorandr = {
       enable = true;
+    };
+    dbus = {
+      enable = true;
+      packages = [ pkgs.dconf ];
     };
     xserver = {
       enable = false;
