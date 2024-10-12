@@ -290,7 +290,62 @@ in
         hyprbars
       ];
       settings = {
+        general = {
+          border_width = 2;
+          border_color = "0.2, 0.2, 0.2, 1";
+          background = "0.1, 0.1, 0.1, 1";
+          font = "Fira Sans";
+          font_size = 14;
+        };
 
+        keybinds = {
+          MOD = "Mod4";
+          binds = [
+            {
+              key = "d";
+              command = "split right";
+            }
+            {
+              key = "a";
+              command = "split left";
+            }
+            {
+              key = "s";
+              command = "split down";
+            }
+            {
+              key = "w";
+              command = "split up";
+            }
+            {
+              key = "e";
+              command = "toggle_float";
+            }
+            {
+              key = "q";
+              command = "quit";
+            }
+          ];
+        };
+
+        window_rules = {
+          rules = [
+            {
+              class = "URxvt";
+              border = "0, 0, 0, 0";
+            }
+          ];
+        };
+
+        hyprbar = {
+          settings = {
+            bar_height = 25;
+            bar_color = "0.1, 0.1, 0.1, 1";
+            font = "Fira Sans";
+            font_size = 14;
+            widget_padding = 10;
+          };
+        };
       };
     };
     xsession = {
