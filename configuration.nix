@@ -137,12 +137,19 @@
     useXkbConfig = true;
   };
 
-  # Enable Z Shell
   programs = {
     zsh.enable = true;
     ssh.startAgent = true;
     light.enable = true;
     dconf.enable = true;
+        nix-ld.enable = true;
+    nh = {
+      enable = true;
+      #clean.enable = true;
+      clean.extraArgs = "-k 10 -K 1w";
+      flake = "${config.users.users.earthnuker.home}/nixos";
+    };
+    mosh.enable = true;
     xdg.portal = {
         enable = true;
         extraPortals = [pkgs.xdg-desktop-portal-gtk];
@@ -260,17 +267,6 @@
   environment.localBinInPath = true;
 
   environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications" "/libexec"];
-
-  programs = {
-    nix-ld.enable = true;
-    nh = {
-      enable = true;
-      #clean.enable = true;
-      clean.extraArgs = "-k 10 -K 1w";
-      flake = "${config.users.users.earthnuker.home}/nixos";
-    };
-    mosh.enable = true;
-  };
 
   # List services that you want to enable:
 
