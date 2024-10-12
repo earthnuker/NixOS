@@ -335,6 +335,7 @@
       enable = true;
       packages = [ pkgs.dconf ];
     };
+    seatd.enable = true;
     xserver = {
       enable = false;
       videoDrivers = ["modesetting"];
