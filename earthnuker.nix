@@ -4,7 +4,6 @@ in
   {
     pkgs,
     inputs,
-    nixosConfig,
     ...
   }: {
     nixpkgs.config = import ./nixpkgs-config.nix;

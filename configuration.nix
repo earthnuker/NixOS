@@ -206,6 +206,14 @@
       ];
     };
   };
+
+  stylix = {
+    enable = true;
+    image = ./wallpaper.jpg;
+    polarity = "dark";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/spacemacs.yaml";
+  };
+  
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
