@@ -18,8 +18,10 @@
   # Bootloader.
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    kernel.sysctl."net.ipv4.ip_forward" = 1;
-    kernel.sysctl."net.ipv6.conf.all.forwarding" = 1;
+    kernel.sysctl = {
+      "net.ipv4.ip_forward" = 1;
+      "net.ipv6.conf.all.forwarding" = 1;
+    };
     kernelModules = ["rt2800usb"];
     plymouth = {
       enable = true;
@@ -59,7 +61,11 @@
       # "audit=1"
     ];
     consoleLogLevel = 0;
-    initrd = {
+    initrd = let
+      uuid = {
+        swap = "a95a5c26-c015-44eb-bc0c-6529e1e4bdfb";
+      };
+    in {
       systemd.enable = true;
       # https://github.com/NixOS/nixpkgs/pull/108294
       verbose = false;
@@ -68,12 +74,9 @@
         "cryptd"
         "tpm_tis"
       ];
+      luks.devices."luks-${uuid.swap}".device = "/dev/disk/by-uuid/${uuid.swap}";
     };
   };
-
-  boot.initrd.luks.devices."luks-a95a5c26-c015-44eb-bc0c-6529e1e4bdfb".device = "/dev/disk/by-uuid/a95a5c26-c015-44eb-bc0c-6529e1e4bdfb";
-  networking.hostName = "godwaker"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   hardware = {
     bluetooth = {
@@ -99,34 +102,33 @@
     };
   };
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager = {
-    enable = true;
-    wifi = {
-      macAddress = "stable";
-      backend = "iwd";
+  networking = {
+    hostName = "godwaker";
+    firewall.enable = false;
+    networkmanager = {
+      enable = true;
+      wifi = {
+        macAddress = "stable";
+        backend = "iwd";
+      };
     };
   };
-  # Set your time zone.
+
   time.timeZone = "Europe/Berlin";
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "de_DE.UTF-8";
-    LC_IDENTIFICATION = "de_DE.UTF-8";
-    LC_MEASUREMENT = "de_DE.UTF-8";
-    LC_MONETARY = "de_DE.UTF-8";
-    LC_NAME = "de_DE.UTF-8";
-    LC_NUMERIC = "de_DE.UTF-8";
-    LC_PAPER = "de_DE.UTF-8";
-    LC_TELEPHONE = "de_DE.UTF-8";
-    LC_TIME = "de_DE.UTF-8";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "de_DE.UTF-8";
+      LC_IDENTIFICATION = "de_DE.UTF-8";
+      LC_MEASUREMENT = "de_DE.UTF-8";
+      LC_MONETARY = "de_DE.UTF-8";
+      LC_NAME = "de_DE.UTF-8";
+      LC_NUMERIC = "de_DE.UTF-8";
+      LC_PAPER = "de_DE.UTF-8";
+      LC_TELEPHONE = "de_DE.UTF-8";
+      LC_TIME = "de_DE.UTF-8";
+    };
   };
 
   # Configure console
@@ -142,7 +144,7 @@
     ssh.startAgent = true;
     light.enable = true;
     dconf.enable = true;
-        nix-ld.enable = true;
+    nix-ld.enable = true;
     nh = {
       enable = true;
       #clean.enable = true;
@@ -150,14 +152,14 @@
       flake = "${config.users.users.earthnuker.home}/nixos";
     };
     mosh.enable = true;
-    xdg.portal = {
-        enable = true;
-        extraPortals = [pkgs.xdg-desktop-portal-gtk];
-        config.commmon.default = "*";
-    };
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    config.commmon.default = "*";
+  };
+
   users.users.earthnuker = {
     isNormalUser = true;
     description = "Earthnuker";
@@ -177,29 +179,29 @@
       earthnuker = import ./earthnuker.nix;
     };
   };
-
-  nix.channel.enable = false;
-  nix.registry.nixpkgs.flake = inputs.nixpkgs;
-  nix.settings = {
-    warn-dirty = false;
-    allow-dirty = false;
-    trusted-users = ["@wheel"];
-    max-jobs = "auto";
-    experimental-features = ["nix-command" "flakes" "repl-flake"];
-    substituters = [
-      "https://nix-community.cachix.org"
-      "https://cache.lix.systems"
-    ];
-    trusted-public-keys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
-    ];
-  };
-  nix.nixPath = ["nixpkgs=${nixpkgs.outPath}"];
-
-  nix.optimise = {
-    automatic = true;
-    dates = ["09:00"];
+  nix = {
+    channel.enable = false;
+    registry.nixpkgs.flake = inputs.nixpkgs;
+    nixPath = ["nixpkgs=${nixpkgs.outPath}"];
+    optimise = {
+      automatic = true;
+      dates = ["09:00"];
+    };
+    settings = {
+      warn-dirty = false;
+      allow-dirty = false;
+      trusted-users = ["@wheel"];
+      max-jobs = "auto";
+      experimental-features = ["nix-command" "flakes" "repl-flake"];
+      substituters = [
+        "https://nix-community.cachix.org"
+        "https://cache.lix.systems"
+      ];
+      trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
+      ];
+    };
   };
 
   stylix = {
@@ -214,8 +216,10 @@
   };
 
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.allowUnfreePredicate = _: true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowUnfreePredicate = _: true;
+  };
 
   systemd.services = {
     NetworkManager-wait-online.enable = false;
@@ -225,50 +229,45 @@
     "prepare-kexec".wantedBy = ["multi-user.target"];
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    git
-    htop
-    neovim
-    wget
-    ripgrep
-    direnv
-    zoxide
-    ncdu
-    file
-    linuxPackages.acpi_call
-    sbctl
-    iw
-    dive
-    docker-compose
-    tpm2-tss
-    # Nix
-    # home-manager
-    npins
-    nix-output-monitor
-    nix-prefetch
-    nix-prefetch-git
-    nix-prefetch-github
-    nixd
-    nix-zsh-completions
-    nurl
-    statix
-    deadnix
-    nix-web
-    nix-tree
-    greetd.tuigreet
-  ];
-
-  environment.variables = {
-    EDITOR = "nvim";
+  environment = {
+    systemPackages = with pkgs; [
+      git
+      htop
+      neovim
+      wget
+      ripgrep
+      direnv
+      zoxide
+      ncdu
+      file
+      linuxPackages.acpi_call
+      sbctl
+      iw
+      dive
+      docker-compose
+      tpm2-tss
+      # Nix
+      # home-manager
+      npins
+      nix-output-monitor
+      nix-prefetch
+      nix-prefetch-git
+      nix-prefetch-github
+      nixd
+      nix-zsh-completions
+      nurl
+      statix
+      deadnix
+      nix-web
+      nix-tree
+      greetd.tuigreet
+    ];
+    variables = {
+      EDITOR = "nvim";
+    };
+    localBinInPath = true;
+    pathsToLink = ["/share/xdg-desktop-portal" "/share/applications" "/libexec"];
   };
-
-  environment.localBinInPath = true;
-
-  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications" "/libexec"];
-
-  # List services that you want to enable:
 
   services = {
     libinput.enable = false;
@@ -290,14 +289,16 @@
     tlp = {
       enable = true;
       settings = {
-        START_CHARGE_THRESH_BAT0 = 40; # 40 and below it starts to charge
-        STOP_CHARGE_THRESH_BAT0 = 80; # 80 and above it stops charging
+        START_CHARGE_THRESH_BAT0 = 40;
+        STOP_CHARGE_THRESH_BAT0 = 80;
       };
     };
     pipewire = {
       enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
       pulse.enable = true;
       wireplumber.enable = true;
     };
@@ -334,7 +335,7 @@
     };
     dbus = {
       enable = true;
-      packages = [ pkgs.dconf ];
+      packages = [pkgs.dconf];
     };
     seatd.enable = true;
     xserver = {
@@ -344,8 +345,10 @@
         layout = "de";
         variant = "nodeadkeys";
       };
-      synaptics.enable = true;
-      synaptics.twoFingerScroll = true;
+      synaptics = {
+        enable = true;
+        twoFingerScroll = true;
+      };
       desktopManager = {
         xterm.enable = true;
       };
@@ -386,7 +389,6 @@
     };
   };
 
-  # Virtualisation
   virtualisation.docker = {
     enable = true;
   };
@@ -400,17 +402,14 @@
     rtkit.enable = true;
     polkit.enable = true;
     auditd.enable = false;
-    audit.enable = false;
-    audit.rules = [
-      "-a exit,always -F arch=b64 -S execve"
-      "-a exit,always -F arch=b32 -S execve"
-    ];
+    audit = {
+      enable = false;
+      rules = [
+        "-a exit,always -F arch=b64 -S execve"
+        "-a exit,always -F arch=b32 -S execve"
+      ];
+    };
   };
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
