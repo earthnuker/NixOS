@@ -42,7 +42,6 @@ push:
 # Git status
 status:
     git diff -U0 $(nixos-version --configuration-revision).. -- ':(exclude)*.lock'
-    #git diff -U0 @{push} -- ':(exclude)*.lock'
     git status -s --renames
 
 # Archive flake inputs
