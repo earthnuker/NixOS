@@ -209,6 +209,7 @@
     nix-daemon = {
       environment.TMPDIR = "/var/tmp";
     };
+    "prepare-kexec".wantedBy = ["multi-user.target"];
   };
 
   # List packages installed in system profile. To search, run:
