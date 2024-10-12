@@ -66,7 +66,10 @@
         swap = "a95a5c26-c015-44eb-bc0c-6529e1e4bdfb";
       };
     in {
-      systemd.enable = true;
+      systemd = {
+        enable = true;
+        tpm2.enable = true;
+      };
       # https://github.com/NixOS/nixpkgs/pull/108294
       verbose = false;
       availableKernelModules = [
