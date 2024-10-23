@@ -60,7 +60,14 @@
         lanzaboote.nixosModules.lanzaboote
         lix-module.nixosModules.default
         nix-index-database.nixosModules.nix-index
-        {programs.nix-index-database.comma.enable = true;}
+        {
+          programs.nix-index-database.comma.enable = true;
+          nixpkgs.overlays = [
+            (self: super: {
+              utillinux = super.util-linux;
+            })
+          ];
+        }
       ];
     };
   };
