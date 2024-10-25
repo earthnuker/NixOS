@@ -278,6 +278,10 @@
   services = {
     libinput.enable = false;
     fstrim.enable = true;
+    k3s = {
+      enable = true;
+      role = "server";
+    };
     kmscon = {
       enable = true;
       hwRender = true;
