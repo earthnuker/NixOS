@@ -38,7 +38,6 @@ in
         xss-lock
         python3Full
         starship
-        yazi
         rofi
         pavucontrol
         qemu
