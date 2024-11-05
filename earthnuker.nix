@@ -46,7 +46,7 @@ in
         nix-inspect
         vim.xxd
         #devenv
-        devbox
+        #devbox
         nnn
         just
         mitmproxy
