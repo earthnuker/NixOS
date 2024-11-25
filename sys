@@ -17,13 +17,19 @@ update:
     nix flake update --commit-lock-file
 
 # Build and switch
-switch: check && archive 
+switch: check && archive
     just --justfile {{ justfile() }} status
     nh os switch -a -D nixdiff 
 
 # Flake check
 check: update
     nix flake check --log-format multiline-with-logs
+
+fix:
+    nix-collect-garbage -d
+    nix-store --verify --check-contents --repair
+    nix store verify --all --log-format multiline-with-logs --repair --refresh
+    just --justfile {{ justfile() }} switch
 
 # show profile history
 history:
