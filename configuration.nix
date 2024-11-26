@@ -217,7 +217,7 @@
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
-      (nerdfonts.override {fonts = ["FiraCode"];})
+     nerd-fonts.fira-code
     ];
   };
 
@@ -289,7 +289,7 @@
       fonts = [
         {
           name = "FiraCode";
-          package = pkgs.nerdfonts;
+          package = pkgs.nerd-fonts.fira-code;
         }
       ];
     };
