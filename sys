@@ -23,12 +23,12 @@ switch: check && archive
 
 # Flake check
 check: update
-    nix flake check --log-format multiline-with-logs
+    nix flake check --log-format bar-with-logs
 
 fix:
     nix-collect-garbage -d
     nix-store --verify --check-contents --repair
-    nix store verify --all --log-format multiline-with-logs --repair --refresh
+    nix store verify --all --log-format bar-with-logs --repair --refresh
     just --justfile {{ justfile() }} switch
 
 # show profile history

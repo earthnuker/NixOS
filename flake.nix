@@ -58,7 +58,7 @@
         nixos-hardware.nixosModules.common-pc-laptop-ssd
         stylix.nixosModules.stylix
         lanzaboote.nixosModules.lanzaboote
-        lix-module.nixosModules.default
+        # lix-module.nixosModules.default
         nix-index-database.nixosModules.nix-index
         {
           programs.nix-index-database.comma.enable = true;

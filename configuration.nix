@@ -195,7 +195,7 @@
       allow-dirty = false;
       trusted-users = ["@wheel"];
       max-jobs = "auto";
-      experimental-features = ["nix-command" "flakes" "repl-flake"];
+      experimental-features = ["nix-command" "flakes"];
       substituters = [
         "https://nix-community.cachix.org"
         "https://cache.lix.systems"
