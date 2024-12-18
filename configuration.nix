@@ -217,7 +217,7 @@
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
-     nerd-fonts.fira-code
+      nerd-fonts.fira-code
     ];
   };
 
@@ -278,6 +278,16 @@
   services = {
     libinput.enable = false;
     fstrim.enable = true;
+    thelounge = {
+      enable = true;
+      extraConfig = {
+        defaults = {
+          name = "BJZ";
+          host = "irc.bonerjamz.us";
+          port = 6697;
+        };
+      };
+    };
     k3s = {
       enable = true;
       role = "server";
