@@ -32,7 +32,7 @@
       timeout = lib.mkForce 0;
       systemd-boot = {
         enable = lib.mkForce false;
-        configurationLimit = 120;
+        configurationLimit = 10;
         consoleMode = "auto";
         editor = false;
         memtest86.enable = true;
