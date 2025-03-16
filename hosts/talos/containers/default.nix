@@ -4,6 +4,7 @@
     containers = {
       ghidra = import ./ghidra.nix;
       test = import ./test.nix;
+      linkding = import ./linkding.nix;
     };
   };
 }
