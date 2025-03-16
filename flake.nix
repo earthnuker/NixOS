@@ -27,6 +27,9 @@
     apps."${system}".default = {
       type = "app";
       program = "${inputs.deploy-rs.defaultPackage.${system}}/bin/deploy";
+      meta = {
+        description = "Run deployment";
+      };
     };
     deploy.nodes = {
       talos = {
