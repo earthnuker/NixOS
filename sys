@@ -36,7 +36,7 @@ switch: check && archive
     nh os switch -a -D nixdiff
 
 # Flake check
-check: update
+check:
     nix flake check --log-format bar-with-logs
 
 fix:
