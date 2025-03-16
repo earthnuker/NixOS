@@ -23,7 +23,7 @@
       nix-prefetch
       nix-prefetch-git
       nix-prefetch-github
-      nixd
+      # nixd
       nix-zsh-completions
       nurl
       statix
