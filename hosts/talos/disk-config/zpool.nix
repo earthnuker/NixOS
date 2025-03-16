@@ -16,7 +16,7 @@
   datasets = {
     data = {
       type = "zfs_fs";
-      mountpoint = "/mnt/data";
+      mountpoint = "/tank";
       options.mountpoint = "legacy";
     };
   };

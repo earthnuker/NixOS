@@ -31,9 +31,7 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  services = {
-    zfs.autoScrub.enable = true;
-  };
+  services = import ./services.nix;
 
   environment.systemPackages = with pkgs; [
     zfs
