@@ -16,6 +16,7 @@
       dive
       docker-compose
       tpm2-tss
+      greetd.tuigreet
       # Nix
       # home-manager
       npins
@@ -28,9 +29,8 @@
       nurl
       statix
       deadnix
-      nix-web
+      # nix-web
       nix-tree
-      greetd.tuigreet
     ];
     variables = {
       EDITOR = "nvim";

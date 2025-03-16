@@ -1,13 +1,14 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just nh git jq colmena sshpass deploy-rs
+#! nix-shell -p just nh git jq sshpass deploy-rs
 
 alias rebuild := switch
 alias b := switch
 alias s := status
 alias c := check
 alias h := history
-alias p := push
+alias p := provision
+alias d := deploy
 alias u := update
 
 _default:
@@ -19,16 +20,17 @@ git:
 shell:
     zsh
 
-
 update:
     nix flake update --commit-lock-file
 
 deploy *args:
     nix run . -- {{args}}
 
-bootstrap flake $SSHPASS: check
-    sshpass -e ssh-copy-id -o StrictHostKeyChecking=no root@nixos-installer.lan
-    nix run github:nix-community/nixos-anywhere -- --ssh-option StrictHostKeyChecking=no -L --flake .#{{flake}} --generate-hardware-config nixos-facter hosts/{{flake}}/facter.json root@nixos-installer.lan
+provision flake host $SSHPASS: check
+    nix flake lock
+    -ssh-keygen -R {{host}}
+    nix run github:nix-community/nixos-anywhere -- --ssh-option StrictHostKeyChecking=no -L --env-password --flake .#{{flake}} --generate-hardware-config nixos-generate-config  hosts/{{flake}}/hardware-configuration.nix root@{{host}}
+    -ssh-keygen -R {{host}}
 
 # Build and switch
 switch: check && archive

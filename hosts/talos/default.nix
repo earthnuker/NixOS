@@ -17,8 +17,6 @@
     ./caddy.nix
   ];
 
-  facter.reportPath = ./facter.json;
-
   nix = {
     settings = {
       experimental-features = ["nix-command" "flakes"];

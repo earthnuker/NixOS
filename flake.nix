@@ -7,7 +7,6 @@
     stylix,
     lanzaboote,
     lix-module,
-    determinate,
     nix-index-database,
     agenix,
     disko,
