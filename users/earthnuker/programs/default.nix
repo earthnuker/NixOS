@@ -24,7 +24,7 @@
       enableFishIntegration = true;
     };
     atuin = {
-      enable = true;
+      enable = false;
       enableZshIntegration = true;
       enableFishIntegration = true;
     };
