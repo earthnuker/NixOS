@@ -69,10 +69,14 @@
         inherit system;
         specialArgs = {
           inherit inputs nixpkgs users sources root;
+          drives = {
+            system = "nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX2J805949";
+          };
         };
         modules = [
           ./revision.nix
           ./hosts/godwaker
+          disko.nixosModules.disko
           nixos-hardware.nixosModules.lenovo-thinkpad-t470s
           nixos-hardware.nixosModules.common-pc-laptop-ssd
           stylix.nixosModules.stylix
