@@ -81,8 +81,8 @@
           nixos-hardware.nixosModules.common-pc-laptop-ssd
           stylix.nixosModules.stylix
           lanzaboote.nixosModules.lanzaboote
-          # lix-module.nixosModules.default
-          determinate.nixosModules.default
+          lix-module.nixosModules.default
+          # determinate.nixosModules.default
           agenix.nixosModules.default
           nix-index-database.nixosModules.nix-index
         ];
@@ -112,7 +112,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.0.tar.gz";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     determinate = {
