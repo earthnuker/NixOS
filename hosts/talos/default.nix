@@ -4,6 +4,7 @@
   lib,
   inputs,
   drives,
+  config,
   ...
 }: {
   imports = [
@@ -31,7 +32,9 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  services = import ./services.nix;
+  services = import ./services.nix {
+    inherit lib pkgs inputs config;
+  };
 
   environment.systemPackages = with pkgs; [
     zfs
@@ -42,6 +45,10 @@
     logDriver = "journald";
     daemon.settings = {
       data-root = "/tank/docker";
+      hosts = [
+        "tcp://127.0.0.1:2375"
+        "unix:///var/run/docker.sock"
+      ];
     };
   };
 

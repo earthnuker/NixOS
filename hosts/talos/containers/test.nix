@@ -1,6 +1,6 @@
 {
   image = "traefik/whoami";
-  hostname = "test";
+  hostname = "whoami";
   ports = [
     "8081:8081"
   ];

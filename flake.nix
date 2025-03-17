@@ -2,17 +2,18 @@
   description = "LocalNet system configuration";
   outputs = {
     self,
-    nixpkgs,
-    nixos-hardware,
-    stylix,
+    agenix,
+    arion,
+    deploy-rs,
+    disko,
     lanzaboote,
     lix-module,
     nix-index-database,
-    agenix,
-    disko,
-    srvos,
-    deploy-rs,
     nixos-facter-modules,
+    nixos-hardware,
+    nixpkgs,
+    srvos,
+    stylix,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -25,7 +26,7 @@
     formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
     apps."${system}".default = {
       type = "app";
-      program = "${inputs.deploy-rs.defaultPackage.${system}}/bin/deploy";
+      program = "${deploy-rs.defaultPackage.${system}}/bin/deploy";
       meta = {
         description = "Run deployment";
       };
@@ -34,6 +35,7 @@
       talos = {
         hostname = "talos.lan";
         sshUser = "root";
+        fastConnection = true;
         profiles.system = {
           user = "root";
           path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.talos;
@@ -62,6 +64,10 @@
           srvos.nixosModules.mixins-systemd-boot
           nixos-facter-modules.nixosModules.facter
           agenix.nixosModules.default
+          arion.nixosModules.arion
+          {
+            age.secrets.tailscale.file = ./secrets/tailscale.age;
+          }
         ];
       };
       godwaker = nixpkgs.lib.nixosSystem {
@@ -90,6 +96,10 @@
   };
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    arion = {
+      url = "github:hercules-ci/arion";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";

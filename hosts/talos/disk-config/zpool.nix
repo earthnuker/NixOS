@@ -16,8 +16,11 @@
   datasets = {
     data = {
       type = "zfs_fs";
-      mountpoint = "/tank";
-      options.mountpoint = "legacy";
+      mountpoint = "/data";
+    };
+    nix = {
+      type = "zfs_fs";
+      mountpoint = "/nix";
     };
   };
 }

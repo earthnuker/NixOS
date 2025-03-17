@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just nh git jq sshpass deploy-rs
+#! nix-shell -p just nh git jq sshpass deploy-rs ragenix watchexec
 
 alias rebuild := switch
 alias b := switch
@@ -22,6 +22,11 @@ shell:
 
 update:
     nix flake update --commit-lock-file
+
+secret file:
+    vim ./secrets/secrets.nix
+    agenix --rules ./secrets/secrets.nix -e {{file}}
+    agenix --rules ./secrets/secrets.nix -r
 
 deploy *args:
     nix run . -- {{args}}

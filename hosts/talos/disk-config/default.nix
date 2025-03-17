@@ -11,15 +11,15 @@
         device = "/dev/disk/by-id/${device}";
         content = {
           type = "zfs";
-          pool = "zpool";
+          pool = "rpool";
         };
       }))
       // {
-        main = import ./system.nix {drive = drives.system;};
+        system = import ./system.nix {drive = drives.system;};
       };
 
     zpool = {
-      zpool = import ./zpool.nix;
+      rpool = import ./zpool.nix;
     };
   };
 }
