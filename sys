@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just nh git jq sshpass deploy-rs
+#! nix-shell -p just nh git jq sshpass deploy-rs ragenix watchexec
 
 alias rebuild := switch
 alias b := switch
@@ -11,7 +11,9 @@ alias p := provision
 alias d := deploy
 alias u := update
 
-_default:
+_default: update switch
+
+help:
     @just --list --justfile {{ justfile() }} 
 
 git:
@@ -22,6 +24,11 @@ shell:
 
 update:
     nix flake update --commit-lock-file
+
+secret file:
+    vim ./secrets/secrets.nix
+    agenix --rules ./secrets/secrets.nix -e ./secrets/{{file}}.age
+    agenix --rules ./secrets/secrets.nix -r
 
 deploy *args:
     nix run . -- {{args}}
@@ -50,6 +57,15 @@ fix:
 # show profile history
 history:
     nix profile history --profile /nix/var/nix/profiles/system
+
+
+# clean nix-store and all old generations
+[confirm]
+gca:
+    nh clean all
+    nix store optimise
+    git reflog expire --expire=now --all
+    git gc --prune=now --aggressive
 
 # clean nix-store
 gc:

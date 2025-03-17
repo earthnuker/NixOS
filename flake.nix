@@ -1,95 +1,11 @@
 {
   description = "LocalNet system configuration";
-  outputs = {
-    self,
-    nixpkgs,
-    nixos-hardware,
-    stylix,
-    lanzaboote,
-    lix-module,
-    nix-index-database,
-    agenix,
-    disko,
-    srvos,
-    deploy-rs,
-    nixos-facter-modules,
-    ...
-  } @ inputs: let
-    system = "x86_64-linux";
-    users = {
-      earthnuker = import ./users/earthnuker;
-    };
-    sources = import ./npins;
-    root = ./.;
-  in {
-    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
-    apps."${system}".default = {
-      type = "app";
-      program = "${inputs.deploy-rs.defaultPackage.${system}}/bin/deploy";
-      meta = {
-        description = "Run deployment";
-      };
-    };
-    deploy.nodes = {
-      talos = {
-        hostname = "talos.lan";
-        sshUser = "root";
-        profiles.system = {
-          user = "root";
-          path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.talos;
-        };
-      };
-    };
-    nixosConfigurations = {
-      talos = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {
-          inherit inputs nixpkgs;
-          drives = {
-            system = "nvme-VMware_Virtual_NVMe_Disk_VMware_NVME_0000";
-            storage = [
-              "wwn-0x5000c29c72d5ee1a"
-              "wwn-0x5000c29aff2e66b9"
-              "wwn-0x5000c294334516a8"
-            ];
-          };
-        };
-        modules = [
-          ./hosts/talos
-          disko.nixosModules.disko
-          srvos.nixosModules.server
-          srvos.nixosModules.mixins-terminfo
-          srvos.nixosModules.mixins-systemd-boot
-          nixos-facter-modules.nixosModules.facter
-          agenix.nixosModules.default
-        ];
-      };
-      godwaker = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {
-          inherit inputs nixpkgs users sources root;
-          drives = {
-            system = "nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX2J805949";
-          };
-        };
-        modules = [
-          ./revision.nix
-          ./hosts/godwaker
-          disko.nixosModules.disko
-          nixos-hardware.nixosModules.lenovo-thinkpad-t470s
-          nixos-hardware.nixosModules.common-pc-laptop-ssd
-          stylix.nixosModules.stylix
-          lanzaboote.nixosModules.lanzaboote
-          lix-module.nixosModules.default
-          # determinate.nixosModules.default
-          agenix.nixosModules.default
-          nix-index-database.nixosModules.nix-index
-        ];
-      };
-    };
-  };
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    arion = {
+      url = "github:hercules-ci/arion";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -110,6 +26,8 @@
       url = "github:niksingh710/nsearch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    /*
+
     lix-module = {
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -118,6 +36,7 @@
       url = "https://flakehub.com/f/DeterminateSystems/determinate/3.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    */
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -148,4 +67,5 @@
       flake = false;
     };
   };
+  outputs = inputs: import ./outputs inputs;
 }
