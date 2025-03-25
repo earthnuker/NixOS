@@ -29,6 +29,7 @@
     homepage-dashboard = {
       enable = true;
       openFirewall = true;
+      services = import ./homepage.nix;
       docker = {
         local = {
           host = "127.0.0.1";

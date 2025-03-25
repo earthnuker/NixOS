@@ -13,30 +13,40 @@ alias u := update
 
 _default: update switch
 
+# Show help
 help:
     @just --list --justfile {{ justfile() }} 
 
+# Start lazygit
 git:
     lazygit
 
+# Spawn shell with tools
 shell:
     zsh
 
+# Update flake
 update:
     nix flake update --commit-lock-file
 
-secret file:
-    vim ./secrets/secrets.nix
-    agenix --rules ./secrets/secrets.nix -e ./secrets/{{file}}.age
-    agenix --rules ./secrets/secrets.nix -r
+# Rekey secrets
+rekey:
+    agenix --rules ./outputs/secrets/secrets.nix -r
 
+# Edit secrets
+secret file: && rekey
+    vim ./outputs/secrets/secrets.nix
+    agenix --rules ./outputs/secrets/secrets.nix -e ./outputs/secrets/{{file}}.age
+
+# Deploy configuration to defined hosts
 deploy *args:
     nix run . -- {{args}}
 
-provision flake host $SSHPASS: check
+# Provision a host
+provision flake host="nixos-installer.lan" $SSHPASS="toor": check
     nix flake lock
     -ssh-keygen -R {{host}}
-    nix run github:nix-community/nixos-anywhere -- --ssh-option StrictHostKeyChecking=no -L --env-password --flake .#{{flake}} --generate-hardware-config nixos-generate-config  hosts/{{flake}}/hardware-configuration.nix root@{{host}}
+    nix run github:nix-community/nixos-anywhere -- --ssh-option StrictHostKeyChecking=no -L --env-password --flake .#{{flake}} --generate-hardware-config nixos-generate-config  outputs/hosts/{{flake}}/hardware-configuration.nix root@{{host}}
     -ssh-keygen -R {{host}}
 
 # Build and switch
@@ -48,18 +58,18 @@ switch: check && archive
 check:
     nix flake check --log-format bar-with-logs
 
-fix:
+# Archive flake inputs
+fix: && switch
     nix-collect-garbage -d
     nix-store --verify --check-contents --repair
     nix store verify --all --log-format bar-with-logs --repair --refresh
-    just --justfile {{ justfile() }} switch
 
-# show profile history
+# Show profile history
 history:
     nix profile history --profile /nix/var/nix/profiles/system
 
 
-# clean nix-store and all old generations
+# Clean nix-store and all old generations
 [confirm]
 gca:
     nh clean all
@@ -67,15 +77,12 @@ gca:
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
 
-# clean nix-store
+# Clean nix-store and old generations (keep 10 or 1 week)
 gc:
     nh clean all -k 10 -K 1w
     nix store optimise
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
-
-push:
-    git push
 
 # Git status
 status:
