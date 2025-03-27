@@ -1,5 +1,5 @@
 {
-  description = "LocalNet system configuration";
+  description = "LocalNet system configurations";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     arion = {
