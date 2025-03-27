@@ -14,7 +14,7 @@
     ./networking.nix
     ./containers
     ./services
-    ./quicksync.nix
+    # ./quicksync.nix
   ];
 
   nix = {

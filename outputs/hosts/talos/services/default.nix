@@ -2,6 +2,7 @@
   imports = [
     ./caddy.nix
     ./duckdns.nix
+    ./recyclarr
   ];
   services = {
     zfs.autoScrub.enable = true;
