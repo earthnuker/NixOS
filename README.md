@@ -3,7 +3,7 @@
 This repository contains the NixOS configurations for my machines. 
 
 - [Godwaker](./outputs/hosts/godwaker/) (ThinkPad T470)
-- [Talos](./outputs/hosts/talos/) (NAS (does not exist yet))
+- [spiritflame](./outputs/hosts/spiritflame/) (NAS (does not exist yet))
 
 ## Usage
 
@@ -37,7 +37,7 @@ Available recipes:
     - `users` contains user configurations (home-manager)
     - `util` contains utility modules
     - `hosts` contains host configurations
-        - `talos` contains the configuration for Talos
+        - `spiritflame` contains the configuration for Spiritflame
             - `containers` contains the configuration for containers
                 - `arion` contains docker-compose stacks for Arion
                 - `oci` contains OCI container configurations

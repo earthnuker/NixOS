@@ -4,6 +4,7 @@
   pkgs,
   ...
 }: {
+  /*
   boot.swraid.mdadmConf = ''
     MAILADDR root
   '';
@@ -20,16 +21,17 @@
     '';
   };
   systemd.timers.mdadm-scrubbing.timerConfig.Persistent = true;
+  */
 
   disko.devices = {
     disk =
-      (lib.genAttrs drives.storage (device: import ./mdadm_disk.nix {inherit device;}))
+      (lib.genAttrs drives.storage (device: import ./zpool_disk.nix {inherit device;}))
       // {
         system = import ./system.nix {drive = drives.system;};
       };
 
-    mdadm = {
-      pool = import ./pool.nix;
+    zpool = {
+      zpool = import ./zpool.nix;
     };
   };
 }

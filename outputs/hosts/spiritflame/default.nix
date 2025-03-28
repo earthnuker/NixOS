@@ -34,6 +34,7 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
+    zfs
   ];
 
   virtualisation.docker = {
@@ -54,5 +55,7 @@
     extraGroups = ["video" "render"];
   };
 
+  boot.supportedFilesystems = ["zfs"];
+  boot.zfs.devNodes = "/dev/disk/by-path";
   system.stateVersion = "24.05";
 }

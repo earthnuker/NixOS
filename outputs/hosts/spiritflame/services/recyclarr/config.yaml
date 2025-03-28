@@ -1,8 +1,7 @@
-/*
 sonarr:
   series:
     # Set the URL/API Key to your actual instance
-    base_url: http://sonarr:8989
+    base_url: http://localhost:8989
     api_key: <API_KEY>
 
     # Quality definitions from the guide to sync to Sonarr. Choices: series, anime
@@ -66,14 +65,14 @@ sonarr:
           - 58790d4e2fdcd9733aa7ae68ba2bb503 # WEB Tier 02
           - d84935abd3f8556dcd51d4f27e22d0a6 # WEB Tier 03
           - d0c516558625b04b363fa6c5c2c7cfd4 # WEB Scene
-        quality_profiles:
+        assign_scores_to:
           - name: WEB-1080p
 
 # Configuration specific to Radarr.
 radarr:
   movies:
     # Set the URL/API Key to your actual instance
-    base_url: http://radarr:7878
+    base_url: http://localhost:7878
     api_key: <API_KEY>
 
     # Set to 'true' to automatically remove custom formats from Radarr when they are removed from
@@ -136,7 +135,7 @@ radarr:
           - cc5e51a9e85a6296ceefe097a77f12f4 # BCORE
           - 16622a6911d1ab5d5b8b713d5b0036d4 # CRiT
           - 2a6039655313bf5dab1e43523b62c374 # MA
-        quality_profiles:
+        assign_scores_to:
           - name: HD Bluray + WEB
 
       - trash_ids:
@@ -154,8 +153,6 @@ radarr:
           - c9fd353f8f5f1baf56dc601c4cb29920 # PCOK
           - e36a0ba1bc902b26ee40818a1d59b8bd # PMTP
           - c2863d2a50c9acad1fb50e53ece60817 # STAN
-        quality_profiles:
+        assign_scores_to:
           - name: HD Bluray + WEB
             score: 0
-*/
-{...}: {}

@@ -31,18 +31,18 @@ in {
     };
   };
   deploy.nodes = {
-    talos = {
+    spiritflame = {
       hostname = "talos.lan";
       sshUser = "root";
       fastConnection = true;
       profiles.system = {
         user = "root";
-        path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.talos;
+        path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.spiritflame;
       };
     };
   };
   nixosConfigurations = {
-    talos = nixpkgs.lib.nixosSystem {
+    spiritflame = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
@@ -56,7 +56,7 @@ in {
         };
       };
       modules = [
-        ./hosts/talos
+        ./hosts/spiritflame
         disko.nixosModules.disko
         srvos.nixosModules.server
         srvos.nixosModules.mixins-terminfo
@@ -69,6 +69,8 @@ in {
             tailscale.file = ./secrets/tailscale.age;
             duckdns.file = ./secrets/duckdns.age;
             qbt.file = ./secrets/qbt.env.age;
+            sonarr_api_key.file = ./secrets/sonarr_api_key.age;
+            radarr_api_key.file = ./secrets/radarr_api_key.age;
           };
         }
       ];

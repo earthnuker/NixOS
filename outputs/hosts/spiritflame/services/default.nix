@@ -55,8 +55,8 @@
       };
       settings.global = {
         "workgroup" = "WORKGROUP";
-        "server string" = "talos";
-        "netbios name" = "talos";
+        "server string" = "spiritflame";
+        "netbios name" = "spiritflame";
         "security" = "user";
         "hosts allow" = "192.168.0. 127.0.0.1 localhost";
         "hosts deny" = "0.0.0.0/0";

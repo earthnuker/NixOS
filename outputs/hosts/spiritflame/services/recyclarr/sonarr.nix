@@ -1,16 +1,18 @@
-{...}: let
+let
   unwanted = [
     "85c61753df5da1fb2aab6f2a47426b09" # BR-DISK
     "9c11cd3f07101cdba90a2d81cf0e56b4" # LQ
-    #"47435ece6b99a0b477caf360e79ba0bb" # x265 (HD)
+    # "47435ece6b99a0b477caf360e79ba0bb" # x265 (HD)
     "fbcb31d8dabd2a319072b84fc0b7249c" # Extras
   ];
+
   misc = [
     "ec8fa7296b64e8cd390a1600981f3923" # Repack/Proper
     "eb3d5cc0a2be0db205fb823640db6a3c" # Repack v2
     "44e7c4de10ae50265753082e5dc76047" # Repack v3
   ];
-  streaming_services = [
+
+  streaming = [
     "d660701077794679fd59e8bdf4ce3a29" # AMZN
     "f67c9ca88f463a48346062e8ad07713f" # ATVP
     "4e9a630db98d5391aec1368a0256e2fe" # CRAV
@@ -33,7 +35,8 @@
     "5d2317d99af813b6529c7ebf01c83533" # VDL
     "77a7b25585c18af08f60b1547bb9b4fb" # CC
   ];
-  hq_source_groups = [
+
+  hqSourceGroups = [
     "e6258996055b9fbab7e9cb2f75819294" # WEB Tier 01
     "58790d4e2fdcd9733aa7ae68ba2bb503" # WEB Tier 02
     "d84935abd3f8556dcd51d4f27e22d0a6" # WEB Tier 03
@@ -41,12 +44,11 @@
   ];
 in {
   base_url = "http://localhost:8989";
-  api_key = "";
-  quality_definition.type = "series";
+  quality_definition = {type = "series";};
   quality_profiles = [
     {
       name = "WEB-1080p";
-      reset_unmatched_scores.enabled = true;
+      reset_unmatched_scores = {enabled = true;};
       upgrade = {
         allowed = true;
         until_quality = "WEB 1080p";
@@ -57,20 +59,15 @@ in {
       qualities = [
         {
           name = "WEB 1080p";
-          qualities = [
-            "WEBDL-1080p"
-            "WEBRip-1080p"
-          ];
+          qualities = ["WEBDL-1080p" "WEBRip-1080p"];
         }
       ];
     }
   ];
   custom_formats = [
     {
-      trash_ids = unwanted ++ misc ++ streaming_services ++ hq_source_groups;
-      quality_profiles = [
-        "WEB-1080p"
-      ];
+      trash_ids = unwanted ++ misc ++ streaming ++ hqSourceGroups;
+      assign_scores_to = [{name = "WEB-1080p";}];
     }
   ];
 }

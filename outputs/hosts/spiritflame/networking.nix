@@ -1,6 +1,6 @@
 {...}: {
   networking = {
-    hostName = "talos";
+    hostName = "spiritflame";
     firewall = {
       enable = true;
       allowPing = true;

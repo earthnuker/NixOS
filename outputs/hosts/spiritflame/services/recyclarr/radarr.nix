@@ -1,5 +1,6 @@
-{...}: let
-  versions = [
+let
+  # Movie Versions
+  movieVersions = [
     "570bc9ebecd92723d2d21500f4be314c" # Remaster
     "eca37840c13c6ef2dd0262b141a5482f" # 4K Remaster
     "e0c07d59beb37348e975a930d5e50319" # Criterion Collection
@@ -9,7 +10,9 @@
     "eecf3a857724171f968a66cb5719e152" # IMAX
     "9f6cbff8cfe4ebbc1bde14c7b7bec0de" # IMAX Enhanced
   ];
-  hq_release_groups = [
+
+  # HQ Release Groups
+  hqReleaseGroups = [
     "ed27ebfef2f323e964fb1f61391bcb35" # HD Bluray Tier 01
     "c20c8647f2746a1f4c4262b0fbbeeeae" # HD Bluray Tier 02
     "5608c71bcebba0a5e666223bae8c9227" # HD Bluray Tier 03
@@ -17,10 +20,14 @@
     "403816d65392c79236dcb6dd591aeda4" # WEB Tier 02
     "af94e0fe497124d1f9ce732069ec8c3b" # WEB Tier 03
   ];
+
+  # Misc
   misc = [
     "e7718d7a3ce595f289bfee26adc178f5" # Repack/Proper
     "ae43b294509409a6a13919dedd4764c4" # Repack2
   ];
+
+  # Unwanted
   unwanted = [
     "ed38b889b31be83fda192888e2286d83" # BR-DISK
     "90a6f9a284dff5103f6346090e6280c8" # LQ
@@ -28,12 +35,15 @@
     "b8cd450cbfa689c0259a01d9e29ba3d6" # 3D
     "0a3f082873eb454bde444150b70253cc" # Extras
   ];
-  streaming_services = [
+
+  # Streaming Services
+  streamingServices = [
     "cc5e51a9e85a6296ceefe097a77f12f4" # BCORE
     "16622a6911d1ab5d5b8b713d5b0036d4" # CRiT
     "2a6039655313bf5dab1e43523b62c374" # MA
   ];
-  other_ids = [
+
+  trash_ids = [
     "b3b3a6ac74ecbd56bcdbefa4799fb9df" # AMZN
     "40e9380490e748672c2522eaaeb692f7" # ATVP
     "f6ff65b3f4b464a79dcc75950fe20382" # CRAV
@@ -51,12 +61,12 @@
   ];
 in {
   base_url = "http://localhost:7878";
-  api_key = "";
-  quality_definition.type = "movie";
+  delete_old_custom_formats = true;
+  quality_definition = {type = "movie";};
   quality_profiles = [
     {
       name = "HD Bluray + WEB";
-      reset_unmatched_scores.enabled = true;
+      reset_unmatched_scores = {enabled = true;};
       upgrade = {
         allowed = true;
         until_quality = "Bluray-1080p";
@@ -65,32 +75,23 @@ in {
       min_format_score = 0;
       quality_sort = "top";
       qualities = [
-        {
-          name = "Bluray-1080p";
-        }
+        {name = "Bluray-1080p";}
         {
           name = "WEB 1080p";
-          qualities = [
-            "WEBDL-1080p"
-            "WEBRip-1080p"
-          ];
+          qualities = ["WEBDL-1080p" "WEBRip-1080p"];
         }
-        {
-          name = "Bluray-720p";
-        }
+        {name = "Bluray-720p";}
       ];
     }
   ];
   custom_formats = [
     {
-      trash_ids = versions ++ hq_release_groups ++ misc ++ unwanted ++ streaming_services;
-      quality_profiles = [
-        "HD Bluray + WEB"
-      ];
+      trash_ids = movieVersions ++ unwanted ++ misc ++ streamingServices ++ hqReleaseGroups;
+      assign_scores_to = [{name = "HD Bluray + WEB";}];
     }
     {
-      trash_ids = other_ids;
-      quality_profiles = [
+      inherit trash_ids;
+      assign_scores_to = [
         {
           name = "HD Bluray + WEB";
           score = 0;
