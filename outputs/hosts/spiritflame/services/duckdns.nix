@@ -2,6 +2,6 @@
   services.duckdns = {
     enable = true;
     domains = ["earthnuker"];
-    tokenFile = config.age.secrets.duckdns.path;
+    tokenFile = config.sops.secrets.duckdns_token.path;
   };
 }

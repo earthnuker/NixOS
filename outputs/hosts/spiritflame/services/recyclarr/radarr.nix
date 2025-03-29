@@ -61,6 +61,7 @@ let
   ];
 in {
   base_url = "http://localhost:7878";
+  api_key = {_secret = "/run/credentials/recyclarr.service/RADARR_API_KEY";};
   delete_old_custom_formats = true;
   quality_definition = {type = "movie";};
   quality_profiles = [

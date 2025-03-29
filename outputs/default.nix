@@ -1,6 +1,5 @@
 {
   self,
-  agenix,
   arion,
   deploy-rs,
   disko,
@@ -11,6 +10,7 @@
   nixos-facter-modules,
   nixos-hardware,
   nixpkgs,
+  sops-nix,
   srvos,
   stylix,
   ...
@@ -21,6 +21,17 @@
   };
   sources = import ../npins;
   root = ./..;
+  sops = secrets: {
+    sops = {
+      defaultSopsFile = ./secrets/secrets.yml;
+      age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+      secrets = builtins.listToAttrs (map (name: {
+          inherit name;
+          value = {};
+        })
+        secrets);
+    };
+  };
 in {
   formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
   apps."${system}".default = {
@@ -32,7 +43,7 @@ in {
   };
   deploy.nodes = {
     spiritflame = {
-      hostname = "talos.lan";
+      hostname = "spiritflame.lan";
       sshUser = "root";
       fastConnection = true;
       profiles.system = {
@@ -62,17 +73,15 @@ in {
         srvos.nixosModules.mixins-terminfo
         srvos.nixosModules.mixins-systemd-boot
         nixos-facter-modules.nixosModules.facter
-        agenix.nixosModules.default
         arion.nixosModules.arion
-        {
-          age.secrets = {
-            tailscale.file = ./secrets/tailscale.age;
-            duckdns.file = ./secrets/duckdns.age;
-            qbt.file = ./secrets/qbt.env.age;
-            sonarr_api_key.file = ./secrets/sonarr_api_key.age;
-            radarr_api_key.file = ./secrets/radarr_api_key.age;
-          };
-        }
+        sops-nix.nixosModules.sops
+        (sops [
+          "duckdns_token"
+          "tailscale_auth"
+          "radarr_api_key"
+          "sonarr_api_key"
+          "vpn_env"
+        ])
       ];
     };
     godwaker = nixpkgs.lib.nixosSystem {
@@ -93,8 +102,8 @@ in {
         lanzaboote.nixosModules.lanzaboote
         # lix-module.nixosModules.default
         # determinate.nixosModules.default
-        agenix.nixosModules.default
         nix-index-database.nixosModules.nix-index
+        sops-nix.nixosModules.sops
       ];
     };
   };

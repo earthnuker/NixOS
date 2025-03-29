@@ -91,7 +91,7 @@ in {
         "5000:5000"
       ];
       extraServiceArgs = {
-        env_file = [config.age.secrets.qbt.path];
+        env_file = [config.sops.secrets.vpn_env.path];
         capabilities = {NET_ADMIN = true;};
         sysctls = {
           "net.ipv4.conf.all.src_valid_mark" = 1;

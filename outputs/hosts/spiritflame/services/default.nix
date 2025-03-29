@@ -15,9 +15,9 @@
     tailscale = {
       enable = true;
       useRoutingFeatures = "both";
-      authKeyFile = config.age.secrets.tailscale.path;
+      authKeyFile = config.sops.secrets.tailscale_auth.path;
       permitCertUid = "caddy";
-      extraUpFlags = ["--ssh"];
+      extraUpFlags = ["--ssh" "--accept-dns"];
     };
     tailscaleAuth = {
       enable = true;
