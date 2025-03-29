@@ -30,6 +30,31 @@ Available recipes:
     update                                             # Update flake [alias: u]
 ```
 
+## Provisioning a new machine
+
+1. Clone the repository
+2. Boot nixos-installer on the new machine, set root password to **toor**
+2. Provision the machine:
+   ```shell
+   $ ssh-add -D # Clear all ssh keys
+   $ ssh-add ~/.ssh/id_ed25519 # Add your local ssh key
+   $ sys provision <flake>
+   ```
+3.  Grab age key for newly provisioned host:
+   ```shell
+   $ sys getkey <host>.lan
+   ```
+4. Grab Sonarr and Radarr API Keys:
+   ```shell
+   $ curl -s http://sonarr.<host>/initialize.json | jq -r .apiKey
+   $ curl -s http://radarr.<host>/initialize.json | jq -r .apiKey
+   ```
+4. update secrets
+   ```shell
+   $ vim .sops.yaml
+   $ sys secrets deploy
+   ```
+
 ## Structure
 
 - `outputs` contains flake outputs
