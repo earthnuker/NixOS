@@ -55,6 +55,7 @@
       sd
       rsync
       grc
+      bat
       inputs.nsearch.packages.${pkgs.system}.default
       (writeShellApplication {
         name = "nixdiff";

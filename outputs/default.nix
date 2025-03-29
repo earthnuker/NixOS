@@ -23,7 +23,7 @@
   root = ./..;
   sops = secrets: {
     sops = {
-      defaultSopsFile = ./secrets/secrets.yml;
+      defaultSopsFile = "${self}/secrets.yml";
       age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
       secrets = builtins.listToAttrs (map (name: {
           inherit name;

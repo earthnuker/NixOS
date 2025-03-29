@@ -1,10 +1,10 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops
-set shell := ["zsh"]
+#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops yq
+set shell := ["zsh", "-cu"]
 set export
 
-SOPS_FILE := "outputs/secrets/secrets.yml"
+SOPS_FILE := "secrets.yml"
 
 alias rebuild := switch
 alias b := switch
@@ -15,11 +15,11 @@ alias p := provision
 alias d := deploy
 alias u := update
 
-_default: update deploy switch
+_default: update stage switch deploy
 
 # Show help
 help:
-    @just --list --justfile {{ justfile() }} 
+    @just --list --justfile {{ justfile() }}
 
 # Start lazygit
 git:
