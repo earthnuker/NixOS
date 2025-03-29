@@ -26,11 +26,11 @@
       url = "github:niksingh710/nsearch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    /*
     lix-module = {
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    /*
     determinate = {
       url = "https://flakehub.com/f/DeterminateSystems/determinate/3.0.0";
       inputs.nixpkgs.follows = "nixpkgs";

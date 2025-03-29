@@ -4,7 +4,7 @@
   deploy-rs,
   disko,
   lanzaboote,
-  # lix-module,
+  lix-module,
   # determinate,
   nix-index-database,
   nixos-facter-modules,
@@ -100,7 +100,7 @@ in {
         nixos-hardware.nixosModules.common-pc-laptop-ssd
         stylix.nixosModules.stylix
         lanzaboote.nixosModules.lanzaboote
-        # lix-module.nixosModules.default
+        lix-module.nixosModules.default
         # determinate.nixosModules.default
         nix-index-database.nixosModules.nix-index
         sops-nix.nixosModules.sops
