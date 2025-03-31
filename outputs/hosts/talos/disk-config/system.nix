@@ -18,10 +18,17 @@
         size = "100%";
         content = {
           type = "btrfs";
-          extraArgs = ["-f"]; # Override existing partition
+          extraArgs = ["-f" "-L system"]; # Override existing partition
           subvolumes = {
-            "/root" = {
+            "@" = {
               mountpoint = "/";
+              mountOptions = [
+                "compress=zstd"
+                "noatime"
+              ];
+            };
+            "@home" = {
+              mountpoint = "/home";
               mountOptions = [
                 "compress=zstd"
                 "noatime"

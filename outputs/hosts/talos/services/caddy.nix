@@ -36,6 +36,7 @@ in {
     '';
     virtualHosts = mkCaddy {
       apps = {
+        search = 8888;
         hydra = 8081;
         linkding = 9090;
         torrent = 8080;

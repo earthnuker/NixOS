@@ -11,6 +11,6 @@
   ];
   environment = {
     GHIDRA_USERS = "admin earthnuker strongleong";
-    GHIDRA_PUBLIC_HOSTNAME = "ghidra.spiritflame.lan";
+    GHIDRA_PUBLIC_HOSTNAME = "ghidra.talos.lan";
   };
 }

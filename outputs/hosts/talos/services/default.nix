@@ -2,6 +2,7 @@
   imports = [
     ./caddy.nix
     ./duckdns.nix
+    ./searxng.nix
     ./recyclarr
   ];
   services = {
@@ -55,8 +56,8 @@
       };
       settings.global = {
         "workgroup" = "WORKGROUP";
-        "server string" = "spiritflame";
-        "netbios name" = "spiritflame";
+        "server string" = "talos";
+        "netbios name" = "talos";
         "security" = "user";
         "hosts allow" = "192.168.0. 127.0.0.1 localhost";
         "hosts deny" = "0.0.0.0/0";

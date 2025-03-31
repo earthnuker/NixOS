@@ -1,11 +1,11 @@
 keys:
   - &earthnuker age1hf0avdess0rgg4t9ulr2zvuanu4l24a5ns2p25pwqrhj7c50ga4s5w5rk5
   - &godwaker age144g8xpr2zgp5h4gt2u2pl3dh4h52vtna2fnpzsmsrcwjsjhnq4kq48us6k
-  - &spiritflame age154fulnajcnetc7zmaxvkd5tze4rqh49pe74dy726acu0n04wzcrsappfhe
+  - &talos age154fulnajcnetc7zmaxvkd5tze4rqh49pe74dy726acu0n04wzcrsappfhe
 creation_rules:
   - path_regex: secrets.yml$
     key_groups:
       - age:
           - *earthnuker
           - *godwaker
-          - *spiritflame
+          - *talos
