@@ -1,9 +1,14 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
 #! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops yq-go
+
+# vi: set syntax=just:
+
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]
 set unstable
+
+isoAttr := "nixosConfigurations.iso.config.system.build.isoImage"
 
 export SOPS_FILE := "secrets.yml"
 
@@ -46,7 +51,13 @@ secrets: && rekey
 [script]
 getkey *HOSTS: && rekey
     for host in {{HOSTS}}; do;
+        COUNT=0; 
+        until ssh -o StrictHostKeyChecking=accept-new root@$host exit 0 || [ $COUNT -eq 10 ]; do sleep 1; (( COUNT++ )); done
         key=$(ssh-keyscan -qt ssh-ed25519 $host | ssh-to-age)
+        if [[ -z $key ]]; then
+            echo "No key found for $host"
+            continue
+        fi
         keyname=$(echo $host | cut -d'.' -f1)
         echo $keyname $key
         if [[ -n $(yq ".keys[] | select(anchor == \"$keyname\")" ".sops.yaml") ]]; then
@@ -57,18 +68,28 @@ getkey *HOSTS: && rekey
     done
 
 # Deploy configuration to defined hosts
-deploy *args:
-    nix run . -- {{args}}
+deploy *args: check
+    # be can skip checks here since they already run in the check command
+    nix run . -- -s {{args}}
+
+# Build a bootable ISO
+iso:
+    nom build --no-link ".#{{isoAttr}}"
+    echo $(nix build --print-out-paths --no-link ".#{{isoAttr}}")
 
 # Provision a host
 provision flake host="nixos-installer.lan" $SSHPASS="toor": check
     nix flake lock
     -ssh-keygen -R {{host}}
+    -ssh-keygen -R {{flake}}.lan
+    until ssh -o StrictHostKeyChecking=accept-new root@{{host}} exit 0; do sleep 1; done
     nix run github:nix-community/nixos-anywhere -- \
-    --ssh-option StrictHostKeyChecking=no -L --env-password --flake .#{{flake}} \
+    --ssh-option StrictHostKeyChecking=accept-new -L --env-password --flake .#{{flake}} \
     --generate-hardware-config nixos-generate-config outputs/hosts/{{flake}}/hardware-configuration.nix \
     root@{{host}}
     -ssh-keygen -R {{host}}
+    just --justfile {{ justfile() }} getkey {{flake}}.lan
+    just --justfile {{ justfile() }} deploy .#{{flake}}
 
 # Build and switch
 switch: check status && archive

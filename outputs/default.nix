@@ -32,7 +32,7 @@
         secrets);
     };
   };
-in {
+in rec {
   formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
   apps."${system}".default = {
     type = "app";
@@ -53,6 +53,29 @@ in {
     };
   };
   nixosConfigurations = {
+    iso = nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = {
+        inherit inputs nixpkgs;
+      };
+      modules = [
+        ./installer
+        {
+          users.users.root = {
+            openssh.authorizedKeys.keyFiles = [
+              inputs.ssh-keys-earthnuker.outPath
+            ];
+          };
+        }
+        ({modulesPath, ...}: {
+          imports = [
+            (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
+            (modulesPath + "/installer/cd-dvd/channel.nix")
+          ];
+        })
+      ];
+    };
+
     talos = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
