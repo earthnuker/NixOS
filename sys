@@ -1,10 +1,11 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops yq
+#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops yq-go
 set shell := ["zsh", "-cu"]
-set export
+set script-interpreter := ["zsh", "-u"]
+set unstable
 
-SOPS_FILE := "secrets.yml"
+export SOPS_FILE := "secrets.yml"
 
 alias rebuild := switch
 alias b := switch
@@ -41,9 +42,19 @@ rekey:
 secrets: && rekey
     sops $SOPS_FILE
 
-# Retrieve age key for specified host
-getkey *args:
-    ssh-keyscan -qt ssh-ed25519 {{args}} | ssh-to-age
+# Retrieve age key for specified host and update .sops.yaml
+[script]
+getkey *HOSTS: && rekey
+    for host in {{HOSTS}}; do;
+        key=$(ssh-keyscan -qt ssh-ed25519 $host | ssh-to-age)
+        keyname=$(echo $host | cut -d'.' -f1)
+        echo $keyname $key
+        if [[ -n $(yq ".keys[] | select(anchor == \"$keyname\")" ".sops.yaml") ]]; then
+            yq -i "(.keys[] | select(anchor == \"$keyname\")) = \"$key\"" ".sops.yaml"
+        else
+            yq -i ".keys += [\"$key\"] | .keys[-1] anchor = \"$keyname\"" ".sops.yaml"
+        fi
+    done
 
 # Deploy configuration to defined hosts
 deploy *args:
