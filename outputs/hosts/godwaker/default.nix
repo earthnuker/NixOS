@@ -85,7 +85,7 @@
   home-manager = {
     inherit users;
     extraSpecialArgs = {inherit inputs sources root;};
-    useGlobalPkgs = true;
+    useGlobalPkgs = false;
     useUserPackages = true;
     backupFileExtension = "hm_bak";
   };
