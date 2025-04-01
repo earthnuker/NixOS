@@ -41,7 +41,7 @@ update:
 
 # Rekey secrets
 rekey:
-    sops updatekeys $SOPS_FILE
+    sops updatekeys -y $SOPS_FILE
 
 # Edit secrets
 secrets: && rekey

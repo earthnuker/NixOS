@@ -17,24 +17,24 @@
       root = {
         size = "100%";
         content = {
-          type = "btrfs";
+          type = "filesystem";
+          format = "ext4";
+          mountpoint = "/";
+          mountOptions = [
+            "defaults"
+            "noatime"
+            "nodiratime"
+          ];
           extraArgs = ["-f" "-L system"]; # Override existing partition
-          subvolumes = {
-            "@" = {
-              mountpoint = "/";
-              mountOptions = [
-                "compress=zstd"
-                "noatime"
-              ];
-            };
-            "@home" = {
-              mountpoint = "/home";
-              mountOptions = [
-                "compress=zstd"
-                "noatime"
-              ];
-            };
-          };
+        };
+      };
+      swap = {
+        size = "32G";
+        content = {
+          type = "swap";
+          discardPolicy = "both";
+          randomEncryption = true;
+          resumeDevice = true; # resume from hiberation from this device
         };
       };
     };
