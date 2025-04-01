@@ -63,6 +63,9 @@
         vim-nix
       ];
     };
+    nushell = {
+      enable=true;
+    };
     fish = {
       enable = true;
       plugins = [
