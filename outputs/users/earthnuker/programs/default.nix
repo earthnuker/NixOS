@@ -64,7 +64,7 @@
       ];
     };
     nushell = {
-      enable=true;
+      enable = true;
     };
     fish = {
       enable = true;
