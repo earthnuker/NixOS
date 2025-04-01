@@ -7,12 +7,17 @@
   ];
   services = {
     zfs.autoScrub.enable = true;
+    openssh.openFirewall = true;
     samba-wsdd = {
       enable = true;
       openFirewall = true;
     };
     fstrim.enable = true;
     fwupd.enable = true;
+    quassel = {
+      enable = true;
+      interfaces = ["0.0.0.0"];
+    };
     tailscale = {
       enable = true;
       useRoutingFeatures = "both";
