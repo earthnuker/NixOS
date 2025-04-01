@@ -21,6 +21,7 @@
   };
   sources = import ../npins;
   root = ./..;
+  pkgs = nixpkgs.legacyPackages.${system};
   sops = secrets: {
     sops = {
       defaultSopsFile = "${self}/secrets.yml";
@@ -33,7 +34,7 @@
     };
   };
 in rec {
-  formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
+  formatter.${system} = pkgs.alejandra;
   apps."${system}".default = {
     type = "app";
     program = "${deploy-rs.defaultPackage.${system}}/bin/deploy";
