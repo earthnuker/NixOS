@@ -37,7 +37,7 @@ shell:
 
 # Update flake
 update:
-    nix flake update --commit-lock-file
+    nix flake update -L --commit-lock-file
 
 # Rekey secrets
 rekey:
@@ -101,7 +101,7 @@ stage:
 
 # Flake check
 check: stage
-    nix flake check --log-format bar-with-logs
+    nix flake check --verbose -L
 
 # Archive flake inputs
 fix: && switch
@@ -136,4 +136,4 @@ status:
 
 # Archive flake inputs
 archive:
-    nix flake archive
+    nix flake archive -L --verbose
