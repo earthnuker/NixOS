@@ -22,7 +22,7 @@
   sources = import ../npins;
   root = ./..;
   pkgs = nixpkgs.legacyPackages.${system};
-  sops = secrets: {
+  secrets = secrets: {
     sops = {
       defaultSopsFile = "${self}/secrets.yml";
       age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
@@ -49,7 +49,7 @@ in rec {
       fastConnection = true;
       profiles.system = {
         user = "root";
-        path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.talos;
+        path = deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.talos;
       };
     };
   };
@@ -99,7 +99,7 @@ in rec {
         nixos-facter-modules.nixosModules.facter
         arion.nixosModules.arion
         sops-nix.nixosModules.sops
-        (sops [
+        (secrets [
           "duckdns_token"
           "tailscale_auth"
           "radarr_api_key"

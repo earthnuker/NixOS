@@ -25,7 +25,7 @@
             "noatime"
             "nodiratime"
           ];
-          extraArgs = ["-f" "-L system"]; # Override existing partition
+          extraArgs = ["-F" "-L system"]; # Override existing partition
         };
       };
       swap = {
