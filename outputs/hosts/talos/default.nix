@@ -17,6 +17,26 @@
     # ./quicksync.nix
   ];
 
+  sops.secrets = {
+    duckdns_token.restartUnits = [
+      "duckdns.service"
+    ];
+    tailscale_auth.restartUnits = [
+      "tailscaled.service"
+      "tailscaled-autoconnect.service"
+    ];
+    radarr_api_key.restartUnits = [
+      "recyclarr.service"
+    ];
+    sonarr_api_key.restartUnits = [
+      "recyclarr.service"
+    ];
+    searxng_env.restartUnits = ["searx-init.service" "searx"];
+    vpn_env.restartUnits = [
+      "arion-tvstack.service"
+    ];
+  };
+
   nix = {
     settings = {
       experimental-features = ["nix-command" "flakes"];
