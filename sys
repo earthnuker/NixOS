@@ -1,7 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops yq-go
-
+#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops yq-go curl
 # vi: set syntax=just:
 
 set shell := ["zsh", "-cu"]
@@ -77,6 +76,16 @@ iso:
     nom build --no-link ".#{{isoAttr}}"
     echo $(nix build --print-out-paths --no-link ".#{{isoAttr}}")
 
+[private]
+[script]
+post-talos:
+    radarr_api_key=$(curl -s http://radarr.talos.lan/initialize.json | jq -r .apiKey)
+    sonarr_api_key=$(curl -s http://sonarr.talos.lan/initialize.json | jq -r .apiKey)
+    sops set secrets.yml '["radarr_api_key"]' \"$radarr_api_key\"
+    sops set secrets.yml '["sonarr_api_key"]' \"$sonarr_api_key\"
+    nix run . -- -s .#talos
+
+
 # Provision a host
 provision flake host="nixos-installer.lan" $SSHPASS="toor": check
     nix flake lock
@@ -90,6 +99,10 @@ provision flake host="nixos-installer.lan" $SSHPASS="toor": check
     -ssh-keygen -R {{host}}
     just --justfile {{ justfile() }} getkey {{flake}}.lan
     just --justfile {{ justfile() }} deploy .#{{flake}}
+    just --justfile {{ justfile() }} --dump --dump-format=json | \
+    jq -re .recipes._post-{{flake}} > /dev/null && \
+    echo Running post-recipe for {{flake}} && \
+    just --justfile {{ justfile() }} _post-{{flake}}
 
 # Build and switch
 switch: check status && archive
