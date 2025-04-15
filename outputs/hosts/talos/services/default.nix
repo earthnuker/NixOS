@@ -2,7 +2,7 @@
   imports = [
     ./caddy.nix
     ./duckdns.nix
-    ./glance
+    ./glances
     ./homepage
     ./monitoring.nix
     ./nats.nix
