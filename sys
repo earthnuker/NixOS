@@ -34,6 +34,9 @@ git:
 shell:
     zsh
 
+fmt:
+    nix fmt .
+
 # Update flake
 update:
     nix flake update -L --commit-lock-file
@@ -51,7 +54,7 @@ secrets: && rekey
 getkey *HOSTS: && rekey
     for host in {{HOSTS}}; do;
         COUNT=0; 
-        until ssh -o StrictHostKeyChecking=accept-new root@$host exit 0 || [ $COUNT -eq 10 ]; do sleep 1; (( COUNT++ )); done
+        until ssh -o StrictHostKeyChecking=accept-new root@$host exit 0;  do sleep 1; done
         key=$(ssh-keyscan -qt ssh-ed25519 $host | ssh-to-age)
         if [[ -z $key ]]; then
             echo "No key found for $host"
@@ -67,9 +70,8 @@ getkey *HOSTS: && rekey
     done
 
 # Deploy configuration to defined hosts
-deploy *args: check
-    # be can skip checks here since they already run in the check command
-    nix run . -- -s {{args}}
+deploy *args:
+    nix run . -- -s {{args}} # we can skip checks here since they already run in the check command
 
 # Build a bootable ISO
 iso:
@@ -78,11 +80,18 @@ iso:
 
 [private]
 [script]
-post-talos:
-    radarr_api_key=$(curl -s http://radarr.talos.lan/initialize.json | jq -r .apiKey)
-    sonarr_api_key=$(curl -s http://sonarr.talos.lan/initialize.json | jq -r .apiKey)
+post_talos credentials="":
+    set -euxo pipefail
+    until ssh -o StrictHostKeyChecking=accept-new root@talos.lan exit 0; do sleep 1; done
+    radarr_api_key=$(curl --fail -s http://{{credentials}}@radarr.talos.lan/initialize.json | jq -r .apiKey)
+    sonarr_api_key=$(curl --fail -s http://{{credentials}}@sonarr.talos.lan/initialize.json | jq -r .apiKey)
+    prowlarr_api_key=$(curl --fail -s http://{{credentials}}@prowlarr.talos.lan/initialize.json | jq -r .apiKey)
+    [[ -n "$radarr_api_key "]] || exit 1
+    [[ -n "$sonarr_api_key"]] || exit 1
+    [[ -n "$prowlarr_api_key" ]] || exit 1
     sops set secrets.yml '["radarr_api_key"]' \"$radarr_api_key\"
     sops set secrets.yml '["sonarr_api_key"]' \"$sonarr_api_key\"
+    sops set secrets.yml '["prowlarr_api_key"]' \"$prowlarr_api_key\"
     nix run . -- -s .#talos
 
 
@@ -100,9 +109,9 @@ provision flake host="nixos-installer.lan" $SSHPASS="toor": check
     just --justfile {{ justfile() }} getkey {{flake}}.lan
     just --justfile {{ justfile() }} deploy .#{{flake}}
     just --justfile {{ justfile() }} --dump --dump-format=json | \
-    jq -re .recipes._post-{{flake}} > /dev/null && \
+    jq -re .recipes.post_{{flake}} > /dev/null && \
     echo Running post-recipe for {{flake}} && \
-    just --justfile {{ justfile() }} _post-{{flake}}
+    just --justfile {{ justfile() }} post_{{flake}}
 
 # Build and switch
 switch: check status && archive
