@@ -74,7 +74,7 @@ deploy *args:
     nix run . -- -s {{args}} # we can skip checks here since they already run in the check command
 
 # Build a bootable ISO
-iso:
+build_iso:
     nom build --no-link ".#{{isoAttr}}"
     echo $(nix build --print-out-paths --no-link ".#{{isoAttr}}")
 

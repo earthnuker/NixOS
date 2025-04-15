@@ -53,6 +53,7 @@ in rec {
       };
     };
   };
+  iso = nixosConfigurations.iso.config.system.build.isoImage;
   nixosConfigurations = {
     iso = nixpkgs.lib.nixosSystem {
       inherit system;

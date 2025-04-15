@@ -3,28 +3,32 @@
 This repository contains the NixOS configurations for my machines. 
 
 - [Godwaker](./outputs/hosts/godwaker/) (ThinkPad T470)
-- [talos](./outputs/hosts/talos/) (NAS (does not exist yet))
+- [talos](./outputs/hosts/talos/) (NAS (B760M-ITX/D4 WiFi, i5-13400, 32GB, 500GB NVMe, 3x12TB HDD))
 
 ## Usage
 
 The `sys` script acts as an entrypoint.
 
 ```shell
-$ sys help #  Display help
+$ ./sys help
 Available recipes:
     archive                                            # Archive flake inputs
+    build_iso                                          # Build a bootable ISO
     check                                              # Flake check [alias: c]
     deploy *args                                       # Deploy configuration to defined hosts [alias: d]
     fix                                                # Archive flake inputs
+    fmt
     gc                                                 # Clean nix-store and old generations (keep 10 or 1 week)
     gca                                                # Clean nix-store and all old generations
+    getkey *HOSTS                                      # Retrieve age key for specified host and update .sops.yaml
     git                                                # Start lazygit
     help                                               # Show help
     history                                            # Show profile history [alias: h]
     provision flake host="nixos-installer.lan" $SSHPASS="toor" # Provision a host [alias: p]
     rekey                                              # Rekey secrets
-    secret file                                        # Edit secrets
+    secrets                                            # Edit secrets
     shell                                              # Spawn shell with tools
+    stage                                              # Stage all .nix files
     status                                             # Git status [alias: s]
     switch                                             # Build and switch [aliases: b, rebuild]
     update                                             # Update flake [alias: u]
@@ -33,27 +37,14 @@ Available recipes:
 ## Provisioning a new machine
 
 1. Clone the repository
-2. Boot nixos-installer on the new machine, set root password to **toor**
+2. Build installer iso and boot on new machine:
+    ```shell
+    $ sys build_iso
+    ```
 2. Provision the machine:
-   ```shell
-   $ ssh-add -D # Clear all ssh keys
-   $ ssh-add ~/.ssh/id_ed25519 # Add your local ssh key
-   $ sys provision <flake>
-   ```
-3.  Grab age key for newly provisioned host:
-   ```shell
-   $ sys getkey <host>.lan
-   ```
-4. Grab Sonarr and Radarr API Keys:
-   ```shell
-   $ curl -s http://sonarr.<host>/initialize.json | jq -r .apiKey
-   $ curl -s http://radarr.<host>/initialize.json | jq -r .apiKey
-   ```
-4. update secrets
-   ```shell
-   $ vim .sops.yaml
-   $ sys secrets deploy
-   ```
+    ```shell
+    $ sys provision <flake>
+    ```
 
 ## Structure
 
@@ -65,13 +56,16 @@ Available recipes:
         - `talos` contains the configuration for Talos
             - `containers` contains the configuration for containers
                 - `arion` contains docker-compose stacks for Arion
+                - `nixos` contains NixOS systemd containers
                 - `oci` contains OCI container configurations
+                - `quadlet` contains quadlet pods
             - `disk-config` contains disk configurations
             - `hardware-configuration.nix` contains the configuration for hardware
             - `services` contains service configurations
                 - `caddy.nix` contains the configuration for Caddy
                 - `duckdns.nix` contains the configuration for DuckDNS
-                - `homepage.nix` contains the configuration for Homepage
+                - `homepage.nix` contains the configuration for Homepage-Dashboard
+                - `monitoring.nix` contains Grafana+Prometheus setup
             - `networking.nix` contains the configuration network configuration
             - `quicksync.nix` contains the configuration for Intel QuickSync
         - `godwaker` contains the configuration for Godwaker
