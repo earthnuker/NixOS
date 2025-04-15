@@ -14,18 +14,6 @@
     "com.sun:auto-snapshot" = "false";
   };
   datasets = {
-    nix = {
-      type = "zfs_fs";
-      mountpoint = "/nix";
-      mountOptions = [
-        "acl"
-        "noatime"
-      ];
-      options = {
-        mountpoint = "legacy";
-        compression = "zstd";
-      };
-    };
     data = {
       type = "zfs_fs";
       mountpoint = "/mnt/data";

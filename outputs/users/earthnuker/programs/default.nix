@@ -12,6 +12,12 @@
     ssh = {
       enable = true;
       addKeysToAgent = "yes";
+      forwardAgent = true;
+      matchBlocks = {
+        talos = {
+          user = "root";
+        };
+      };
     };
     kitty = {
       enable = true;

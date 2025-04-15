@@ -7,6 +7,10 @@
     libinput.enable = false;
     fstrim.enable = true;
     resolved.enable = true;
+    quassel = {
+      enable = true;
+      interfaces = ["0.0.0.0"];
+    };
     thelounge = {
       enable = true;
       plugins = with pkgs.theLoungePlugins; [

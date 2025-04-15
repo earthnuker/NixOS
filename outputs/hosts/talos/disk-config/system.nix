@@ -17,15 +17,15 @@
       root = {
         size = "100%";
         content = {
-          type = "filesystem";
-          format = "ext4";
+          type = "btrfs";
           mountpoint = "/";
           mountOptions = [
             "defaults"
+            "compress=zstd"
             "noatime"
             "nodiratime"
           ];
-          extraArgs = ["-F" "-L system"]; # Override existing partition
+          extraArgs = ["-f" "-L system"]; # Override existing partition
         };
       };
       swap = {

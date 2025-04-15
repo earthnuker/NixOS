@@ -2,11 +2,25 @@
   imports = [
     ./caddy.nix
     ./duckdns.nix
-    ./searxng.nix
+    ./glance
+    ./homepage
+    ./monitoring.nix
+    ./nats.nix
+    ./postgresql.nix
     ./recyclarr
+    ./searxng.nix
   ];
   services = {
-    zfs.autoScrub.enable = true;
+    immich = {
+      enable = true;
+      accelerationDevices = null;
+      host = "127.0.0.1";
+      # mediaLocation = "/mnt/data/media/photos";
+    };
+    zfs = {
+      autoScrub.enable = true;
+      autoSnapshot.enable = true;
+    };
     openssh.openFirewall = true;
     samba-wsdd = {
       enable = true;
@@ -14,10 +28,6 @@
     };
     fstrim.enable = true;
     fwupd.enable = true;
-    quassel = {
-      enable = true;
-      interfaces = ["0.0.0.0"];
-    };
     tailscale = {
       enable = true;
       useRoutingFeatures = "both";
@@ -32,18 +42,6 @@
     };
 
     resolved.enable = true;
-
-    homepage-dashboard = {
-      enable = true;
-      openFirewall = true;
-      services = import ./homepage.nix;
-      docker = {
-        local = {
-          host = "127.0.0.1";
-          port = 2375;
-        };
-      };
-    };
 
     samba = {
       enable = true;

@@ -14,7 +14,7 @@
     ./networking.nix
     ./containers
     ./services
-    # ./quicksync.nix
+    ./quicksync.nix
   ];
 
   sops.secrets = {
@@ -37,6 +37,8 @@
     ];
   };
 
+  systemd.sleep.extraConfig = lib.mkForce "";
+
   nix = {
     settings = {
       experimental-features = ["nix-command" "flakes"];
@@ -55,25 +57,20 @@
 
   environment.systemPackages = with pkgs; [
     zfs
+    fastfetch
+    htop
+    nh
+    podman-tui
+    dive
   ];
 
-  virtualisation.docker = {
-    enable = true;
-    logDriver = "journald";
-    daemon.settings = {
-      data-root = "/mnt/data/docker";
-      hosts = [
-        "tcp://127.0.0.1:2375"
-        "unix:///var/run/docker.sock"
-      ];
-    };
+  users.users.root = {
+    hashedPasswordFile = config.sops.secrets.talos_root_passwd.path;
+    openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
+    extraGroups = ["video" "render" "podman" "docker"];
   };
 
-  users.users.root = {
-    initialPassword = "toor";
-    openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
-    extraGroups = ["video" "render"];
-  };
+  users.users.immich.extraGroups = ["video" "render"];
 
   boot.supportedFilesystems = ["zfs"];
   boot.zfs.devNodes = "/dev/disk/by-path";

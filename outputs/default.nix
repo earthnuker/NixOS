@@ -1,6 +1,6 @@
 {
   self,
-  arion,
+  quadlet,
   deploy-rs,
   disko,
   lanzaboote,
@@ -82,11 +82,11 @@ in rec {
       specialArgs = {
         inherit inputs nixpkgs;
         drives = {
-          system = "nvme-VMware_Virtual_NVMe_Disk_VMware_NVME_0000_1";
+          system = "nvme-CT500P3PSSD8_25054DD6F3E8_1";
           storage = [
-            "wwn-0x5000c29c72d5ee1a"
-            "wwn-0x5000c29aff2e66b9"
-            "wwn-0x5000c294334516a8"
+            "ata-ST12000VN0008-2YS101_WRS19TD0"
+            "ata-ST12000VN0008-2YS101_WV70DWWZ"
+            "ata-ST12000VN0008-2YS101_WRS1AY50"
           ];
         };
       };
@@ -97,7 +97,7 @@ in rec {
         srvos.nixosModules.mixins-terminfo
         srvos.nixosModules.mixins-systemd-boot
         nixos-facter-modules.nixosModules.facter
-        arion.nixosModules.arion
+        quadlet.nixosModules.quadlet
         sops-nix.nixosModules.sops
         (secrets [
           "duckdns_token"
@@ -106,6 +106,8 @@ in rec {
           "sonarr_api_key"
           "vpn_env"
           "searxng_env"
+          "talos_root_passwd"
+          "homepage_env"
         ])
       ];
     };
