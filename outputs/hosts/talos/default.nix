@@ -15,6 +15,7 @@
     ./containers
     ./services
     ./quicksync.nix
+    ./topology.nix
   ];
 
   sops.secrets = {

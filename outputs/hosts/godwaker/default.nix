@@ -19,7 +19,7 @@
     ./networking.nix
     ./environment.nix
     ./services.nix
-    inputs.home-manager.nixosModules.home-manager
+    ./topology.nix
     #"${modulesPath}/installer/cd-dvd/iso-image.nix"
   ];
 

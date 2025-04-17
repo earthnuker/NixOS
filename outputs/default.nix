@@ -1,27 +1,34 @@
 {
   self,
-  quadlet,
+  authentik-nix,
   deploy-rs,
   disko,
+  flake-utils,
   lanzaboote,
   lix-module,
-  # determinate,
   nix-index-database,
+  nix-topology,
   nixos-facter-modules,
   nixos-hardware,
+  home-manager,
   nixpkgs,
+  quadlet,
   sops-nix,
   srvos,
   stylix,
   ...
 } @ inputs: let
+  vars = import ./../vars;
   system = "x86_64-linux";
   users = {
     earthnuker = import ./users/earthnuker;
   };
   sources = import ../npins;
+  pkgs = import nixpkgs {
+    inherit system;
+    overlays = [nix-topology.overlays.default];
+  };
   root = ./..;
-  pkgs = nixpkgs.legacyPackages.${system};
   secrets = secrets: {
     sops = {
       defaultSopsFile = "${self}/secrets.yml";
@@ -43,17 +50,27 @@ in rec {
     };
   };
   deploy.nodes = {
-    talos = {
+    talos = rec {
       hostname = "talos.lan";
       sshUser = "root";
       fastConnection = true;
+      remoteBuild = true;
       profiles.system = {
-        user = "root";
+        user = sshUser;
         path = deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.talos;
       };
     };
   };
   iso = nixosConfigurations.iso.config.system.build.isoImage;
+
+  topology = import nix-topology {
+    inherit pkgs;
+    modules = [
+      ./topology
+      {inherit (self) nixosConfigurations;}
+    ];
+  };
+
   nixosConfigurations = {
     iso = nixpkgs.lib.nixosSystem {
       inherit system;
@@ -62,6 +79,7 @@ in rec {
       };
       modules = [
         ./installer
+        nix-topology.nixosModules.default
         {
           users.users.root = {
             openssh.authorizedKeys.keyFiles = [
@@ -82,14 +100,7 @@ in rec {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
-        drives = {
-          system = "nvme-CT500P3PSSD8_25054DD6F3E8_1";
-          storage = [
-            "ata-ST12000VN0008-2YS101_WRS19TD0"
-            "ata-ST12000VN0008-2YS101_WV70DWWZ"
-            "ata-ST12000VN0008-2YS101_WRS1AY50"
-          ];
-        };
+        drives = vars.talos.drives;
       };
       modules = [
         ./hosts/talos
@@ -100,16 +111,9 @@ in rec {
         nixos-facter-modules.nixosModules.facter
         quadlet.nixosModules.quadlet
         sops-nix.nixosModules.sops
-        (secrets [
-          "duckdns_token"
-          "tailscale_auth"
-          "radarr_api_key"
-          "sonarr_api_key"
-          "vpn_env"
-          "searxng_env"
-          "talos_root_passwd"
-          "homepage_env"
-        ])
+        nix-topology.nixosModules.default
+        authentik-nix.nixosModules.default
+        (secrets vars.talos.secrets)
       ];
     };
     godwaker = nixpkgs.lib.nixosSystem {
@@ -126,12 +130,13 @@ in rec {
         disko.nixosModules.disko
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         nixos-hardware.nixosModules.common-pc-laptop-ssd
+        home-manager.nixosModules.home-manager
         stylix.nixosModules.stylix
         lanzaboote.nixosModules.lanzaboote
-        lix-module.nixosModules.default
-        # determinate.nixosModules.default
+        #lix-module.nixosModules.default
         nix-index-database.nixosModules.nix-index
         sops-nix.nixosModules.sops
+        nix-topology.nixosModules.default
       ];
     };
   };
