@@ -9,12 +9,14 @@
     ./postgresql.nix
     ./recyclarr
     ./searxng.nix
+    ./authentik.nix
   ];
   services = {
     immich = {
       enable = true;
       accelerationDevices = null;
       host = "127.0.0.1";
+      port = 2283;
       # mediaLocation = "/mnt/data/media/photos";
     };
     zfs = {

@@ -51,22 +51,26 @@ in {
       auto_https off
     '';
     virtualHosts = mkCaddy rec {
-      apps = {
-        search = config.services.searx.settings.server.port;
-        prometheus = config.services.prometheus.port;
-        photos = config.services.immich.port;
-        start = config.services.glance.settings.server.port;
-        cockpit = config.services.cockpit.port;
-        monitoring = config.services.grafana.settings.server.http_port;
-        linkding = 9090;
-        torrent = 8080;
-        sonarr = 8989;
-        radarr = 7878;
-        bazarr = 6767;
-        prowlarr = 9696;
-      };
+      apps =
+        {
+          search = config.services.searx.settings.server.port;
+          prometheus = config.services.prometheus.port;
+          photos = config.services.immich.port;
+          monitoring = config.services.grafana.settings.server.http_port;
+          auth = config.services.authentik.settings.listen.http;
+        }
+        // (lib.optionalAttrs (config.virtualisation.quadlet.containers != {}) {
+          torrent = 8080;
+          sonarr = 8989;
+          radarr = 7878;
+          bazarr = 6767;
+          prowlarr = 9696;
+        });
       extraHosts = {
         "${hostname}.${localTld}:80".extraConfig = ''
+          reverse_proxy 127.0.0.1:${toString config.services.homepage-dashboard.listenPort}
+        '';
+        "${hostname}.${tailscaleTld}:80".extraConfig = ''
           reverse_proxy 127.0.0.1:${toString config.services.homepage-dashboard.listenPort}
         '';
         "${hostname}.${tailnet}:80".extraConfig = ''
