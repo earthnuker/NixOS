@@ -74,6 +74,7 @@
   users.users.immich.extraGroups = ["video" "render"];
 
   boot.supportedFilesystems = ["zfs"];
+  boot.kernelModules = ["intel_rapl_common"];
   boot.zfs.devNodes = "/dev/disk/by-path";
   system.stateVersion = "24.05";
 }
