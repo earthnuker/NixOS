@@ -44,6 +44,7 @@
     settings = {
       experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
+      trusted-users = ["@wheel" "root"];
     };
     gc = {
       automatic = true;
@@ -68,6 +69,9 @@
   users.users.root = {
     hashedPasswordFile = config.sops.secrets.talos_root_passwd.path;
     openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoF0ps1qmKwMvyoe0N6vVNh95yITqagGy571C2/2msk root@godwaker"
+    ];
     extraGroups = ["video" "render" "podman" "docker"];
   };
 
