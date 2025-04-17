@@ -10,23 +10,6 @@ inputs: {
       containers = import ./oci;
     };
     # quadlet = import ./quadlet inputs;
-    # arion = {
-    #   backend = "podman-socket";
-    #   projects.tvstack = {
-    #     settings = import ./arion/tvstack.nix inputs;
-    #   };
-    # };
-    docker = {
-      enable = false;
-      logDriver = "journald";
-      daemon.settings = {
-        data-root = "/mnt/data/docker";
-        hosts = [
-          "tcp://127.0.0.1:2375"
-          "unix:///var/run/docker.sock"
-        ];
-      };
-    };
     podman = {
       enable = true;
       autoPrune.enable = true;
