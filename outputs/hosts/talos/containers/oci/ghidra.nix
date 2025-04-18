@@ -1,16 +1,15 @@
-{
-  image = "blacktop/ghidra";
-  hostname = "ghidra";
-  ports = [
-    "13100:13100"
-    "13101:13101"
-    "13102:13102"
-  ];
+{config, ...}: {
+  image = "blacktop/ghidra:latest";
+  hostname = "ghidra-ts";
+  cmd = ["server"];
   volumes = [
-    "/mnt/data/ghidra:/repos"
+    "/mnt/data/ghidra:/srv/repositories"
+  ];
+  extraOptions = [
+    "--network=container:ghidra-ts"
   ];
   environment = {
     GHIDRA_USERS = "admin earthnuker strongleong";
-    GHIDRA_PUBLIC_HOSTNAME = "ghidra.talos.lan";
+    GHIDRA_PUBLIC_HOSTNAME = "ghidra";
   };
 }

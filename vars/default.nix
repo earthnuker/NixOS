@@ -20,6 +20,7 @@
       "talos_root_passwd"
       "homepage_env"
       "authentik_env"
+      "ghidra_ts_env"
     ];
   };
 }
