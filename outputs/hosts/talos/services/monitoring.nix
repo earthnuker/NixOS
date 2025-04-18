@@ -1,7 +1,7 @@
 {config, ...}: {
-  system.activationScripts = {
-    scaphandre.text = "chown -R scaphandre-exporter /sys/devices/virtual/powercap || true";
-  };
+  systemd.tmpfiles.rules = [
+    "Z /sys/devices/virtual/powercap - scaphandre-exporter scaphandre-exporter"
+  ];
   services = {
     grafana = {
       enable = true;
