@@ -1,13 +1,10 @@
 inputs: {
-  containers.test = {
-    privateNetwork = true;
-    config = import ./nixos/test.nix;
-  };
+  containers = {};
   virtualisation = {
     containers.enable = true;
     oci-containers = {
       backend = "podman";
-      containers = import ./oci;
+      containers = import ./oci inputs;
     };
     # quadlet = import ./quadlet inputs;
     podman = {
