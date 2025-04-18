@@ -59,7 +59,7 @@ in {
           monitoring = config.services.grafana.settings.server.http_port;
           auth = config.services.authentik.settings.listen.http;
         }
-        // (lib.optionalAttrs (config.virtualisation.quadlet.containers != {}) {
+        // (lib.optionalAttrs (lib.hasAttr "tvstack" config.virtualisation.quadlet.pods) {
           torrent = 8080;
           sonarr = 8989;
           radarr = 7878;

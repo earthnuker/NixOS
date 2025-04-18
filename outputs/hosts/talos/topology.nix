@@ -4,6 +4,7 @@
   ...
 }: {
   topology.self = {
+    name = "🖴 ${config.networking.hostName}";
     hardware.info = "NAS";
     services = {
       ssh = {
@@ -21,6 +22,12 @@
       };
       tailscale0 = {
         network = "tailscale_home";
+        virtual = true;
+        type = "wireguard";
+        addresses = [config.networking.hostName];
+      };
+      tailscale1 = {
+        network = "tailscale_rescrap";
         virtual = true;
         type = "wireguard";
         addresses = [config.networking.hostName];

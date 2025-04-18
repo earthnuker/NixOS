@@ -1,5 +1,6 @@
 {config, ...}: {
   topology.self = {
+    name = "💻 ${config.networking.hostName}";
     hardware.info = "Thinkpad T470";
     services = {
       ssh = {
@@ -20,6 +21,12 @@
         network = "home";
         virtual = false;
         type = "wifi";
+        physicalConnections = [
+          {
+            node = "router";
+            interface = "wifi";
+          }
+        ];
       };
       tailscale0 = {
         addresses = [config.networking.hostName];
