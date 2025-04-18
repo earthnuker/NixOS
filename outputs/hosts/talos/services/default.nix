@@ -20,8 +20,23 @@
       # mediaLocation = "/mnt/data/media/photos";
     };
     zfs = {
-      autoScrub.enable = true;
-      autoSnapshot.enable = true;
+      autoScrub = {
+        enable = true;
+        interval = "*-*-1 23:00";
+      };
+    };
+    sanoid = {
+      enable = true;
+      templates.backup = {
+          hourly = 24;
+          daily = 30;
+          monthly = 12;
+          autoprune = true;
+          autosnap = true;
+        };
+        datasets."zpool/data" = {
+          useTemplate = [ "backup" ];
+        };
     };
     openssh.openFirewall = true;
     samba-wsdd = {
