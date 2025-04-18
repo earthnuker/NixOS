@@ -41,7 +41,9 @@
     inherit autoStart;
     containerConfig =
       {
-        inherit image pod name;
+        # Defaults
+        inherit image name;
+        pod = lib.optionalString (pod != null) quadlet.pods.${pod}.ref;
         volumes =
           [
             "${containerVolumes.config}/${name}:${configDir}"
@@ -51,73 +53,78 @@
         publishPorts = map toLocalPort ports;
         startWithPod = true;
       }
-      // extraContainerArgs;
+      // extraContainerArgs; # Overrides
     serviceConfig =
       {
+        # Defaults
         RestartSec = "10";
         Restart = "always";
       }
-      // extraServiceArgs;
+      // extraServiceArgs; # Overrides
   };
-in rec {
-  containers = {
-    sonarr = mkService {
+
+  mkPod = pod_name: {
+    services,
+    extraPodConfig ? {},
+  }: let
+    publishPorts = map toLocalPort (lib.unique (lib.concatMap (svc: svc.ports or []) (lib.attrValues services)));
+    mkContainer = name: value:
+      mkService ((lib.removeAttrs value ["ports"])
+        // {
+          pod = pod_name;
+          name = name;
+        });
+  in {
+    containers = lib.mapAttrs mkContainer services;
+    pods."${pod_name}" = {
+      podConfig = {inherit publishPorts;} // extraPodConfig;
+    };
+  };
+in (mkPod "tvstack" {
+  services = {
+    sonarr = {
       image = "hotio/sonarr:release";
-      name = "sonarr";
-      pod = quadlet.pods.tvstack.ref;
       volumes = [
         "${containerVolumes.media}:/media"
         "${containerVolumes.downloads}:/downloads"
       ];
-      # ports = [8989];
+      ports = [8989];
     };
-    radarr = mkService {
+    radarr = {
       image = "hotio/radarr:release";
-      name = "radarr";
-      pod = quadlet.pods.tvstack.ref;
       volumes = [
         "${containerVolumes.media}:/media"
         "${containerVolumes.downloads}:/downloads"
       ];
-      # ports = [7878];
+      ports = [7878];
     };
-    lidarr = mkService rec {
+    lidarr = rec {
       image = "youegraillot/lidarr-on-steroids";
-      name = "lidarr";
-      pod = quadlet.pods.tvstack.ref;
       volumes = [
         "${containerVolumes.media}/music:/music"
-        "${containerVolumes.config}/${name}/deemix:/config_deemix"
+        "${containerVolumes.config}/lidarr/deemix:/config_deemix"
         "${containerVolumes.downloads}:/downloads"
       ];
-      # ports = [8686 6595];
+      ports = [8686 6595];
     };
-    prowlarr = mkService {
+    prowlarr = {
       image = "hotio/prowlarr:release";
-      name = "prowlarr";
-      pod = quadlet.pods.tvstack.ref;
-      # ports = [9696];
+      ports = [9696];
     };
-    bazarr = mkService {
+    bazarr = {
       image = "hotio/bazarr:release";
-      name = "bazarr";
-      pod = quadlet.pods.tvstack.ref;
-      # ports = [6767];
+      ports = [6767];
       volumes = [
         "${containerVolumes.media}:/media"
       ];
     };
-    flaresolverr = mkService {
+    flaresolverr = {
       image = "ghcr.io/flaresolverr/flaresolverr";
-      name = "flaresolverr";
-      pod = quadlet.pods.tvstack.ref;
-      # ports = [8191];
+      ports = [8191];
     };
-    qbittorrent = mkService {
-      image = "hotio/qbittorrent:release";
-      name = "qbittorrent";
-      pod = quadlet.pods.tvstack.ref;
-      # ports = [8080 5000];
+    qbittorrent = {
+      image = "hotio/qbittorrent:legacy";
+      ports = [8080 5000];
       extraContainerArgs = {
         addCapabilities = ["NET_ADMIN"];
         sysctl = {
@@ -134,9 +141,4 @@ in rec {
       ];
     };
   };
-  pods = {
-    tvstack = {
-      podConfig.publishPorts = map toLocalPort (builtins.concatLists (builtins.attrValues exposedPorts));
-    };
-  };
-}
+})
