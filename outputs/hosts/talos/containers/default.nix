@@ -1,12 +1,19 @@
-inputs: {
+{
+  lib,
+  inputs,
+  ...
+} @ input_args: let
+  std = inputs.nix-std.lib;
+in {
+  imports = [
+    ./oci
+    ./arion
+  ];
+
   containers = {};
   virtualisation = {
     containers.enable = true;
-    oci-containers = {
-      backend = "podman";
-      containers = import ./oci inputs;
-    };
-    # quadlet = import ./quadlet inputs;
+    quadlet.autoEscape = true;
     podman = {
       enable = true;
       autoPrune.enable = true;
@@ -14,6 +21,9 @@ inputs: {
       dockerSocket.enable = true;
       defaultNetwork.settings.dns_enabled = true;
     };
+  };
+  environment.etc."containers/registries.conf.d/01-unqualified-docker.conf".text = std.serde.toTOML {
+    unqualified-search-registries = ["quay.io" "ghcr.io" "gcr.io" "docker.io"];
   };
 
   networking.firewall.allowedTCPPorts = [

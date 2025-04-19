@@ -1,5 +1,6 @@
 {
   self,
+  arion,
   authentik-nix,
   deploy-rs,
   disko,
@@ -110,6 +111,7 @@ in rec {
         srvos.nixosModules.mixins-systemd-boot
         nixos-facter-modules.nixosModules.facter
         quadlet.nixosModules.quadlet
+        arion.nixosModules.arion
         sops-nix.nixosModules.sops
         nix-topology.nixosModules.default
         authentik-nix.nixosModules.default

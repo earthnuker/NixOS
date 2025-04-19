@@ -5,6 +5,7 @@
       url = "github:NixOS/nixpkgs/nixos-unstable";
     };
     flake-utils.url = "github:numtide/flake-utils";
+    nix-std.url = "github:chessai/nix-std";
     nix-topology = {
       url = "github:oddlama/nix-topology";
       inputs.nixpkgs.follows = "nixpkgs";

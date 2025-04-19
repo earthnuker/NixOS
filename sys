@@ -78,6 +78,9 @@ build_iso:
     nom build --no-link ".#{{isoAttr}}"
     echo $(nix build --print-out-paths --no-link ".#{{isoAttr}}")
 
+diagram: check
+    nom build .#topology.config.output
+
 [private]
 [script]
 post_talos credentials="":

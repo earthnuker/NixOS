@@ -1,4 +1,4 @@
-{config, ...}: {
+{config, ...}: rec {
   image = "tailscale/tailscale:latest";
   hostname = "ghidra";
   ports = [
@@ -7,7 +7,6 @@
     "13102:13102"
   ];
   volumes = [
-    "ts-data-ghidra-server:/var/lib/tailscale"
     "/dev/net/tun:/dev/net/tun"
   ];
   capabilities = {

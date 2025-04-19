@@ -28,15 +28,15 @@
     sanoid = {
       enable = true;
       templates.backup = {
-          hourly = 24;
-          daily = 30;
-          monthly = 12;
-          autoprune = true;
-          autosnap = true;
-        };
-        datasets."zpool/data" = {
-          useTemplate = [ "backup" ];
-        };
+        hourly = 24;
+        daily = 30;
+        monthly = 12;
+        autoprune = true;
+        autosnap = true;
+      };
+      datasets."zpool/data" = {
+        useTemplate = ["backup"];
+      };
     };
     openssh.openFirewall = true;
     samba-wsdd = {

@@ -36,6 +36,9 @@
     vpn_env.restartUnits = [
       "arion-tvstack.service"
     ];
+    ghidra_ts_env.restartUnits = [
+      "arion-ghidra.service"
+    ];
   };
 
   systemd.sleep.extraConfig = lib.mkForce "";
