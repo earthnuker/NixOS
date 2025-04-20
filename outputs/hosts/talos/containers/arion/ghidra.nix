@@ -5,8 +5,9 @@ in {
     ghidra = mkService {
       image = "blacktop/ghidra:alpine";
       hostname = "ghidra-server";
+      configDir = null;
       volumes = [
-        "/mnt/data/ghidra:/srv/repositories"
+        "/mnt/data/ghidra:/repos"
       ];
       extraServiceArgs = {
         command = "server";
@@ -21,6 +22,7 @@ in {
     tailscale = mkService {
       image = "tailscale/tailscale:latest";
       hostname = "ghidra";
+      configDir = null;
       ports = [13100 13101 13102];
       extraServiceArgs = {
         capabilities = {
@@ -38,6 +40,7 @@ in {
       environment = {
         TS_EXTRA_ARGS = "--advertise-tags=tag:ghidra";
         TS_STATE_DIR = "/var/lib/tailscale";
+        TS_HOSTNAME = "ghidra";
       };
     };
   };

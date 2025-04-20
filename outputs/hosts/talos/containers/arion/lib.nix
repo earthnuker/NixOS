@@ -29,9 +29,13 @@ in rec {
           inherit image hostname;
           ports = (map (port: "127.0.0.1:${toString port}:${toString port}") ports) ++ (map (port: "${toString port}:${toString port}") exposed_ports);
           volumes =
-            [
-              "${containerVolumes.config}/${hostname}:${configDir}"
-            ]
+            (
+              if (configDir != null)
+              then [
+                "${containerVolumes.config}/${hostname}:${configDir}"
+              ]
+              else []
+            )
             ++ volumes;
           environment = globalEnv // environment;
         }
