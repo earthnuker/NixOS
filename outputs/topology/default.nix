@@ -4,12 +4,11 @@
   ...
 }: let
   inherit (config.lib.topology) mkInternet mkRouter mkConnection mkSwitch mkDevice;
-  /* TODO: update to docker */
-  tvstack_enabled = lib.hasAttr "tvstack" config.nixosConfigurations.talos.config.virtualisation.quadlet.pods;
+  tvstack_enabled = lib.hasAttr "tvstack" config.nixosConfigurations.talos.config.virtualisation.arion.projects;
 in {
   nodes =
     {
-      internet = mkInternet { };
+      internet = mkInternet {};
       work =
         mkInternet {
           connections = mkConnection "work-laptop" "vpn1";
