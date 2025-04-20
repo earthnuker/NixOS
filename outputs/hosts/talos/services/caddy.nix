@@ -58,6 +58,7 @@ in {
           photos = config.services.immich.port;
           monitoring = config.services.grafana.settings.server.http_port;
           auth = config.services.authentik.settings.listen.http;
+          cadvisor = config.services.cadvisor.port;
         }
         // (lib.optionalAttrs (lib.hasAttr "tvstack" config.virtualisation.arion.projects) {
           torrent = 8080;

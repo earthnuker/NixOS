@@ -3,6 +3,10 @@
     "Z /sys/devices/virtual/powercap - scaphandre-exporter scaphandre-exporter"
   ];
   services = {
+    cadvisor = {
+      enable = true;
+      port = 9877;
+    };
     grafana = {
       enable = true;
       settings = {
@@ -48,6 +52,7 @@
                 "127.0.0.1:${toString config.services.prometheus.exporters.smartctl.port}"
                 "127.0.0.1:${toString config.services.prometheus.exporters.scaphandre.port}"
                 "127.0.0.1:${toString config.services.prometheus.exporters.pihole.port}"
+                "127.0.0.1:${toString config.services.cadvisor.port}"
               ];
             }
           ];
