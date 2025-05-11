@@ -1,0 +1,29 @@
+I convert and corrupt random YouTube videos in various ways
+
+mention me in a toot with a video attachment to add it to the pool
+
+you can also mention me in a reply to a toot with a video attachment, but the reply has to be liked/favorited by the original poster to approve inclusion in the pool
+
+Score meaning:
+SI: Spatial information
+TI: Temporal Information
+Diff: difference to original video
+MSAD: Mean Sum of Absolute Differences
+C: Correlation
+DL: Duration Loss
+FJ: Frame rate Jitter
+
+Joined
+    Feb 15, 2020
+
+Creator
+    @earthnuker@merveilles.town
+
+Posting Interval
+    4 hours (deletded after 1 year)
+
+Scoring Function
+    (0.5+(DL/2)) * TI * SI * (1-abs(C))^2 * MSAD * (1-J))**1/6
+
+Source Code
+    https://github.com/earthnuker/FFGlitch

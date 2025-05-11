@@ -24,13 +24,14 @@
       nix-prefetch
       nix-prefetch-git
       nix-prefetch-github
-      # nixd
+      nixd
       nix-zsh-completions
       nurl
       statix
       deadnix
       # nix-web
       nix-tree
+      molly-guard
     ];
     variables = {
       EDITOR = "nvim";

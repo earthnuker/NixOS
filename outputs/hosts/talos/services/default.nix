@@ -1,16 +1,35 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ./caddy.nix
     ./duckdns.nix
     ./glances
     ./homepage
-    ./monitoring.nix
+    ./monitoring
     ./nats.nix
     ./postgresql.nix
     ./recyclarr
     ./searxng.nix
     ./authentik.nix
+    ./printing.nix
+    ./weechat.nix
+    ./forgejo.nix
+    ./lldap.nix
   ];
+  systemd.tmpfiles.rules = [
+    "v /.snapshots - - -"
+  ];
+  hive.services = {
+    tvstack = {
+      enable = false;
+    };
+  };
+
+  users.users.immich.extraGroups = ["video" "render"];
+
   services = {
     immich = {
       enable = true;
@@ -19,7 +38,23 @@
       port = 2283;
       # mediaLocation = "/mnt/data/media/photos";
     };
+    thelounge = {
+      enable = true;
+      port = 3333;
+      plugins = with pkgs.theLoungePlugins; [
+        # TODO: re-add themes
+        # themes.midnight
+      ];
+      extraConfig = {
+        defaults = {
+          name = "BJZ";
+          host = "irc.bonerjamz.us";
+          port = 6697;
+        };
+      };
+    };
     zfs = {
+      autoSnapshot.enable = false;
       autoScrub = {
         enable = true;
         interval = "*-*-1 23:00";
@@ -38,6 +73,27 @@
         useTemplate = ["backup"];
       };
     };
+    snapper = {
+      snapshotRootOnBoot = true;
+      persistentTimer = true;
+      configs.root = {
+        SUBVOLUME = "/";
+        # create hourly snapshots
+        TIMELINE_CREATE = true;
+
+        # cleanup hourly snapshots after some time
+        TIMELINE_CLEANUP = true;
+
+        # limits for timeline cleanup
+        TIMELINE_MIN_AGE = 1800;
+        TIMELINE_LIMIT_HOURLY = 24;
+        TIMELINE_LIMIT_DAILY = 7;
+        TIMELINE_LIMIT_WEEKLY = 4;
+        TIMELINE_LIMIT_MONTHLY = 12;
+        TIMELINE_LIMIT_YEARLY = 3;
+      };
+    };
+    ucodenix.enable = true;
     openssh.openFirewall = true;
     samba-wsdd = {
       enable = true;

@@ -1,0 +1,5 @@
+base=<Instance URL>
+client_id=<Client ID>
+client_secret=<Client Secret>
+token=<Auth token>
+redirect=""

@@ -1,0 +1,80 @@
+interval = "4h"
+max_file_size = 536870912 # 512 MB
+max_post_size = 20971520 # 20 MB
+max_bake_time = "15m"
+max_video_size = [1280,720]
+out_width = 512
+clip_length = "10s"
+min_duration = "5s"
+downtime.from="23:00:00"
+downtime.to="08:00:00"
+exts = ["mkv", "mp4", "avi", "m4v", "mpg", "mpeg"]
+roots = []
+accounts = [
+
+]
+
+[source_weights]
+mention = 1
+local_post = 1
+old_post = 2
+youtube = 2
+random_queue = 2
+
+[fmt_weights]
+"*"=1
+
+[codec_weights]
+"*"=1
+
+[video]
+weight = 1
+exts = ["mkv","avi"]
+codec_blacklist = ["dnxhd", "av1", "roqvideo", "roq" ,"apng","jpeg2000","rawvideo","pcx","zlib","bitpacked","avrp"]
+max_encoding_time = "15m"
+max_frame_window = 50
+min_frame_window = 25
+
+[audio]
+min_sample_rate = 8000
+max_sample_rate = 96000
+weight = 1
+max_encoding_time = "15m"
+yuv = ["yuv420p","yuv444p","yuv422p"]
+max_shift = { w = 2, h = 2 }
+codec_blacklist = ["dfpwm","pcm_"]
+# from https://github.com/g-l-i-t-c-h-o-r-s-e/SoniFFPy/blob/f9b9052dff51a245b7b1328c936444b3ae7e2e55/SoniStart.py#L150
+filters = ["acrusher=level_in=1.0:level_out=1.0", "adeclick=window=3", "adeclip", "adecorrelate", "adelay=delays=1000|1000", "adenorm", "aderivative", "adrc", "adynamicequalizer", "adynamicsmooth", "aemphasis=type=RIAA", "aeval", "aexciter=harmonics=3:gain=1", "afade=t=in", "afreqshift=shift=100", "agate", "aintegral", "alatency", "alimiter=level=0", "ametadata", "apad=pad_len=0", "aperms", "aphaseshift", "apsyclip", "asidedata", "asubboost", "asubcut", "asupercut", "asuperpass", "asuperstop", "atilt=f=0:c0=1", "bandpass=f=1000", "bandreject=f=1000", "bass=g=10:f=100", "biquad", "dcshift=shift=0", "deesser=f=3000", "dialoguenhance", "dynaudnorm", "equalizer=f=1000:t=1:g=1", "extrastereo=m=2.5", "highpass=f=1000", "highshelf=g=10:f=1000", "lowpass=f=1000", "lowshelf=g=10:f=1000", "compensationdelay", "crossfeed", "crystalizer=e=2", "speechnorm", "stereotools", "stereowiden=delay=20", "tiltshelf=f=1000:g=10:t=h", "treble=g=10:f=1000", "tremolo=f=10:d=0.5", "vibrato=f=10:d=0.5", "virtualbass=f=40:t=h:g=10", "volume=1"]
+max_filters = 3
+
+[audio.fmt_groups]
+int8 = ["u8", "s8"] # 8-bit int
+int16 = ["u16le", "u16be", "s16be", "s16le"] # 16-bit int
+int24 = ["s24le", "s24be", "u24be", "u24le"] # 24-bit int
+int32 = ["u32le", "u32be", "s32be", "s32le"] # 32-bit int
+float32 = ["f32be", "f32le"] # 32-bit float
+float64 = ["f64be", "f64le"] # 64-bit float
+w32 = ["u32le", "s32le", "s32be", "u32be", "f32le", "f32be"] # 32-bit wide
+uints = ["u8", "u16le", "u16be", "u32le", "u32le"] # unsigned ints
+sints = ["s8", "s16le", "s16be", "s32le", "s32le"] # signed ints
+floats = ["f32be", "f32le", "f64be", "f64le"] # floats
+all = [
+    "u8",
+    "s8",
+    "u16le",
+    "u16be",
+    "s16le",
+    "s16be",
+    "u24le",
+    "u24be",
+    "s24le",
+    "s24be",
+    "u32le",
+    "u32be",
+    "s32le",
+    "s32be",
+    "f32be",
+    "f32le",
+    "f64be",
+    "f64le"
+]

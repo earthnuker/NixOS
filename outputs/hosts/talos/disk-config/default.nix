@@ -1,7 +1,6 @@
 {
   drives,
   lib,
-  pkgs,
   ...
 }: {
   /*

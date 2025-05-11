@@ -1,4 +1,4 @@
-{config, ...}: [
+_: [
   {
     resources = {
       disk = "/mnt/data";

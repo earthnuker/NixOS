@@ -1,4 +1,4 @@
-{...}: {
+_: {
   image = "containrrr/watchtower:latest";
   hostname = "watchtower";
   volumes = [

@@ -2,14 +2,15 @@
 #! nix-shell -i "just --justfile" --quiet
 #! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops yq-go curl
 # vi: set syntax=just:
-
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]
 set unstable
+set export
 
 isoAttr := "nixosConfigurations.iso.config.system.build.isoImage"
 
-export SOPS_FILE := "secrets.yml"
+SOPS_FILE := "secrets.yml"
+SSHPASS:="toor"
 
 alias rebuild := switch
 alias b := switch
@@ -32,7 +33,7 @@ git:
 
 # Spawn shell with tools
 shell:
-    zsh
+    nix develop .
 
 fmt:
     nix fmt .
@@ -71,7 +72,7 @@ getkey *HOSTS: && rekey
 
 # Deploy configuration to defined hosts
 deploy *args:
-    nix run . -- -s {{args}} # we can skip checks here since they already run in the check command
+    nix run -L --log-format bar-with-logs . -- -s {{args}} # we can skip checks here since they already run in the check command
 
 # Build a bootable ISO
 build_iso:
@@ -99,7 +100,7 @@ post_talos credentials="":
 
 
 # Provision a host
-provision flake host="nixos-installer.lan" $SSHPASS="toor": check
+provision flake host="nixos-installer.lan": check
     nix flake lock
     -ssh-keygen -R {{host}}
     -ssh-keygen -R {{flake}}.lan
@@ -118,7 +119,7 @@ provision flake host="nixos-installer.lan" $SSHPASS="toor": check
 
 # Build and switch
 switch: check status && archive
-    nh os switch -a -D nixdiff
+    nh os switch -a
 
 # Stage all .nix files
 stage:

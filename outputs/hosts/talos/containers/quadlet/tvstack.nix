@@ -1,9 +1,5 @@
-{
-  config,
-  lib,
-  ...
-} @ inputs: let
-  quadlet = config.virtualisation.quadlet;
+{config, ...} @ inputs: let
+  inherit (config.virtualisation) quadlet;
   inherit (import ./lib.nix inputs) mkPod containerVolumes;
 in {
   virtualisation.quadlet = mkPod "tvstack" {

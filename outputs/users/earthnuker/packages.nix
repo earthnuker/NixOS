@@ -45,6 +45,7 @@ with pkgs; [
   grc
   bat
   cachix
+  weechat
   inputs.nsearch.packages.${pkgs.system}.default
   (writeShellApplication {
     name = "nixdiff";

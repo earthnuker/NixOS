@@ -16,7 +16,7 @@
         vpl-gpu-rt
         vaapiVdpau
         libvdpau-va-gl
-        (vaapiIntel.overrideAttrs (prev: {
+        (vaapiIntel.overrideAttrs (_prev: {
           meta.priority = 1;
         }))
       ];

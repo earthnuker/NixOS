@@ -1,4 +1,4 @@
-{...}: {
+_: {
   networking = {
     hostName = "godwaker";
     firewall.enable = false;

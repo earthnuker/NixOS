@@ -20,7 +20,10 @@
       "talos_root_passwd"
       "homepage_env"
       "authentik_env"
-      "ghidra_ts_env"
+      "rescrap_tailscale_auth"
+      "vodafone_station_passwd"
+      "tapo_exporter_json"
+      "lldap_env"
     ];
   };
 }

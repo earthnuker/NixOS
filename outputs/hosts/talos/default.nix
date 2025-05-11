@@ -3,7 +3,6 @@
   pkgs,
   lib,
   inputs,
-  drives,
   config,
   ...
 }: {
@@ -16,6 +15,7 @@
     ./services
     ./quicksync.nix
     ./topology.nix
+    ./limits.nix
   ];
 
   sops.secrets = {
@@ -36,12 +36,14 @@
     vpn_env.restartUnits = [
       "arion-tvstack.service"
     ];
-    ghidra_ts_env.restartUnits = [
-      "arion-ghidra.service"
+    rescrap_tailscale_auth.restartUnits = [
+      "container@chimera.service"
     ];
   };
 
   systemd.sleep.extraConfig = lib.mkForce "";
+
+  programs.nix-index-database.comma.enable = true;
 
   nix = {
     settings = {
@@ -67,7 +69,63 @@
     nh
     podman-tui
     dive
+    comma
+    ripgrep
+    tmux
+    neovim
+    inxi
+    molly-guard
   ];
+
+  programs.rust-motd = {
+    enable = true;
+    enableMotdInSSHD = true;
+    order = [
+      "banner"
+      "uptime"
+      "load_avg"
+      "memory"
+      "filesystems"
+      "service_status"
+      "last_login"
+    ];
+    settings = {
+      banner = {
+        color = "red";
+        command = ''
+          hostname | ${lib.getExe pkgs.figlet} -f slant
+        '';
+      };
+      service_status = {
+        Tailscale = "tailscaled";
+        "Prometheus Exporter" = "prometheus-node-exporter";
+        Grafana = "grafana";
+        Immich = "immich-server";
+        Podman = "podman";
+        NATS = "nats";
+        SMB = "samba-smbd";
+        SSH = "sshd";
+        Caddy = "caddy";
+      };
+      load_avg = {
+        format = "Load (1, 5, 15 min.): {one:.02}, {five:.02}, {fifteen:.02}";
+      };
+      uptime = {
+        prefix = "Up";
+      };
+      filesystems = {
+        root = "/";
+        boot = "/boot";
+        data = "/mnt/data";
+      };
+      memory = {
+        swap_pos = "beside";
+      };
+      last_login = {
+        root = 2;
+      };
+    };
+  };
 
   users.users.root = {
     hashedPasswordFile = config.sops.secrets.talos_root_passwd.path;
@@ -78,10 +136,11 @@
     extraGroups = ["video" "render" "podman" "docker"];
   };
 
-  users.users.immich.extraGroups = ["video" "render"];
-
-  boot.supportedFilesystems = ["zfs"];
-  boot.kernelModules = ["intel_rapl_common"];
-  boot.zfs.devNodes = "/dev/disk/by-path";
+  boot = {
+    supportedFilesystems = ["zfs"];
+    kernelModules = ["intel_rapl_common"];
+    zfs.devNodes = "/dev/disk/by-path";
+    kernelParams = ["microcode.amd_sha_check=off"];
+  };
   system.stateVersion = "24.05";
 }

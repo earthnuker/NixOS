@@ -2,18 +2,17 @@
   lib,
   inputs,
   ...
-} @ input_args: let
+}: let
   std = inputs.nix-std.lib;
 in {
   imports = [
     ./oci
     ./arion
+    ./nixos
   ];
-
-  containers = {};
   virtualisation = {
     containers.enable = true;
-    quadlet.autoEscape = true;
+    # quadlet.autoEscape = true;
     podman = {
       enable = true;
       autoPrune.enable = true;

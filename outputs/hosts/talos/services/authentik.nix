@@ -1,6 +1,6 @@
 {config, ...}: {
   services.authentik = {
-    enable = true;
+    enable = false;
     environmentFile = config.sops.secrets.authentik_env.path;
     settings = {
       disable_startup_analytics = true;

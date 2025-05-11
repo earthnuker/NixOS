@@ -2,28 +2,17 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  inherit (pkgs) lib;
+in {
   services = {
     libinput.enable = false;
     fstrim.enable = true;
     resolved.enable = true;
+    ucodenix.enable = true;
     quassel = {
-      enable = true;
+      enable = false;
       interfaces = ["0.0.0.0"];
-    };
-    thelounge = {
-      enable = true;
-      plugins = with pkgs.theLoungePlugins; [
-        # TODO: re-add themes
-        # themes.midnight
-      ];
-      extraConfig = {
-        defaults = {
-          name = "BJZ";
-          host = "irc.bonerjamz.us";
-          port = 6697;
-        };
-      };
     };
     k3s = {
       enable = false;
@@ -68,13 +57,16 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
+          command = "${lib.getExe pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
           user = "greeter";
         };
       };
     };
     fwupd.enable = true;
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      settings.PermitRootLogin = "no";
+    };
     upower.enable = true;
     picom.enable = true;
     devmon.enable = true;

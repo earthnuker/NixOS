@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: {
+{config, ...}: {
   topology.self = {
     name = "🖴 ${config.networking.hostName}";
     hardware.info = "NAS";

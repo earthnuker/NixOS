@@ -4,19 +4,19 @@
   authentik-nix,
   deploy-rs,
   disko,
-  flake-utils,
   lanzaboote,
-  lix-module,
   nix-index-database,
   nix-topology,
   nixos-facter-modules,
   nixos-hardware,
   home-manager,
   nixpkgs,
-  quadlet,
+  ucodenix,
   sops-nix,
   srvos,
   stylix,
+  devshell,
+  git-hooks,
   ...
 } @ inputs: let
   vars = import ./../vars;
@@ -27,8 +27,12 @@
   sources = import ../npins;
   pkgs = import nixpkgs {
     inherit system;
-    overlays = [nix-topology.overlays.default];
+    overlays = [
+      nix-topology.overlays.default
+      devshell.overlays.default
+    ];
   };
+  inherit (pkgs) lib;
   root = ./..;
   secrets = secrets: {
     sops = {
@@ -42,10 +46,13 @@
     };
   };
 in rec {
+  imports = [
+    ./imp_test.nix
+  ];
   formatter.${system} = pkgs.alejandra;
   apps."${system}".default = {
     type = "app";
-    program = "${deploy-rs.defaultPackage.${system}}/bin/deploy";
+    program = "${lib.getExe deploy-rs.defaultPackage.${system}}";
     meta = {
       description = "Run deployment";
     };
@@ -62,7 +69,7 @@ in rec {
       };
     };
   };
-  iso = nixosConfigurations.iso.config.system.build.isoImage;
+  iso = nixosConfigurations.installer.config.system.build.isoImage;
 
   topology = import nix-topology {
     inherit pkgs;
@@ -72,8 +79,72 @@ in rec {
     ];
   };
 
+  checks.${system}.git-hooks = git-hooks.lib.${system}.run {
+    src = nixpkgs.lib.cleanSource root;
+    hooks = {
+      # Nix
+      alejandra.enable = true;
+      deadnix.enable = true;
+      statix.enable = true;
+      flake-checker.enable = true;
+    };
+  };
+
+  devShells.${system}.default = pkgs.devshell.mkShell {
+    name = "Hive";
+    packages = with pkgs; [
+      just
+      zsh
+      nh
+      git
+      jq
+      sshpass
+      deploy-rs
+      ssh-to-age
+      watchexec
+      sops
+      yq-go
+      curl
+    ];
+    commands = [
+      {
+        package = pkgs.alejandra;
+        category = "formatters";
+      }
+      {
+        package = pkgs.deadnix;
+        category = "linters";
+      }
+      {
+        package = pkgs.statix;
+        category = "linters";
+      }
+      {
+        package = deploy-rs.defaultPackage.${system};
+        category = "tools";
+      }
+      {
+        package = pkgs.sops;
+        category = "tools";
+      }
+      {
+        package = pkgs.ssh-to-age;
+        category = "tools";
+      }
+      {
+        package = pkgs.yq-go;
+        category = "tools";
+      }
+      {
+        package = "just";
+        category = "tools";
+      }
+    ];
+    devshell.startup.git-hooks.text = self.checks.${system}.git-hooks.shellHook;
+  };
+
   nixosConfigurations = {
-    iso = nixpkgs.lib.nixosSystem {
+    installer = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
@@ -101,20 +172,23 @@ in rec {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
-        drives = vars.talos.drives;
+        inherit (vars.talos) drives;
       };
       modules = [
+        ./util/revision.nix
         ./hosts/talos
         disko.nixosModules.disko
         srvos.nixosModules.server
         srvos.nixosModules.mixins-terminfo
         srvos.nixosModules.mixins-systemd-boot
         nixos-facter-modules.nixosModules.facter
-        quadlet.nixosModules.quadlet
+        # quadlet.nixosModules.quadlet
+        nix-index-database.nixosModules.nix-index
         arion.nixosModules.arion
         sops-nix.nixosModules.sops
         nix-topology.nixosModules.default
         authentik-nix.nixosModules.default
+        ucodenix.nixosModules.default
         (secrets vars.talos.secrets)
       ];
     };
@@ -135,10 +209,10 @@ in rec {
         home-manager.nixosModules.home-manager
         stylix.nixosModules.stylix
         lanzaboote.nixosModules.lanzaboote
-        #lix-module.nixosModules.default
         nix-index-database.nixosModules.nix-index
         sops-nix.nixosModules.sops
         nix-topology.nixosModules.default
+        ucodenix.nixosModules.default
       ];
     };
   };

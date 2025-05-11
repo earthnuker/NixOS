@@ -2,8 +2,8 @@
   config,
   lib,
   ...
-} @ inputs: let
-  quadlet = config.virtualisation.quadlet;
+}: let
+  inherit (config.virtualisation) quadlet;
   containerVolumes = {
     config = "/mnt/data/config";
     media = "/mnt/data/media";

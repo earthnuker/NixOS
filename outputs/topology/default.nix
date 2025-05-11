@@ -16,9 +16,9 @@ in {
         // {
           name = "Work Network";
         };
-      rescrap =
+      rescrap_ts =
         mkInternet {
-          connections = mkConnection "ghidra" "tailscale";
+          connections = mkConnection "chimera" "tailscale0";
         }
         // {
           name = "ReScrap Tailnet";
@@ -37,61 +37,67 @@ in {
           addresses = ["192.168.0.1"];
           network = "home";
         };
-        connections.wan = mkConnection "internet" "*";
-        connections.lan = mkConnection "router_switch" "eth0";
+        connections = {
+          wan = mkConnection "internet" "*";
+          lan = mkConnection "router_switch" "eth0";
+        };
       };
       router_switch = mkSwitch "Router Switch" {
         info = "ARRIS TG3442DE internal switch";
         interfaceGroups = [["eth0" "eth1" "eth2" "eth3" "eth4" "eth5"]];
-        connections.eth1 = mkConnection "office_switch" "eth1";
-        connections.eth2 = mkConnection "nightmaregreen" "eth1";
-        connections.eth3 = mkConnection "talos" "eth1";
+        connections = {
+          eth1 = mkConnection "office_switch" "eth1";
+          eth2 = mkConnection "nightmaregreen" "eth1";
+          eth3 = mkConnection "talos" "eth1";
+        };
       };
       office_switch = mkSwitch "Office Switch" {
         info = "D-Link DGS-105";
         image = ./images/dlink-dgs105.png;
         interfaceGroups = [["eth1" "eth2" "eth3" "eth4" "eth5"]];
-        connections.eth2 = mkConnection "work-laptop" "eth1";
-        connections.eth3 = mkConnection "dietpi" "eth1";
-        connections.eth4 = mkConnection "godwaker" "eth1";
-      };
-      ghidra = mkDevice "🐉 Ghidra" {
-        parent = "talos";
-        guestType = "docker";
-        info = "Ghidra Docker Container";
-        interfaces = {
-          eth1 = {
-            addresses = [];
-            network = "home";
-            virtual = true;
-            type = "ethernet";
-            physicalConnections = [
-              {
-                node = "talos";
-                interface = "eth1";
-              }
-            ];
-          };
-          tailscale = {
-            addresses = ["ghidra"];
-            network = "tailscale_rescrap";
-            type = "wireguard";
-            virtual = true;
-            physicalConnections = [
-              {
-                node = "nightmaregreen";
-                interface = "tailscale2";
-              }
-            ];
-          };
-        };
-        services = {
-          ghidra = {
-            name = "Ghidra";
-            info = ":13100, :13101, :13102";
-          };
+        connections = {
+          eth2 = mkConnection "work-laptop" "eth1";
+          eth3 = mkConnection "dietpi" "eth1";
+          eth4 = mkConnection "godwaker" "eth1";
         };
       };
+      # ghidra = mkDevice "🐉 Ghidra" {
+      #   parent = "talos";
+      #   guestType = "docker";
+      #   info = "Ghidra Docker Container";
+      #   interfaces = {
+      #     eth1 = {
+      #       addresses = [];
+      #       network = "home";
+      #       virtual = true;
+      #       type = "ethernet";
+      #       physicalConnections = [
+      #         {
+      #           node = "talos";
+      #           interface = "eth1";
+      #         }
+      #       ];
+      #     };
+      #     tailscale = {
+      #       addresses = ["ghidra"];
+      #       network = "tailscale_rescrap";
+      #       type = "wireguard";
+      #       virtual = true;
+      #       physicalConnections = [
+      #         {
+      #           node = "nightmaregreen";
+      #           interface = "tailscale2";
+      #         }
+      #       ];
+      #     };
+      #   };
+      #   services = {
+      #     ghidra = {
+      #       name = "Ghidra";
+      #       info = ":13100, :13101, :13102";
+      #     };
+      #   };
+      # };
       dietpi = mkDevice "🥧 Dietpi" {
         info = "ODROID C2";
         services = {
@@ -290,20 +296,26 @@ in {
         };
       };
     });
-  networks.home = {
-    name = "Home Network";
-    cidrv4 = "192.168.0.0/24";
-  };
-  networks.work = {
-    name = "Work Network";
-    cidrv4 = "192.168.1.0/24";
-  };
-  networks.tailscale_home = {
-    name = "Home Tailscale";
-    cidrv4 = "100.64.0.0/10";
-  };
-  networks.tailscale_rescrap = {
-    name = "ReScrap Tailscale";
-    cidrv4 = "100.64.0.0/10";
+  networks = {
+    home = {
+      name = "Home Network";
+      cidrv4 = "192.168.0.0/24";
+    };
+    work = {
+      name = "Work Network";
+      cidrv4 = "192.168.1.0/24";
+    };
+    tailscale_home = {
+      name = "Home Tailscale";
+      cidrv4 = "100.64.0.0/10";
+    };
+    tailscale_rescrap = {
+      name = "ReScrap Tailscale";
+      cidrv4 = "100.64.0.0/10";
+    };
+    container_net = {
+      name = "talos container network";
+      cidrv4 = "192.168.100.0/32";
+    };
   };
 }

@@ -7,7 +7,7 @@
   history.extended = true;
   enableVteIntegration = true;
 
-  initExtra = ''
+  initContent = ''
     unsetopt extendedGlob
     setopt autocd
     setopt append_history share_history histignorealldups
