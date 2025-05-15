@@ -36,7 +36,7 @@ in {
         };
         log.level = "warn";
         security = {
-          cookie_secure = true;
+          cookie_secure = false;
           content_security_policy = true;
           strict_transport_security = true;
         };

@@ -46,13 +46,19 @@
     };
   };
 in rec {
-  imports = [
-    ./imp_test.nix
-  ];
   formatter.${system} = pkgs.alejandra;
-  apps."${system}".default = {
+  apps."${system}".default = let
+    deploy = lib.getExe deploy-rs.defaultPackage.${system};
+    nom = lib.getExe pkgs.nix-output-monitor;
+    script = pkgs.writeShellScriptBin "deploy" ''
+      #!/usr/bin/env bash
+      set -exuo pipefail
+      ${deploy} $@ -- . --log-format internal-json |& ${nom} --json
+    '';
+  in {
     type = "app";
-    program = "${lib.getExe deploy-rs.defaultPackage.${system}}";
+    program = "${lib.getExe script}";
+    # program = "echo ${lib.getExe deploy-rs.defaultPackage.${system}}";
     meta = {
       description = "Run deployment";
     };
@@ -69,26 +75,50 @@ in rec {
       };
     };
   };
-  iso = nixosConfigurations.installer.config.system.build.isoImage;
-
-  topology = import nix-topology {
-    inherit pkgs;
-    modules = [
-      ./topology
-      {inherit (self) nixosConfigurations;}
-    ];
+  packages."${system}" = {
+    installer-iso = nixosConfigurations.installer.config.system.build.isoImage;
+    sd-image = nixosConfigurations.daedalus.config.system.build.sdImage;
+    # diagram =
+    #   (import nix-topology
+    #     {
+    #       inherit pkgs;
+    #       modules = [
+    #         ./topology
+    #         {inherit (self) nixosConfigurations;}
+    #       ];
+    #     }).config.output;
   };
 
-  checks.${system}.git-hooks = git-hooks.lib.${system}.run {
-    src = nixpkgs.lib.cleanSource root;
-    hooks = {
-      # Nix
-      alejandra.enable = true;
-      deadnix.enable = true;
-      statix.enable = true;
-      flake-checker.enable = true;
-    };
-  };
+  # checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+  checks.${system} =
+    {
+      git-hooks = git-hooks.lib.${system}.run {
+        src = nixpkgs.lib.cleanSource root;
+        addGcRoot = true;
+        hooks = {
+          alejandra.enable = true;
+          deadnix.enable = true;
+          statix.enable = true;
+          ripsecrets.enable = true;
+          flake-checker.enable = true;
+          check-case-conflicts.enable = true;
+          check-executables-have-shebangs.enable = true;
+          check-merge-conflicts.enable = true;
+          check-shebang-scripts-are-executable.enable = true;
+          check-symlinks.enable = true;
+          lychee = {
+            enable = true;
+            types = ["markdown"];
+            settings.flags = "--cache --verbose";
+          };
+          markdownlint = {
+            enable = true;
+            settings.configuration.MD013 = false;
+          };
+        };
+      };
+    }
+    // (inputs.deploy-rs.lib.${system}.deployChecks self.deploy);
 
   devShells.${system}.default = pkgs.devshell.mkShell {
     name = "Hive";
@@ -140,10 +170,12 @@ in rec {
         category = "tools";
       }
     ];
-    devshell.startup.git-hooks.text = self.checks.${system}.git-hooks.shellHook;
+    # devshell.startup.git-hooks.text = self.checks.${system}.git-hooks.shellHook;
   };
 
+  # The installer ISO configuration.
   nixosConfigurations = {
+    # This is the installer ISO configuration.
     installer = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
@@ -161,13 +193,14 @@ in rec {
         }
         ({modulesPath, ...}: {
           imports = [
-            (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
-            (modulesPath + "/installer/cd-dvd/channel.nix")
+            "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
+            "${modulesPath}/installer/cd-dvd/channel.nix"
           ];
         })
       ];
     };
 
+    # This is the main system configuration for the Talos server.
     talos = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
@@ -192,18 +225,30 @@ in rec {
         (secrets vars.talos.secrets)
       ];
     };
+
+    daedalus = nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux";
+      specialArgs = {
+        inherit inputs nixpkgs;
+      };
+      modules = [
+        ./hosts/daedalus
+        nix-topology.nixosModules.default
+      ];
+    };
+
+    # This is the main system configuration for the Godwaker laptop.
     godwaker = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs users sources root;
-        drives = {
-          system = "nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX2J805949_1";
-        };
+        inherit (vars.godwaker) drives;
       };
       modules = [
         ./util/revision.nix
         ./hosts/godwaker
         disko.nixosModules.disko
+        nixos-facter-modules.nixosModules.facter
         nixos-hardware.nixosModules.lenovo-thinkpad-t470s
         nixos-hardware.nixosModules.common-pc-laptop-ssd
         home-manager.nixosModules.home-manager
@@ -213,6 +258,7 @@ in rec {
         sops-nix.nixosModules.sops
         nix-topology.nixosModules.default
         ucodenix.nixosModules.default
+        (secrets vars.godwaker.secrets)
       ];
     };
   };

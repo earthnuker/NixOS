@@ -4,19 +4,13 @@
   inputs,
   ...
 }: {
-  networking.nat = {
-    enable = true;
-    # Use "ve-*" when using nftables instead of iptables
-    internalInterfaces = ["ve-+"];
-    externalInterface = "enp3s0";
-  };
   containers = {
-    rescrap = {
+    chimera = {
       autoStart = true;
       privateNetwork = true;
       hostAddress = "192.168.100.10";
       localAddress = "192.168.100.11";
-      additionalCapabilities = ["CAP_NET_ADMIN"];
+      enableTun = true;
       bindMounts = {
         "/var/lib/ghidra" = {
           hostPath = "/mnt/data/ghidra";
@@ -26,13 +20,18 @@
           hostPath = config.sops.secrets.rescrap_tailscale_auth.path;
           isReadOnly = true;
         };
+        "/var/run/dbus/system_bus_socket" = {
+          hostPath = "/var/run/dbus/system_bus_socket";
+          isReadOnly = true;
+        };
       };
       config = {...}: {
         imports = [
           ./ghidra.nix
           ./tailscale.nix
-          inputs.nix-topology.nixosModules.default
+          # ./dns-server.nix
           ./topology.nix
+          inputs.nix-topology.nixosModules.default
         ];
         boot.isContainer = true;
         networking = {

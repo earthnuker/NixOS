@@ -71,6 +71,7 @@ in {
           code = config.services.forgejo.settings.server.HTTP_PORT;
           dc = config.services.lldap.settings.http_port;
           lounge = config.services.thelounge.port;
+          glance = config.services.glance.settings.server.port;
         }
         // (lib.optionalAttrs config.hive.services.tvstack.enable {
           torrent = 8080;

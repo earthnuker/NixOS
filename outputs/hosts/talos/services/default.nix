@@ -18,6 +18,8 @@
     ./weechat.nix
     ./forgejo.nix
     ./lldap.nix
+    ./dns.nix
+    ./glance.nix
   ];
   systemd.tmpfiles.rules = [
     "v /.snapshots - - -"

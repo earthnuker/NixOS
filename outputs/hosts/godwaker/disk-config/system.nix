@@ -20,11 +20,32 @@
       root = {
         end = "-16G";
         content = {
-          type = "filesystem";
-          format = "btrfs";
-          extraArgs = ["-f"]; # Override existing partition
-          mountpoint = "/";
-          mountOptions = ["compress=zstd" "noatime"];
+          type = "luks";
+          name = "cryptroot";
+          settings = {
+            allowDiscards = true;
+            crypttabExtraOpts = [ "tpm2-device=auto" "tpm2-measure-pcr=yes" ];
+          };
+          askPassword = true;
+          content = {
+            type = "filesystem";
+            format = "btrfs";
+            extraArgs = ["-f" "-L" "nixos"]; # Override existing partition
+            subvolumes = {
+              "/root" = {
+                mountpoint = "/";
+                mountOptions = [ "compress=zstd" "noatime" ];
+              };
+              "/home" = {
+                mountpoint = "/home";
+                mountOptions = [ "compress=zstd" "noatime" ];
+              };
+              "/nix" = {
+                mountpoint = "/nix";
+                mountOptions = [ "compress=zstd" "noatime" ];
+              };
+            };
+          };
         };
       };
       swap = {

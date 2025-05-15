@@ -7,8 +7,6 @@ set script-interpreter := ["zsh", "-u"]
 set unstable
 set export
 
-isoAttr := "nixosConfigurations.iso.config.system.build.isoImage"
-
 SOPS_FILE := "secrets.yml"
 SSHPASS:="toor"
 
@@ -35,12 +33,13 @@ git:
 shell:
     nix develop .
 
+# Format nix files
 fmt:
     nix fmt .
 
 # Update flake
 update:
-    nix flake update -L --commit-lock-file
+    nix flake update -v -L --commit-lock-file --log-format internal-json |& nom --json
 
 # Rekey secrets
 rekey:
@@ -72,15 +71,16 @@ getkey *HOSTS: && rekey
 
 # Deploy configuration to defined hosts
 deploy *args:
-    nix run -L --log-format bar-with-logs . -- -s {{args}} # we can skip checks here since they already run in the check command
+    nix run -v -L --log-format bar-with-logs . -- -s {{args}} # we can skip checks here since they already run in the check command
 
 # Build a bootable ISO
 build_iso:
-    nom build --no-link ".#{{isoAttr}}"
-    echo $(nix build --print-out-paths --no-link ".#{{isoAttr}}")
+    nom build --no-link ".#installer-iso"
+    echo $(nix build --print-out-paths --no-link ".#installer-iso")
 
+# Generate network diagram
 diagram: check
-    nom build .#topology.config.output
+    nom build .#diagram
 
 [private]
 [script]
@@ -101,21 +101,21 @@ post_talos credentials="":
 
 # Provision a host
 provision flake host="nixos-installer.lan": check
-    nix flake lock
+    nix flake lock -v
     -ssh-keygen -R {{host}}
     -ssh-keygen -R {{flake}}.lan
     until ssh -o StrictHostKeyChecking=accept-new root@{{host}} exit 0; do sleep 1; done
     nix run github:nix-community/nixos-anywhere -- \
-    --ssh-option StrictHostKeyChecking=accept-new -L --env-password --flake .#{{flake}} \
-    --generate-hardware-config nixos-generate-config outputs/hosts/{{flake}}/hardware-configuration.nix \
-    root@{{host}}
+        --ssh-option StrictHostKeyChecking=accept-new -L --env-password --flake .#{{flake}} \
+        --generate-hardware-config nixos-facter outputs/hosts/{{flake}}/facter.json \
+        root@{{host}}
     -ssh-keygen -R {{host}}
     just --justfile {{ justfile() }} getkey {{flake}}.lan
     just --justfile {{ justfile() }} deploy .#{{flake}}
     just --justfile {{ justfile() }} --dump --dump-format=json | \
-    jq -re .recipes.post_{{flake}} > /dev/null && \
-    echo Running post-recipe for {{flake}} && \
-    just --justfile {{ justfile() }} post_{{flake}}
+        jq -re .recipes.post_{{flake}} > /dev/null && \
+        echo Running post-recipe for {{flake}} && \
+        just --justfile {{ justfile() }} post_{{flake}}
 
 # Build and switch
 switch: check status && archive

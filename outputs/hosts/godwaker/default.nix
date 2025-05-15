@@ -9,21 +9,25 @@
   users,
   sources,
   root,
+  modulesPath,
   ...
 }: {
   imports = [
-    # Include the results of the hardware scan.
-    ./hardware-configuration.nix
+    "${modulesPath}/installer/scan/not-detected.nix"
+    ./disk-config
     ./boot.nix
     ./hardware.nix
     ./networking.nix
     ./environment.nix
     ./services.nix
     ./topology.nix
+    ./backup.nix
+    ./power.nix
     #"${modulesPath}/installer/cd-dvd/iso-image.nix"
   ];
 
   nixpkgs.config.allowUnfree = true;
+  facter.reportPath = ./facter.json;
 
   time.timeZone = "Europe/Berlin";
 

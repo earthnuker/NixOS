@@ -7,17 +7,18 @@
   ...
 }: {
   imports = [
-    (modulesPath + "/installer/scan/not-detected.nix")
+    "${modulesPath}/installer/scan/not-detected.nix"
     ./disk-config
-    ./hardware-configuration.nix
+    # ./hardware-configuration.nix
     ./networking.nix
     ./containers
     ./services
     ./quicksync.nix
     ./topology.nix
     ./limits.nix
+    # ./power.nix
   ];
-
+  facter.reportPath = ./facter.json;
   sops.secrets = {
     duckdns_token.restartUnits = [
       "duckdns.service"

@@ -1,6 +1,6 @@
 _: {
   networking = {
-    hostName = "godwaker";
+    hostName = "godwaker-test";
     firewall.enable = false;
     networkmanager = {
       enable = true;

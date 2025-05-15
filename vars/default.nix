@@ -1,5 +1,11 @@
 {
   godwaker = {
+    drives = {
+      system = "nvme-SAMSUNG_MZVLW256HEHP-000L7_S35ENX2J805949_1";
+    };
+    secrets = [
+      "restic_password"
+    ];
   };
   talos = {
     drives = {

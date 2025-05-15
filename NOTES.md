@@ -1,13 +1,22 @@
+# TPM2
+
+```shell
+sbctl verify
+sbctl enroll-keys -- --microsoft
+bootctl status
+systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7+12 --tpm2-with-pin=yes /dev/nvme0n1p2
+```
+
 # Weechat
 
-```
+```shell
 systemctl stop weechat
 systemctl cat weechat.service | rg ^ExecStart=
 sudo -u weechat /nix/store/...-weechat-bin-env-x.y.z/bin/weechat --dir /var/lib/weechat
 systemctl start weechat
 ```
 
-```
+```shell
 /mouse enable
 /set irc.look.server_buffer independent
 /set script.scripts.download_enabled on
@@ -44,7 +53,7 @@ systemctl start weechat
 /save
 ```
 
-```
+```shell
 /mouse enable
 /secure set relay <RELAY_PASSWORD>
 /remote addreplace talos http://wc.talos.ts:80/ -password=${sec.data.relay}
