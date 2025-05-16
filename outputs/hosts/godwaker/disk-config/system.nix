@@ -24,25 +24,24 @@
           name = "cryptroot";
           settings = {
             allowDiscards = true;
-            crypttabExtraOpts = [ "tpm2-device=auto" "tpm2-measure-pcr=yes" ];
+            crypttabExtraOpts = ["tpm2-device=auto" "tpm2-measure-pcr=yes"];
           };
           askPassword = true;
           content = {
-            type = "filesystem";
-            format = "btrfs";
+            type = "btrfs";
             extraArgs = ["-f" "-L" "nixos"]; # Override existing partition
             subvolumes = {
               "/root" = {
                 mountpoint = "/";
-                mountOptions = [ "compress=zstd" "noatime" ];
+                mountOptions = ["compress=zstd" "noatime"];
               };
               "/home" = {
                 mountpoint = "/home";
-                mountOptions = [ "compress=zstd" "noatime" ];
+                mountOptions = ["compress=zstd" "noatime"];
               };
               "/nix" = {
                 mountpoint = "/nix";
-                mountOptions = [ "compress=zstd" "noatime" ];
+                mountOptions = ["compress=zstd" "noatime"];
               };
             };
           };

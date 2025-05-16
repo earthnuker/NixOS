@@ -30,6 +30,10 @@
       "vodafone_station_passwd"
       "tapo_exporter_json"
       "lldap_env"
+      "authelia_jwt"
+      "authelia_storage"
     ];
   };
 }
+
+# ((file: builtins.fromJSON (builtins.readFile (pkgs.runCommand "" {} ''${lib.getExe pkgs.yj} > "$out" < "${file}"''))) ./secrets.yml).test

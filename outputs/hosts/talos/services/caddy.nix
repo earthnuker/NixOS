@@ -52,21 +52,29 @@ in {
   services.caddy = {
     enable = true;
     adapter = "caddyfile";
+    package = pkgs.caddy.withPlugins {
+      plugins = [
+        "github.com/greenpau/caddy-security@v1.1.31"
+        "go.akpain.net/caddy-tailscale-auth@v0.1.7"
+      ];
+      hash = "sha256-xtSrKXhaXONXK2hTY2ORauBJjDHRPqUmgcQtG7POuTg=";
+    };
     logFormat = lib.mkForce ''
       format console
       level INFO
     '';
     globalConfig = ''
       auto_https off
+      order authenticate before respond
+      order authorize before basicauth
     '';
-    virtualHosts = mkCaddy rec {
+    virtualHosts = mkCaddy {
       apps =
         {
           search = config.services.searx.settings.server.port;
           prometheus = config.services.prometheus.port;
           photos = config.services.immich.port;
           monitoring = config.services.grafana.settings.server.http_port;
-          auth = config.services.authentik.settings.listen.http;
           cadvisor = config.services.cadvisor.port;
           code = config.services.forgejo.settings.server.HTTP_PORT;
           dc = config.services.lldap.settings.http_port;

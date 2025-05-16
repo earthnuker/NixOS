@@ -14,7 +14,8 @@
 }: {
   imports = [
     "${modulesPath}/installer/scan/not-detected.nix"
-    ./disk-config
+    # ./disk-config
+    ./hardware-configuration.nix
     ./boot.nix
     ./hardware.nix
     ./networking.nix
@@ -27,7 +28,7 @@
   ];
 
   nixpkgs.config.allowUnfree = true;
-  facter.reportPath = ./facter.json;
+  # facter.reportPath = ./facter.json;
 
   time.timeZone = "Europe/Berlin";
 

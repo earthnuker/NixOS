@@ -19,7 +19,7 @@ alias p := provision
 alias d := deploy
 alias u := update
 
-_default: update stage switch deploy
+_default: update stage fmt check switch deploy
 
 # Show help
 help:

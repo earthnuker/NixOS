@@ -1,4 +1,6 @@
-# TPM2
+# Notes
+
+## TPM2
 
 ```shell
 sbctl verify
@@ -7,7 +9,7 @@ bootctl status
 systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7+12 --tpm2-with-pin=yes /dev/nvme0n1p2
 ```
 
-# Weechat
+## Weechat
 
 ```shell
 systemctl stop weechat

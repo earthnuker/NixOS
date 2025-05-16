@@ -13,7 +13,7 @@
     ./postgresql.nix
     ./recyclarr
     ./searxng.nix
-    ./authentik.nix
+    ./kanidm.nix
     ./printing.nix
     ./weechat.nix
     ./forgejo.nix
