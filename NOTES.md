@@ -6,7 +6,7 @@
 sbctl verify
 sbctl enroll-keys -- --microsoft
 bootctl status
-systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+7+12 --tpm2-with-pin=yes /dev/nvme0n1p2
+systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11 /dev/nvme0n1p2
 ```
 
 ## Weechat

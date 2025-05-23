@@ -132,13 +132,13 @@
     hashedPasswordFile = config.sops.secrets.talos_root_passwd.path;
     openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoF0ps1qmKwMvyoe0N6vVNh95yITqagGy571C2/2msk root@godwaker"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQP9/reHoakHb/tcF9YDspdUE+epG/gmU8yLrA3Jh7d root@godwaker"
     ];
     extraGroups = ["video" "render" "podman" "docker"];
   };
 
   boot = {
-    supportedFilesystems = ["zfs"];
+    supportedFilesystems = ["zfs" "ntfs" "exfat"];
     kernelModules = ["intel_rapl_common"];
     zfs.devNodes = "/dev/disk/by-path";
     kernelParams = ["microcode.amd_sha_check=off"];

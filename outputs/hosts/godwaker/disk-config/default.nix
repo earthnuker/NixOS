@@ -1,7 +1,7 @@
-{drives, ...}: {
+{vars, ...}: {
   disko.devices = {
     disk = {
-      main = import ./system.nix {drive = drives.system;};
+      main = import ./system.nix {drive = vars.drives.system;};
     };
   };
 }

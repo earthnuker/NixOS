@@ -26,6 +26,10 @@
             allowDiscards = true;
             crypttabExtraOpts = ["tpm2-device=auto" "tpm2-measure-pcr=yes"];
           };
+          postCreateHook = ''
+            pcrs=7+11
+            systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=$pcrs $device
+          '';
           askPassword = true;
           content = {
             type = "btrfs";

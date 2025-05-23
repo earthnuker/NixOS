@@ -1,0 +1,61 @@
+auto_https off
+order authenticate before respond
+order authorize before basicauth
+security {
+    ldap identity store talos.lan {
+        realm talos.lan
+        servers {
+            "ldap://127.0.0.1:3890"
+        }
+        attributes {
+            name first_name
+            surename last_name
+            username cn
+            member_of memberOf
+            email mail
+        }
+        username "CN=admin,OU=people,DC=talos,DC=lan"
+        password "{env.BIND_PASSWORD}"
+        search_base_dn "DC=talos,DC=lan"
+        search_user_filter "(&(uid=%s)(objectClass=person))"
+        search_group_filter "(&(uid=%s)(objectClass=groupOfUniqueNames))"
+        groups {
+            "cn=admin,ou=groups,dc=talos,dc=lan" admin
+            "cn=media,ou=groups,dc=talos,dc=lan" media
+            "cn=users,ou=groups,dc=talos,dc=lan" users
+        }
+    }
+    authentication portal talos {
+        crypto default token lifetime 3600
+        crypto key sign-verify {env.JWT_SHARED_KEY}
+        enable identity store talos.lan
+        cookie domain talos.lan
+        cookie insecure on
+        ui {
+            logo url "https://raw.githubusercontent.com/caddyserver/website/refs/heads/master/src/resources/images/logo-light.svg"
+            logo description "Caddy"
+            links {
+                "My Identity" "/whoami" icon "las la-user"
+            }
+            #password_recovery_enabled yes
+        }
+    }
+    authorization policy user {
+        crypto key verify {env.JWT_SHARED_KEY}
+        inject headers with claims
+        enable strip token
+        allow roles users
+    }
+    authorization policy admin {
+        crypto key verify {env.JWT_SHARED_KEY}
+        inject headers with claims
+        enable strip token
+        allow roles admin
+    }
+    authorization policy media {
+        crypto key verify {env.JWT_SHARED_KEY}
+        inject headers with claims
+        enable strip token
+        allow roles media
+    }
+}

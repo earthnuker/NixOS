@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age watchexec sops yq-go curl
+#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age nix-output-monitor watchexec sops yq-go curl
 # vi: set syntax=just:
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]
@@ -41,6 +41,14 @@ fmt:
 update:
     nix flake update -v -L --commit-lock-file --log-format internal-json |& nom --json
 
+# Set up automatic LUKS unlock
+[script]
+cryptenroll device="/dev/nvme0n1p2":
+  set -euxo pipefail
+  pcrs=7+11
+  sudo systemd-cryptenroll --wipe-slot=tpm2 $device
+  sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=$pcrs $device
+
 # Rekey secrets
 rekey:
     sops updatekeys -y $SOPS_FILE
@@ -71,7 +79,7 @@ getkey *HOSTS: && rekey
 
 # Deploy configuration to defined hosts
 deploy *args:
-    nix run -v -L --log-format bar-with-logs . -- -s {{args}} # we can skip checks here since they already run in the check command
+    nix run -v -L --log-format bar-with-logs .#deploy -- -s {{args}} # we can skip checks here since they already run in the check command
 
 # Build a bootable ISO
 build_iso:
@@ -118,15 +126,15 @@ provision flake host="nixos-installer.lan": check
         just --justfile {{ justfile() }} post_{{flake}}
 
 # Build and switch
-switch: check status && archive
-    nh os switch -a
+switch *args: check status && archive
+    nh os switch {{args}}
 
 # Stage all .nix files
 stage:
     git add **/*.nix
 
 # Flake check
-check: stage
+check: fmt stage
     nix flake check --verbose -L
 
 # Archive flake inputs

@@ -1,13 +1,23 @@
-{pkgs, ...}: {
+{pkgs, ...} @ inputs: {
   programs = {
     home-manager.enable = true;
     lazygit.enable = true;
     topgrade.enable = true;
     nix-index.enable = true;
     fd.enable = true;
+    zathura = {
+      enable = true;
+      options = {
+        recolor = true;
+        adjust-open = "best-fit";
+      };
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true;
+    };
+    vscode = {
+      enable = true;
     };
     ssh = {
       enable = true;
@@ -81,7 +91,8 @@
         }
       ];
     };
-    zsh = import ./zsh.nix;
-    starship = import ./starship.nix;
+    zsh = import ./zsh.nix inputs;
+    starship = import ./starship.nix inputs;
+    mpv = import ./mpv.nix inputs;
   };
 }

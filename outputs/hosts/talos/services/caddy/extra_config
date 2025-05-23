@@ -1,0 +1,9 @@
+(auth) {
+    route /auth* {
+        authenticate with {args[0]}
+    }
+    route {
+        authorize with {args[1]}
+        {block}
+    }
+}

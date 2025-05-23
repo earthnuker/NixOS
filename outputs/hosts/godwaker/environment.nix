@@ -25,6 +25,7 @@
       nix-prefetch-git
       nix-prefetch-github
       nixd
+      nil
       nix-zsh-completions
       nurl
       statix

@@ -4,7 +4,7 @@
   ...
 }: {
   imports = [
-    ./caddy.nix
+    ./caddy
     ./duckdns.nix
     ./glances
     ./homepage
@@ -13,7 +13,7 @@
     ./postgresql.nix
     ./recyclarr
     ./searxng.nix
-    ./kanidm.nix
+    # ./kanidm.nix
     ./printing.nix
     ./weechat.nix
     ./forgejo.nix

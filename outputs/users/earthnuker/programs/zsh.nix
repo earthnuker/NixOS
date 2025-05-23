@@ -1,4 +1,4 @@
-{
+_: {
   enable = true;
   enableCompletion = true;
   autosuggestion.enable = true;

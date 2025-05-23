@@ -10,12 +10,13 @@
   sources,
   root,
   modulesPath,
+  lib,
   ...
 }: {
   imports = [
     "${modulesPath}/installer/scan/not-detected.nix"
-    # ./disk-config
-    ./hardware-configuration.nix
+    ./disk-config
+    #./hardware-configuration.nix
     ./boot.nix
     ./hardware.nix
     ./networking.nix
@@ -24,11 +25,12 @@
     ./topology.nix
     ./backup.nix
     ./power.nix
+    ./desktop
     #"${modulesPath}/installer/cd-dvd/iso-image.nix"
   ];
 
   nixpkgs.config.allowUnfree = true;
-  # facter.reportPath = ./facter.json;
+  facter.reportPath = ./facter.json;
 
   time.timeZone = "Europe/Berlin";
 
@@ -87,9 +89,13 @@
 
   home-manager = {
     inherit users;
-    extraSpecialArgs = {inherit inputs sources root;};
+    extraSpecialArgs = {
+      inherit inputs sources root;
+      host-config = config;
+    };
     useGlobalPkgs = false;
     useUserPackages = true;
+    verbose = true;
     backupFileExtension = "hm_bak";
   };
 
@@ -118,20 +124,13 @@
     };
   };
 
-  stylix = {
-    enable = false;
-    image = ./wallpaper.jpg;
-    polarity = "dark";
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/spacemacs.yaml";
-  };
-
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
       nerd-fonts.fira-code
     ];
   };
-
+  systemd.network.wait-online.enable = lib.mkForce false;
   systemd.services = {
     NetworkManager-wait-online.enable = false;
     nix-daemon = {

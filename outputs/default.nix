@@ -19,7 +19,6 @@
   git-hooks,
   ...
 } @ inputs: let
-  vars = import ./../vars;
   system = "x86_64-linux";
   users = {
     earthnuker = import ./users/earthnuker;
@@ -45,22 +44,30 @@
         secrets);
     };
   };
+  vars = import ./../vars (
+    inputs
+    // {
+      inherit pkgs;
+      inherit (pkgs) lib;
+    }
+  );
 in rec {
   formatter.${system} = pkgs.alejandra;
-  apps."${system}".default = let
-    deploy = lib.getExe deploy-rs.defaultPackage.${system};
-    nom = lib.getExe pkgs.nix-output-monitor;
-    script = pkgs.writeShellScriptBin "deploy" ''
-      #!/usr/bin/env bash
-      set -exuo pipefail
-      ${deploy} $@ -- . --log-format internal-json |& ${nom} --json
-    '';
-  in {
-    type = "app";
-    program = "${lib.getExe script}";
-    # program = "echo ${lib.getExe deploy-rs.defaultPackage.${system}}";
-    meta = {
-      description = "Run deployment";
+  apps."${system}" = {
+    deploy = let
+      deploy = lib.getExe deploy-rs.defaultPackage.${system};
+      nom = lib.getExe pkgs.nix-output-monitor;
+      script = pkgs.writeShellScriptBin "deploy" ''
+        #!/usr/bin/env bash
+        set -exuo pipefail
+        ${deploy} $@ -- . --log-format internal-json |& ${nom} --json
+      '';
+    in {
+      type = "app";
+      program = "${lib.getExe script}";
+      meta = {
+        description = "Run deployment";
+      };
     };
   };
   deploy.nodes = {
@@ -180,23 +187,11 @@ in rec {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
+        vars = vars.installer;
       };
       modules = [
         ./installer
         nix-topology.nixosModules.default
-        {
-          users.users.root = {
-            openssh.authorizedKeys.keyFiles = [
-              inputs.ssh-keys-earthnuker.outPath
-            ];
-          };
-        }
-        ({modulesPath, ...}: {
-          imports = [
-            "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
-            "${modulesPath}/installer/cd-dvd/channel.nix"
-          ];
-        })
       ];
     };
 
@@ -205,7 +200,7 @@ in rec {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
-        inherit (vars.talos) drives;
+        vars = vars.talos;
       };
       modules = [
         ./util/revision.nix
@@ -230,6 +225,7 @@ in rec {
       system = "aarch64-linux";
       specialArgs = {
         inherit inputs nixpkgs;
+        vars = vars.daedalus;
       };
       modules = [
         ./hosts/daedalus
@@ -242,7 +238,7 @@ in rec {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs users sources root;
-        inherit (vars.godwaker) drives;
+        vars = vars.godwaker;
       };
       modules = [
         ./util/revision.nix

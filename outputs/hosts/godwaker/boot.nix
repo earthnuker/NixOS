@@ -1,8 +1,19 @@
 {
   pkgs,
   lib,
+  vars,
   ...
-}: {
+}: let
+  splash = pkgs.runCommand "splash.bmp" {nativeBuildInputs = with pkgs; [imagemagick];} ''
+    convert \
+      -verbose \
+      -negate \
+      -background black \
+      -resize 256x256 \
+      ${vars.bootsplash} \
+      $out
+  '';
+in {
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
     kernel.sysctl = {
@@ -12,6 +23,8 @@
     kernelModules = ["rt2800usb"];
     plymouth = {
       enable = true;
+      logo = splash;
+      # theme = lib.mkForce "breeze";
     };
     #binfmt.emulatedSystems = ["aarch64-linux"];
     loader = {
@@ -33,7 +46,6 @@
     };
     tmp = {
       useTmpfs = true;
-
       cleanOnBoot = true;
     };
     kernelParams = [
@@ -49,11 +61,7 @@
       # "audit=1"
     ];
     consoleLogLevel = 0;
-    initrd = let
-      uuid = {
-        swap = "a95a5c26-c015-44eb-bc0c-6529e1e4bdfb";
-      };
-    in {
+    initrd = {
       systemd = {
         enable = true;
         tpm2.enable = true;
@@ -65,7 +73,6 @@
         "cryptd"
         "tpm_tis"
       ];
-      luks.devices."luks-${uuid.swap}".device = "/dev/disk/by-uuid/${uuid.swap}";
     };
   };
 }

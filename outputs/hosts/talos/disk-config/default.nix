@@ -1,6 +1,7 @@
 {
   drives,
   lib,
+  vars,
   ...
 }: {
   /*
@@ -24,9 +25,9 @@
 
   disko.devices = {
     disk =
-      (lib.genAttrs drives.storage (device: import ./zpool_disk.nix {inherit device;}))
+      (lib.genAttrs vars.drives.storage (device: import ./zpool_disk.nix {inherit device;}))
       // {
-        system = import ./system.nix {drive = drives.system;};
+        system = import ./system.nix {drive = vars.drives.system;};
       };
 
     zpool = {

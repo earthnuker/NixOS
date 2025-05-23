@@ -3,7 +3,7 @@ keys:
   - &godwaker age144g8xpr2zgp5h4gt2u2pl3dh4h52vtna2fnpzsmsrcwjsjhnq4kq48us6k
   - &talos age1mpk8wz3u752pdy45vd2lq6tnk6r949mh9sswzyk6ka32d0qlx9ssnpxr29
 creation_rules:
-  - path_regex: secrets.yml$
+  - path_regex: .*
     key_groups:
       - age:
           - *earthnuker

@@ -1,12 +1,5 @@
-{
-  pkgs,
-  config,
-  ...
-}: let
-  inherit (pkgs) lib;
-in {
+{pkgs, ...}: {
   services = {
-    libinput.enable = false;
     fstrim.enable = true;
     resolved.enable = true;
     ucodenix.enable = true;
@@ -33,7 +26,7 @@ in {
       bolt.enable = true;
     };
     tlp = {
-      enable = true;
+      enable = false;
       settings = {
         START_CHARGE_THRESH_BAT0 = 40;
         STOP_CHARGE_THRESH_BAT0 = 80;
@@ -53,88 +46,24 @@ in {
       useRoutingFeatures = "both";
       extraUpFlags = ["--ssh"];
     };
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${lib.getExe pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
-          user = "greeter";
-        };
-      };
-    };
     fwupd.enable = true;
     openssh = {
       enable = true;
       settings.PermitRootLogin = "no";
     };
     upower.enable = true;
-    picom.enable = true;
+    picom.enable = false;
     devmon.enable = true;
-    xrdp = {
-      enable = true;
-      defaultWindowManager = "i3";
-      openFirewall = true;
-    };
+
     logind = {
       lidSwitch = "ignore";
       lidSwitchDocked = "ignore";
       lidSwitchExternalPower = "ignore";
-    };
-    autorandr = {
-      enable = true;
     };
     dbus = {
       enable = true;
       packages = [pkgs.dconf];
     };
     seatd.enable = true;
-    xserver = {
-      enable = false;
-      videoDrivers = ["modesetting"];
-      xkb = {
-        layout = "de";
-        variant = "nodeadkeys";
-      };
-      synaptics = {
-        enable = true;
-        twoFingerScroll = true;
-      };
-      desktopManager = {
-        xterm.enable = true;
-      };
-      windowManager = {
-        awesome = {
-          enable = false;
-          noArgb = true;
-          package = pkgs.awesome.override {
-            lua = pkgs.luajit;
-          };
-          luaModules = [
-            pkgs.luajitPackages.vicious
-            pkgs.luajitPackages.luarocks
-          ];
-        };
-        i3.enable = false;
-        qtile.enable = false;
-      };
-      displayManager = {
-        lightdm = {
-          enable = false;
-          greeters.mini = {
-            enable = true;
-            user = "earthnuker";
-            extraConfig = ''
-              [greeter]
-              show-password-label = false
-              [greeter-theme]
-              background-image = ${config.stylix.image}
-            '';
-          };
-        };
-      };
-    };
-    displayManager = {
-      defaultSession = "qtile";
-    };
   };
 }

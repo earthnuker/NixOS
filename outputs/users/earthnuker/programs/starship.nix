@@ -1,4 +1,4 @@
-{
+_: {
   enable = true;
   enableZshIntegration = true;
   enableFishIntegration = true;
@@ -11,7 +11,7 @@
       impure_msg = "[impure shell](bold red)";
       pure_msg = "[pure shell](bold green)";
       unknown_msg = "[shell](bold yellow)";
-      heuristic = true;
+      heuristic = false;
     };
   };
 }
