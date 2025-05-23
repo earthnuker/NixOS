@@ -4,14 +4,21 @@
   pkgs,
   ...
 }: let
-  tailnet = "possum-gila.ts.net";
   hostname = config.networking.hostName;
-  localTld = "lan";
-  tailscaleTld = "ts";
+  tld = {
+    ts = {
+      local = "ts";
+      funnel = "possum-gila.ts.net";
+    };
+    local = "lan";
+  };
   revProxy = port: "reverse_proxy 127.0.0.1:${toString port}";
   mkCaddy = {
     apps ? {},
-    suffixes ? [localTld tailscaleTld],
+    suffixes ? [
+      tld.ts.local
+      tld.local
+    ],
     extraConfigPre ? {},
     extraConfigPost ? {},
     extraHosts ? {},
@@ -29,8 +36,7 @@
       };
     };
   in
-    (lib.mergeAttrsList (map mkHost (builtins.attrNames apps)))
-    // extraHosts;
+    (lib.mergeAttrsList (map mkHost (builtins.attrNames apps))) // extraHosts;
   glowingBearCaddy = ''
     # Proxy WebSocket connections at /weechat to WeeChat relay on port 9001
     reverse_proxy /weechat 127.0.0.1:9001 {
@@ -83,18 +89,25 @@ in {
           prowlarr = 9696;
         });
       extraHosts = {
-        "${hostname}.${tailnet}:80".extraConfig = ''
+        "${hostname}.${tld.ts.funnel}:80".extraConfig = ''
           respond "Hello from {hostport} to {header.X-Forwarded-For}"
         '';
-        "auth-test.${hostname}.${localTld}:80, auth-test.${hostname}.${tailscaleTld}:80".extraConfig = ''
+        "auth-test.${hostname}.${tld.local}:80, auth-test.${hostname}.${tld.ts.local}:80".extraConfig = ''
           import auth talos user {
-            reverse_proxy 127.0.0.1:31337
+            ${revProxy 31337}
           }
         '';
-        "${hostname}.${tailscaleTld}:80, ${hostname}.${localTld}:80".extraConfig =
+        "*.proxy.${hostname}.${tld.local}:80, *.proxy.${hostname}.${tld.ts.local}:80".extraConfig = ''
+          @hostnames header_regexp host Host ([0-9]+)\..*
+          handle @hostnames {
+            reverse_proxy 127.0.0.1:{http.regexp.host.1}
+          }
+        '';
+        "${hostname}.${tld.ts.local}:80, ${hostname}.${tld.local}:80".extraConfig =
           revProxy config.services.homepage-dashboard.listenPort;
-        "irc.${hostname}.${tailscaleTld}:80, irc.${hostname}.${localTld}:80".extraConfig = glowingBearCaddy;
-        "wc.${hostname}.${tailscaleTld}:80, wc.${hostname}.${localTld}:80".extraConfig = weechatCaddy;
+        "irc.${hostname}.${tld.ts.local}:80, irc.${hostname}.${tld.local}:80".extraConfig =
+          glowingBearCaddy;
+        "wc.${hostname}.${tld.ts.local}:80, wc.${hostname}.${tld.local}:80".extraConfig = weechatCaddy;
       };
     };
   };

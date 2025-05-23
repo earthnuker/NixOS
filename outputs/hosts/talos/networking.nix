@@ -1,8 +1,7 @@
 _: {
   networking = {
     hostName = "talos";
-    interfaces = {
-    };
+    interfaces = {};
     firewall = {
       enable = true;
       allowPing = true;

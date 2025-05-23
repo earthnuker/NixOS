@@ -4,11 +4,12 @@
     headless = true;
     package = pkgs.weechat.override {
       configure = {availablePlugins, ...}: {
-        plugins = builtins.attrValues (availablePlugins
+        plugins = builtins.attrValues (
+          availablePlugins
           // {
-            python =
-              availablePlugins.python.withPackages (ps: with ps; [requests]);
-          });
+            python = availablePlugins.python.withPackages (ps: with ps; [requests]);
+          }
+        );
         scripts = with pkgs.weechatScripts; [
           weechat-grep
           highmon

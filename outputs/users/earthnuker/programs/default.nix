@@ -1,4 +1,10 @@
-{pkgs, ...} @ inputs: {
+{pkgs, ...}: {
+  imports = [
+    ./zsh.nix
+    ./starship.nix
+    ./mpv.nix
+    ./discord.nix
+  ];
   programs = {
     home-manager.enable = true;
     lazygit.enable = true;
@@ -11,6 +17,15 @@
         recolor = true;
         adjust-open = "best-fit";
       };
+    };
+    eza = {
+      enable = true;
+      git = true;
+      extraOptions = [
+        "--group-directories-first"
+        "--hyperlink"
+        "-sold"
+      ];
     };
     direnv = {
       enable = true;
@@ -91,8 +106,5 @@
         }
       ];
     };
-    zsh = import ./zsh.nix inputs;
-    starship = import ./starship.nix inputs;
-    mpv = import ./mpv.nix inputs;
   };
 }

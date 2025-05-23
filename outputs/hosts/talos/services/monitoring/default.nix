@@ -72,10 +72,15 @@ in {
         # nats.enable = true;
         node = {
           enable = true;
-          enabledCollectors = ["systemd" "rapl"];
+          enabledCollectors = [
+            "systemd"
+            "rapl"
+          ];
         };
       };
-      globalConfig.external_labels = {host = "${config.networking.hostName}";};
+      globalConfig.external_labels = {
+        host = "${config.networking.hostName}";
+      };
       scrapeConfigs = [
         (mkScrapeConfig "node" config.services.prometheus.exporters.node.port)
         (mkScrapeConfig "zfs" config.services.prometheus.exporters.zfs.port)

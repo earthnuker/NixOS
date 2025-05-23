@@ -33,11 +33,16 @@
       # nix-web
       nix-tree
       molly-guard
+      evil-helix
     ];
     variables = {
-      EDITOR = "nvim";
+      EDITOR = "hx";
     };
     localBinInPath = true;
-    pathsToLink = ["/share/xdg-desktop-portal" "/share/applications" "/libexec"];
+    pathsToLink = [
+      "/share/xdg-desktop-portal"
+      "/share/applications"
+      "/libexec"
+    ];
   };
 }

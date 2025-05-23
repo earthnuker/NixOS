@@ -59,17 +59,25 @@ in {
     services,
     extraPodConfig ? {},
   }: let
-    publishPorts = map toLocalPort (lib.unique (lib.concatMap (svc: svc.ports or []) (lib.attrValues services)));
+    publishPorts = map toLocalPort (
+      lib.unique (lib.concatMap (svc: svc.ports or []) (lib.attrValues services))
+    );
     mkContainer = name: value:
-      mkService ((lib.removeAttrs value ["ports"])
+      mkService (
+        (lib.removeAttrs value ["ports"])
         // {
           pod = pod_name;
           name = "${pod_name}-${name}";
-        });
+        }
+      );
   in {
     containers = lib.mapAttrs mkContainer services;
     pods."${pod_name}" = {
-      podConfig = {inherit publishPorts;} // extraPodConfig;
+      podConfig =
+        {
+          inherit publishPorts;
+        }
+        // extraPodConfig;
     };
   };
 }

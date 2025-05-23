@@ -5,7 +5,6 @@ _: {
   };
   services.dnsmasq = {
     enable = true;
-    settings = {
-    };
+    settings = {};
   };
 }

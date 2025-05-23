@@ -21,7 +21,14 @@
 } @ inputs: let
   system = "x86_64-linux";
   users = {
-    earthnuker = import ./users/earthnuker;
+    earthnuker = import ./users/earthnuker {
+      inherit
+        inputs
+        root
+        sources
+        pkgs
+        ;
+    };
   };
   sources = import ../npins;
   pkgs = import nixpkgs {
@@ -37,11 +44,13 @@
     sops = {
       defaultSopsFile = "${self}/secrets.yml";
       age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
-      secrets = builtins.listToAttrs (map (name: {
+      secrets = builtins.listToAttrs (
+        map (name: {
           inherit name;
           value = {};
         })
-        secrets);
+        secrets
+      );
     };
   };
   vars = import ./../vars (
@@ -60,7 +69,7 @@ in rec {
       script = pkgs.writeShellScriptBin "deploy" ''
         #!/usr/bin/env bash
         set -exuo pipefail
-        ${deploy} $@ -- . --log-format internal-json |& ${nom} --json
+        ${deploy} $@ -- . -j auto -v --log-format internal-json |& ${nom} --json
       '';
     in {
       type = "app";
@@ -85,15 +94,14 @@ in rec {
   packages."${system}" = {
     installer-iso = nixosConfigurations.installer.config.system.build.isoImage;
     sd-image = nixosConfigurations.daedalus.config.system.build.sdImage;
-    # diagram =
-    #   (import nix-topology
-    #     {
-    #       inherit pkgs;
-    #       modules = [
-    #         ./topology
-    #         {inherit (self) nixosConfigurations;}
-    #       ];
-    #     }).config.output;
+    diagram =
+      (import nix-topology {
+        inherit pkgs;
+        modules = [
+          ./topology
+          {inherit (self) nixosConfigurations;}
+        ];
+      }).config.output;
   };
 
   # checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
@@ -237,7 +245,13 @@ in rec {
     godwaker = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
-        inherit inputs nixpkgs users sources root;
+        inherit
+          inputs
+          nixpkgs
+          users
+          sources
+          root
+          ;
         vars = vars.godwaker;
       };
       modules = [

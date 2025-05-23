@@ -22,7 +22,12 @@ in {
     };
   };
   environment.etc."containers/registries.conf.d/01-unqualified-docker.conf".text = std.serde.toTOML {
-    unqualified-search-registries = ["quay.io" "ghcr.io" "gcr.io" "docker.io"];
+    unqualified-search-registries = [
+      "quay.io"
+      "ghcr.io"
+      "gcr.io"
+      "docker.io"
+    ];
   };
 
   networking.firewall.allowedTCPPorts = [

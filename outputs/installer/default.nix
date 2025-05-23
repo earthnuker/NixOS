@@ -23,7 +23,10 @@
   ];
   isoImage.squashfsCompression = "zstd";
   nix = {
-    settings.experimental-features = ["nix-command" "flakes"];
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     extraOptions = "experimental-features = nix-command flakes";
   };
   services.getty.autologinUser = lib.mkForce "root";

@@ -27,7 +27,9 @@ in rec {
       service =
         {
           inherit image hostname;
-          ports = (map (port: "127.0.0.1:${toString port}:${toString port}") ports) ++ (map (port: "${toString port}:${toString port}") exposed_ports);
+          ports =
+            (map (port: "127.0.0.1:${toString port}:${toString port}") ports)
+            ++ (map (port: "${toString port}:${toString port}") exposed_ports);
           volumes =
             (
               if (configDir != null)

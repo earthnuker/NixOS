@@ -71,7 +71,10 @@
     };
     xserver = {
       enable = true;
-      videoDrivers = ["intel" "modesetting"];
+      videoDrivers = [
+        "intel"
+        "modesetting"
+      ];
       xkb = {
         layout = "de";
         variant = "nodeadkeys";

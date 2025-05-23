@@ -62,10 +62,15 @@ in {
       qbittorrent = mkService {
         image = "hotio/qbittorrent:release";
         hostname = "qbittorrent";
-        ports = [8080 5000];
+        ports = [
+          8080
+          5000
+        ];
         extraServiceArgs = {
           env_file = [config.sops.secrets.vpn_env.path];
-          capabilities = {NET_ADMIN = true;};
+          capabilities = {
+            NET_ADMIN = true;
+          };
           sysctls = {
             "net.ipv4.conf.all.src_valid_mark" = 1;
             "net.ipv6.conf.all.disable_ipv6" = 1;

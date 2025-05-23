@@ -3,7 +3,14 @@
   lib,
   ...
 }: let
-  inherit (config.lib.topology) mkInternet mkRouter mkConnection mkSwitch mkDevice;
+  inherit
+    (config.lib.topology)
+    mkInternet
+    mkRouter
+    mkConnection
+    mkSwitch
+    mkDevice
+    ;
   tvstack_enabled = lib.hasAttr "tvstack" config.nixosConfigurations.talos.config.virtualisation.arion.projects;
 in {
   nodes =
@@ -26,7 +33,10 @@ in {
       router = mkRouter "Vodafone Station" {
         info = "ARRIS TG3442DE";
         interfaceGroups = [
-          ["lan" "wifi"]
+          [
+            "lan"
+            "wifi"
+          ]
           ["wan"]
         ];
         interfaces.lan = {
@@ -44,7 +54,16 @@ in {
       };
       router_switch = mkSwitch "Router Switch" {
         info = "ARRIS TG3442DE internal switch";
-        interfaceGroups = [["eth0" "eth1" "eth2" "eth3" "eth4" "eth5"]];
+        interfaceGroups = [
+          [
+            "eth0"
+            "eth1"
+            "eth2"
+            "eth3"
+            "eth4"
+            "eth5"
+          ]
+        ];
         connections = {
           eth1 = mkConnection "office_switch" "eth1";
           eth2 = mkConnection "nightmaregreen" "eth1";
@@ -54,7 +73,15 @@ in {
       office_switch = mkSwitch "Office Switch" {
         info = "D-Link DGS-105";
         image = ./images/dlink-dgs105.png;
-        interfaceGroups = [["eth1" "eth2" "eth3" "eth4" "eth5"]];
+        interfaceGroups = [
+          [
+            "eth1"
+            "eth2"
+            "eth3"
+            "eth4"
+            "eth5"
+          ]
+        ];
         connections = {
           eth2 = mkConnection "work-laptop" "eth1";
           eth3 = mkConnection "dietpi" "eth1";

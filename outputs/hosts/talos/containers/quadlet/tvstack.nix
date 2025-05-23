@@ -27,7 +27,10 @@ in {
           "${containerVolumes.config}/lidarr/deemix:/config_deemix"
           "${containerVolumes.downloads}:/downloads"
         ];
-        ports = [8686 6595];
+        ports = [
+          8686
+          6595
+        ];
       };
       prowlarr = {
         image = "hotio/prowlarr:release";
@@ -46,7 +49,10 @@ in {
       };
       qbittorrent = {
         image = "hotio/qbittorrent:legacy";
-        ports = [8080 5000];
+        ports = [
+          8080
+          5000
+        ];
         extraContainerArgs = {
           addCapabilities = ["NET_ADMIN"];
           sysctl = {

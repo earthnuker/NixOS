@@ -6,7 +6,10 @@
 }: let
   nixdiff = pkgs.writeShellApplication {
     name = "nixdiff";
-    runtimeInputs = [pkgs.nvd pkgs.nix-diff];
+    runtimeInputs = [
+      pkgs.nvd
+      pkgs.nix-diff
+    ];
     text = ''
       set -euxo pipefail
       nix-diff --word-oriented --skip-already-compared "$1" "$2"
@@ -48,6 +51,7 @@
     inputs.nsearch.packages.${pkgs.system}.default
     nixdiff
     ffmpeg_7-full
+    uutils-coreutils-noprefix
   ];
   x_pkgs = with pkgs; [
     dconf
@@ -60,6 +64,7 @@
     xss-lock
     pavucontrol
     networkmanager_dmenu
+    # discord
   ];
 in {
   home.packages =

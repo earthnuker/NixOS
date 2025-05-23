@@ -2,11 +2,13 @@
   pkgs,
   sources,
   root,
+  inputs,
   ...
 }: {
   imports = [
     ./programs
     ./packages.nix
+    inputs.nixcord.homeModules.nixcord
   ];
   nixpkgs.config = import ./nixpkgs-config.nix;
   xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
@@ -45,12 +47,13 @@
       "${pkgs.dex}/bin/dex" -a
     '';
   };
+
   stylix = {
-    # enable = config.stylix.enable;
-    # image = config.stylix.image;
-    # polarity = config.stylix.polarity;
-    # base16Scheme = config.stylix.base16Scheme;
-    enableReleaseChecks = false;
+    enable = true;
+    #image = config.stylix.image;
+    #polarity = config.stylix.polarity;
+    #base16Scheme = config.stylix.base16Scheme;
+    #enableReleaseChecks = false;
   };
   home.stateVersion = "24.05";
 }

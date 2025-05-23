@@ -33,7 +33,10 @@
     sonarr_api_key.restartUnits = [
       "recyclarr.service"
     ];
-    searxng_env.restartUnits = ["searx-init.service" "searx"];
+    searxng_env.restartUnits = [
+      "searx-init.service"
+      "searx"
+    ];
     vpn_env.restartUnits = [
       "arion-tvstack.service"
     ];
@@ -48,9 +51,15 @@
 
   nix = {
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       auto-optimise-store = true;
-      trusted-users = ["@wheel" "root"];
+      trusted-users = [
+        "@wheel"
+        "root"
+      ];
     };
     gc = {
       automatic = true;
@@ -134,11 +143,20 @@
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQP9/reHoakHb/tcF9YDspdUE+epG/gmU8yLrA3Jh7d root@godwaker"
     ];
-    extraGroups = ["video" "render" "podman" "docker"];
+    extraGroups = [
+      "video"
+      "render"
+      "podman"
+      "docker"
+    ];
   };
 
   boot = {
-    supportedFilesystems = ["zfs" "ntfs" "exfat"];
+    supportedFilesystems = [
+      "zfs"
+      "ntfs"
+      "exfat"
+    ];
     kernelModules = ["intel_rapl_common"];
     zfs.devNodes = "/dev/disk/by-path";
     kernelParams = ["microcode.amd_sha_check=off"];

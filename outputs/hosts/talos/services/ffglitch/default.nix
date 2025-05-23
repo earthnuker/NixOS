@@ -23,14 +23,15 @@
     };
   };
   python = pkgs.python3;
-  py_env = python.withPackages (ps:
-    with ps; [
-      yt-dlp-light
-      mastodon-py
-    ]);
+  py_env = python.withPackages (
+    ps:
+      with ps; [
+        yt-dlp-light
+        mastodon-py
+      ]
+  );
   rust-toolchain = pkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.minimal);
-  craneLib =
-    (crane.mkLib pkgs).overrideToolchain rust-toolchain;
+  craneLib = (crane.mkLib pkgs).overrideToolchain rust-toolchain;
   buildInputs = [];
   ffglitch = craneLib.buildPackage {
     inherit buildInputs;
@@ -44,7 +45,10 @@ in {
     isSystemUser = true;
     home = "/var/lib/ffglitch";
     createHome = true;
-    extraGroups = ["video" "render"];
+    extraGroups = [
+      "video"
+      "render"
+    ];
   };
   system.tmpfiles.rules = [
     "d /var/lib/ffglitch ffglitch ffglitch -"

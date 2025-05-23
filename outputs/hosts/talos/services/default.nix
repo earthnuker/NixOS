@@ -30,7 +30,10 @@
     };
   };
 
-  users.users.immich.extraGroups = ["video" "render"];
+  users.users.immich.extraGroups = [
+    "video"
+    "render"
+  ];
 
   services = {
     immich = {
@@ -108,7 +111,10 @@
       useRoutingFeatures = "both";
       authKeyFile = config.sops.secrets.tailscale_auth.path;
       permitCertUid = "caddy";
-      extraUpFlags = ["--ssh" "--accept-dns"];
+      extraUpFlags = [
+        "--ssh"
+        "--accept-dns"
+      ];
     };
     tailscaleAuth = {
       enable = true;

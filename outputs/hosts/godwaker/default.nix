@@ -82,7 +82,14 @@
   users.users.earthnuker = {
     isNormalUser = true;
     description = "Earthnuker";
-    extraGroups = ["networkmanager" "wheel" "docker" "dialout" "xrdp" "video"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "dialout"
+      "xrdp"
+      "video"
+    ];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
   };
@@ -110,9 +117,15 @@
     settings = {
       warn-dirty = true;
       allow-dirty = true;
-      trusted-users = ["@wheel" "earthnuker"];
+      trusted-users = [
+        "@wheel"
+        "earthnuker"
+      ];
       max-jobs = "auto";
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       substituters = [
         "https://nix-community.cachix.org"
         "https://cache.lix.systems"

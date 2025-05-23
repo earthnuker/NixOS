@@ -127,7 +127,7 @@ provision flake host="nixos-installer.lan": check
 
 # Build and switch
 switch *args: check status && archive
-    nh os switch {{args}}
+    nh os switch {{args}} -- -j auto
 
 # Stage all .nix files
 stage:
@@ -155,10 +155,11 @@ gca:
     nix store optimise
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
-
+    
 # Clean nix-store and old generations (keep 10 or 1 week)
 gc:
     nh clean all -k 10 -K 1w
+    sudo /run/current-system/bin/switch-to-configuration boot
     nix store optimise
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive

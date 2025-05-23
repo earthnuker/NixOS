@@ -1,7 +1,11 @@
 {
   base_url = "http://localhost:8989";
-  api_key = {_secret = "/run/credentials/recyclarr.service/SONARR_API_KEY";};
-  quality_definition = {type = "series";};
+  api_key = {
+    _secret = "/run/credentials/recyclarr.service/SONARR_API_KEY";
+  };
+  quality_definition = {
+    type = "series";
+  };
   delete_old_custom_formats = true;
   media_naming = {
     series = "default";
