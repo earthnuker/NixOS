@@ -24,15 +24,25 @@
     extraHosts ? {},
     commonConfig ? "",
   }: let
-    # TODO: auth option
-    mkHost = name: {
+    mkAuth = {
+      group,
+      inner,
+    }: "import auth talos ${group} {\n ${inner} \n}";
+    mkHost = name: let
+      app_info = apps.${name};
+      inner = lib.concatStringsSep "\n" [
+        commonConfig
+        (extraConfigPre.${name} or "")
+        "reverse_proxy http://127.0.0.1:${toString app_info.port}"
+        (extraConfigPost.${name} or "")
+      ];
+      group = app_info.auth or null;
+    in {
       "${lib.concatStringsSep ", " (map (tld: "${name}.${hostname}.${tld}:80") suffixes)}" = {
-        extraConfig = lib.concatStringsSep "\n" [
-          commonConfig
-          (extraConfigPre.${name} or "")
-          "reverse_proxy http://127.0.0.1:${toString apps.${name}}"
-          (extraConfigPost.${name} or "")
-        ];
+        extraConfig =
+          if group != null
+          then mkAuth {inherit inner group;}
+          else inner;
       };
     };
   in
@@ -71,22 +81,22 @@ in {
     virtualHosts = mkCaddy {
       apps =
         {
-          search = config.services.searx.settings.server.port;
-          prometheus = config.services.prometheus.port;
-          photos = config.services.immich.port;
-          monitoring = config.services.grafana.settings.server.http_port;
-          cadvisor = config.services.cadvisor.port;
-          code = config.services.forgejo.settings.server.HTTP_PORT;
-          dc = config.services.lldap.settings.http_port;
-          lounge = config.services.thelounge.port;
-          glance = config.services.glance.settings.server.port;
+          search = {inherit (config.services.searx.settings.server) port;};
+          prometheus = {inherit (config.services.prometheus) port;};
+          photos = {inherit (config.services.immich) port;};
+          monitoring = {port = config.services.grafana.settings.server.http_port;};
+          cadvisor = {inherit (config.services.cadvisor) port;};
+          code = {port = config.services.forgejo.settings.server.HTTP_PORT;};
+          dc = {port = config.services.lldap.settings.http_port;};
+          lounge = {inherit (config.services.thelounge) port;};
+          glance = {inherit (config.services.glance.settings.server) port;};
         }
         // (lib.optionalAttrs config.hive.services.tvstack.enable {
-          torrent = 8080;
-          sonarr = 8989;
-          radarr = 7878;
-          bazarr = 6767;
-          prowlarr = 9696;
+          torrent = {port = 8080;};
+          sonarr = {port = 8989;};
+          radarr = {port = 7878;};
+          bazarr = {port = 6767;};
+          prowlarr = {port = 9696;};
         });
       extraHosts = {
         "${hostname}.${tld.ts.funnel}:80".extraConfig = ''

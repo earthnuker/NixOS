@@ -12,4 +12,12 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/flakehub-cache-action@main
       - uses: DeterminateSystems/update-flake-lock@v25
-      - uses: DeterminateSystems/flake-checker-action@v9
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - id: update
+        uses: DeterminateSystems/flake-checker-action@v9
+      - name: Merge
+        run: gh pr merge --auto "${{ steps.update.outputs.pull-request-number }}" --rebase
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        if: ${{ steps.update.outputs.pull-request-number != '' }}
