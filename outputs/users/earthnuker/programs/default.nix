@@ -18,6 +18,40 @@
         adjust-open = "best-fit";
       };
     };
+    helix = {
+      enable = true;
+      package = pkgs.evil-helix;
+      defaultEditor = true;
+      settings = {
+        theme = "stylix";
+        editor = {
+          true-color = true;
+          color-modes = true;
+          cursor-shape = {
+            normal = "block";
+            insert = "bar";
+            select = "underline";
+          };
+          gutters = [
+            "diagnostics"
+            "line-numbers"
+            "spacer"
+            "diff"
+          ];
+          file-picker = {
+            hidden = false;
+          };
+          indent-guides = {
+            render = false;
+            character = "│";
+          };
+          lsp = {
+            display-messages = true;
+          };
+          mouse = true;
+        };
+      };
+    };
     eza = {
       enable = true;
       git = true;

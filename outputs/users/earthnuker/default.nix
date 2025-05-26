@@ -17,7 +17,7 @@
     homeDirectory = "/home/earthnuker";
     enableNixpkgsReleaseCheck = false;
     sessionVariables = {
-      EDITOR = "nvim";
+      EDITOR = "hx";
       VISUAL = "code -n -w";
       ZSH_CACHE_DIR = "/home/earthnuker/.cache/oh-my-zsh";
       TERM = "xterm-256color";
@@ -46,14 +46,6 @@
     initExtra = ''
       "${pkgs.dex}/bin/dex" -a
     '';
-  };
-
-  stylix = {
-    enable = true;
-    #image = config.stylix.image;
-    #polarity = config.stylix.polarity;
-    #base16Scheme = config.stylix.base16Scheme;
-    #enableReleaseChecks = false;
   };
   home.stateVersion = "24.05";
 }

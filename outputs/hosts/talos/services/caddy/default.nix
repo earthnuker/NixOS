@@ -68,8 +68,9 @@ in {
       plugins = [
         "github.com/greenpau/caddy-security@v1.1.31"
         "go.akpain.net/caddy-tailscale-auth@v0.1.7"
+        "github.com/enum-gg/caddy-discord@v1.2.0"
       ];
-      hash = "sha256-OFqOcNbZ7w5mJke389EFfTTLaAzZl+8VLPu/6nr57tw=";
+      hash = "sha256-3yVK9WbAtKKUjW5mmjA7oIdFVK7lW9ZQi5wqAORs3bc=";
     };
     environmentFile = config.sops.secrets.caddy_env.path;
     logFormat = lib.mkForce ''
