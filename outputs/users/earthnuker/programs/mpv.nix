@@ -10,7 +10,6 @@
       hwdec-codecs = "all";
       scale = "ewa_lanczossharp";
       vo = "gpu";
-      gpu-context = "drm";
     };
     scripts = with pkgs.mpvScripts; [
       mpris

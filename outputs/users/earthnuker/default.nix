@@ -40,7 +40,11 @@
   services = {
     ssh-agent.enable = true;
   };
-
+  stylix.targets = {
+    nixcord.enable = false;
+    vencord.enable = false;
+    vesktop.enable = false;
+  };
   xsession = {
     enable = true;
     initExtra = ''
