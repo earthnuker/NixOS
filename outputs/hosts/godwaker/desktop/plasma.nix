@@ -19,15 +19,16 @@
   environment.systemPackages = with pkgs; [
     kde-rounded-corners
     kara
+    kdePackages.krdp
     # Qt6 stuff
     qt6.qtbase # Qt6 core, includes xcb plugin
     qt6.qtwayland # Qt6 Wayland plugin (so “wayland” backend exists)
   ];
   environment = {
-    # sessionVariables = {
-    #   QT_QPA_PLATFORM = "xcb";
-    #   QT_QPA_PLATFORM_PLUGIN_PATH = "${pkgs.qt6.qtbase}/lib/qt-6/plugins/platforms";
-    # };
+    sessionVariables = {
+      QT_QPA_PLATFORM = "wayland";
+      QT_QPA_PLATFORM_PLUGIN_PATH = "${pkgs.qt6.qtbase}/lib/qt-6/plugins/platforms";
+    };
     etc."xdg/baloofilerc".text = ''
       [Basic Settings]
       Indexing-Enabled=false

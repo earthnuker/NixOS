@@ -61,7 +61,7 @@
       enable = true;
     };
     xrdp = {
-      enable = true;
+      enable = false;
       openFirewall = true;
       # defaultWindowManager = "startplasma-x11";
     };
