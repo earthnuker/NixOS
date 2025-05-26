@@ -89,6 +89,7 @@
       "dialout"
       "xrdp"
       "video"
+      "audio"
     ];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
