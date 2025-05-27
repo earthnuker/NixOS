@@ -3,7 +3,7 @@
     ./zsh.nix
     ./starship.nix
     ./mpv.nix
-    ./discord.nix
+    ./discord
   ];
   programs = {
     home-manager.enable = true;
@@ -52,14 +52,17 @@
         };
       };
     };
-    eza = {
+    lsd = {
       enable = true;
-      git = true;
-      extraOptions = [
-        "--group-directories-first"
-        "--hyperlink"
-        "-sold"
-      ];
+      settings = {
+        indicators = true;
+        sorting = {
+          column = "time";
+          reverse = true;
+        };
+        hyperlink = "auto";
+        header = false;
+      };
     };
     direnv = {
       enable = true;
@@ -87,6 +90,16 @@
       enable = true;
       enableZshIntegration = true;
       enableFishIntegration = true;
+    };
+    bat = {
+      enable = true;
+      extraPackages = with pkgs; [
+        bat-extras.core
+      ];
+      config = {
+        style = "plain";
+        paging = "auto";
+      };
     };
     atuin = {
       enable = false;

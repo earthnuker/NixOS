@@ -83,7 +83,7 @@ deploy *args:
 
 # Deploy without automatic rollback
 unsafe_deploy host:
-    nixos-rebuild --flake ".#{{host}}" --target-host root@{{host}}.lan switch --use-remote-sudo -v --log-format internal-json |& nom --json
+    nixos-rebuild --flake ".#{{host}}" --build-host root@{{host}}.lan --target-host root@{{host}}.lan switch --use-remote-sudo -v --log-format internal-json |& nom --json
 
 # Build a bootable ISO
 build_iso:

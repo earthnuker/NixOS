@@ -2,13 +2,11 @@
   pkgs,
   sources,
   root,
-  inputs,
   ...
 }: {
   imports = [
     ./programs
     ./packages.nix
-    inputs.nixcord.homeModules.nixcord
   ];
   nixpkgs.config = import ./nixpkgs-config.nix;
   xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
@@ -16,6 +14,7 @@
     username = "earthnuker";
     homeDirectory = "/home/earthnuker";
     enableNixpkgsReleaseCheck = false;
+    shell.enableZshIntegration = true;
     sessionVariables = {
       EDITOR = "hx";
       VISUAL = "code -n -w";
@@ -26,7 +25,6 @@
       NSEARCH_FZF_CMD = "fzf --multi";
     };
   };
-
   xdg.configFile = {
     "awesome" = {
       recursive = true;

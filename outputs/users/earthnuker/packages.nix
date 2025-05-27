@@ -21,7 +21,6 @@
     batmon
     btop
     dex
-    eza
     iftop
     iotop
     micromamba

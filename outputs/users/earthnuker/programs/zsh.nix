@@ -99,8 +99,6 @@
       "neofetch" = "fastfetch";
       "cp+" = "rsync -ah --progress";
       "sys" = "~/nixos/sys";
-      "cat" = "bat -pp";
-      "ls" = "eza";
     };
   };
 }

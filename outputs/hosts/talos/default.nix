@@ -82,7 +82,7 @@
     comma
     ripgrep
     tmux
-    neovim
+    evil-helix
     inxi
     molly-guard
   ];
