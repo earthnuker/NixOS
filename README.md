@@ -5,34 +5,38 @@ This repository contains the NixOS configurations for my machines.
 - [godwaker](./outputs/hosts/godwaker/) (ThinkPad T470)
 - [talos](./outputs/hosts/talos/) (NAS (B760M-ITX/D4 WiFi, i5-13400, 32GB, 500GB NVMe, 3x12TB HDD))
 - [daedalus](./outputs/hosts/daedalus/) (ODROID C2)
+- [helios](./outputs/hosts/helios/) (WSL on Work Laptop)
 
 ## Usage
 
-The `sys` script acts as an entrypoint.
+The `sys` script acts as an entry-point.
 
 ```shell
 $ ./sys help
 Available recipes:
-    archive                                            # Archive flake inputs
-    build_iso                                          # Build a bootable ISO
-    check                                              # Flake check [alias: c]
-    deploy *args                                       # Deploy configuration to defined hosts [alias: d]
-    fix                                                # Archive flake inputs
-    fmt
-    gc                                                 # Clean nix-store and old generations (keep 10 or 1 week)
-    gca                                                # Clean nix-store and all old generations
-    getkey *HOSTS                                      # Retrieve age key for specified host and update .sops.yaml
-    git                                                # Start lazygit
-    help                                               # Show help
-    history                                            # Show profile history [alias: h]
-    provision flake host="nixos-installer.lan" $SSHPASS="toor" # Provision a host [alias: p]
-    rekey                                              # Rekey secrets
-    secrets                                            # Edit secrets
-    shell                                              # Spawn shell with tools
-    stage                                              # Stage all .nix files
-    status                                             # Git status [alias: s]
-    switch                                             # Build and switch [aliases: b, rebuild]
-    update                                             # Update flake [alias: u]
+    archive                                    # Archive flake inputs
+    build_iso                                  # Build a bootable ISO
+    check                                      # Flake check [alias: c]
+    cryptenroll device="/dev/nvme0n1p2"        # Set up automatic LUKS unlock
+    deploy *args                               # Deploy configuration to defined hosts [alias: d]
+    diagram                                    # Generate network diagram
+    fix                                        # Archive flake inputs
+    fmt                                        # Format nix files
+    gc                                         # Clean nix-store and old generations (keep 10 or 1 week)
+    gca                                        # Clean nix-store and all old generations
+    getkey *HOSTS                              # Retrieve age key for specified host and update .sops.yaml
+    git                                        # Start lazygit
+    help                                       # Show help
+    history                                    # Show profile history [alias: h]
+    provision flake host="nixos-installer.lan" # Provision a host [alias: p]
+    rekey                                      # Rekey secrets
+    secrets                                    # Edit secrets
+    shell                                      # Spawn shell with tools
+    stage                                      # Stage all .nix files
+    status                                     # Git status [alias: s]
+    switch *args                               # Build and switch [aliases: b, rebuild]
+    unsafe_deploy host                         # Deploy without automatic rollback
+    update                                     # Update flake [alias: u]
 ```
 
 ## Provisioning a new machine
@@ -62,7 +66,7 @@ Available recipes:
     - `talos` contains the configuration for Talos
       - `containers` contains the configuration for containers
         - `arion` contains docker-compose stacks for Arion
-        - `nixos` contains NixOS systemd containers
+        - `nixos` contains NixOS containers
         - `oci` contains OCI container configurations
         - `quadlet` contains quadlet pods
       - `disk-config` contains disk configurations

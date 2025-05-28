@@ -1,22 +1,6 @@
 {
   self,
-  arion,
-  authentik-nix,
-  deploy-rs,
-  disko,
-  lanzaboote,
-  nix-index-database,
-  nix-topology,
-  nixos-facter-modules,
-  nixos-hardware,
-  home-manager,
   nixpkgs,
-  ucodenix,
-  sops-nix,
-  srvos,
-  stylix,
-  devshell,
-  git-hooks,
   ...
 } @ inputs: let
   system = "x86_64-linux";
@@ -34,8 +18,8 @@
   pkgs = import nixpkgs {
     inherit system;
     overlays = [
-      nix-topology.overlays.default
-      devshell.overlays.default
+      inputs.nix-topology.overlays.default
+      inputs.devshell.overlays.default
     ];
   };
   inherit (pkgs) lib;
@@ -53,7 +37,7 @@
       );
     };
   };
-  vars = import ./../vars (
+  vars = import "${root}/vars" (
     inputs
     // {
       inherit pkgs;
@@ -63,8 +47,22 @@
 in rec {
   formatter.${system} = pkgs.alejandra;
   apps."${system}" = {
+    wsl = let
+      wsl-builder = nixosConfigurations.helios.config.system.build.tarballBuilder;
+      script = pkgs.writeShellScriptBin "wsl" ''
+        #!/usr/bin/env bash
+        set -exuo pipefail
+        sudo ${lib.getExe wsl-builder}
+      '';
+    in {
+      type = "app";
+      program = "${lib.getExe script}";
+      meta = {
+        description = "build WSL tarball";
+      };
+    };
     deploy = let
-      deploy = lib.getExe deploy-rs.defaultPackage.${system};
+      deploy = lib.getExe inputs.deploy-rs.defaultPackage.${system};
       nom = lib.getExe pkgs.nix-output-monitor;
       script = pkgs.writeShellScriptBin "deploy" ''
         #!/usr/bin/env bash
@@ -87,7 +85,7 @@ in rec {
       remoteBuild = true;
       profiles.system = {
         user = sshUser;
-        path = deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.talos;
+        path = inputs.deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.talos;
       };
     };
   };
@@ -95,7 +93,7 @@ in rec {
     installer-iso = nixosConfigurations.installer.config.system.build.isoImage;
     sd-image = nixosConfigurations.daedalus.config.system.build.sdImage;
     diagram =
-      (import nix-topology {
+      (import inputs.nix-topology {
         inherit pkgs;
         modules = [
           ./topology
@@ -107,7 +105,7 @@ in rec {
   # checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
   checks.${system} =
     {
-      git-hooks = git-hooks.lib.${system}.run {
+      git-hooks = inputs.git-hooks.lib.${system}.run {
         src = nixpkgs.lib.cleanSource root;
         addGcRoot = true;
         hooks = {
@@ -165,7 +163,7 @@ in rec {
         category = "linters";
       }
       {
-        package = deploy-rs.defaultPackage.${system};
+        package = inputs.deploy-rs.defaultPackage.${system};
         category = "tools";
       }
       {
@@ -199,7 +197,20 @@ in rec {
       };
       modules = [
         ./installer
-        nix-topology.nixosModules.default
+        inputs.nix-topology.nixosModules.default
+      ];
+    };
+
+    helios = nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = {
+        inherit inputs nixpkgs;
+        vars = vars.helios or {};
+      };
+      modules = [
+        ./hosts/helios
+        inputs.nix-topology.nixosModules.default
+        inputs.nixos-wsl.nixosModules.default
       ];
     };
 
@@ -213,18 +224,18 @@ in rec {
       modules = [
         ./util/revision.nix
         ./hosts/talos
-        disko.nixosModules.disko
-        srvos.nixosModules.server
-        srvos.nixosModules.mixins-terminfo
-        srvos.nixosModules.mixins-systemd-boot
-        nixos-facter-modules.nixosModules.facter
+        inputs.disko.nixosModules.disko
+        inputs.srvos.nixosModules.server
+        inputs.srvos.nixosModules.mixins-terminfo
+        inputs.srvos.nixosModules.mixins-systemd-boot
+        inputs.nixos-facter-modules.nixosModules.facter
         # quadlet.nixosModules.quadlet
-        nix-index-database.nixosModules.nix-index
-        arion.nixosModules.arion
-        sops-nix.nixosModules.sops
-        nix-topology.nixosModules.default
-        authentik-nix.nixosModules.default
-        ucodenix.nixosModules.default
+        inputs.nix-index-database.nixosModules.nix-index
+        inputs.arion.nixosModules.arion
+        inputs.sops-nix.nixosModules.sops
+        inputs.nix-topology.nixosModules.default
+        inputs.authentik-nix.nixosModules.default
+        inputs.ucodenix.nixosModules.default
         (secrets vars.talos.secrets)
       ];
     };
@@ -237,7 +248,7 @@ in rec {
       };
       modules = [
         ./hosts/daedalus
-        nix-topology.nixosModules.default
+        inputs.nix-topology.nixosModules.default
       ];
     };
 
@@ -257,17 +268,17 @@ in rec {
       modules = [
         ./util/revision.nix
         ./hosts/godwaker
-        disko.nixosModules.disko
-        nixos-facter-modules.nixosModules.facter
-        nixos-hardware.nixosModules.lenovo-thinkpad-t470s
-        nixos-hardware.nixosModules.common-pc-laptop-ssd
-        home-manager.nixosModules.home-manager
-        stylix.nixosModules.stylix
-        lanzaboote.nixosModules.lanzaboote
-        nix-index-database.nixosModules.nix-index
-        sops-nix.nixosModules.sops
-        nix-topology.nixosModules.default
-        ucodenix.nixosModules.default
+        inputs.disko.nixosModules.disko
+        inputs.nixos-facter-modules.nixosModules.facter
+        inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t470s
+        inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
+        inputs.home-manager.nixosModules.home-manager
+        inputs.stylix.nixosModules.stylix
+        inputs.lanzaboote.nixosModules.lanzaboote
+        inputs.nix-index-database.nixosModules.nix-index
+        inputs.sops-nix.nixosModules.sops
+        inputs.nix-topology.nixosModules.default
+        inputs.ucodenix.nixosModules.default
         (secrets vars.godwaker.secrets)
       ];
     };

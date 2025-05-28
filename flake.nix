@@ -23,6 +23,10 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     crane.url = "github:ipetkov/crane";
     pyproject-nix = {
       url = "github:nix-community/pyproject.nix";
