@@ -92,14 +92,20 @@ in rec {
   packages."${system}" = {
     installer-iso = nixosConfigurations.installer.config.system.build.isoImage;
     sd-image = nixosConfigurations.daedalus.config.system.build.sdImage;
-    diagram =
-      (import inputs.nix-topology {
+    diagram = let
+      # Gross hack
+      topology = import inputs.nix-topology {
         inherit pkgs;
         modules = [
           ./topology
           {inherit (self) nixosConfigurations;}
         ];
-      }).config.output;
+      };
+    in
+      pkgs.runCommandNoCC "topology" {} ''
+        set +xeuo pipefail
+        cp -R ${topology.config.output}/ $out
+      '';
   };
 
   # checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
