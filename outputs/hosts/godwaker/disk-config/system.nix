@@ -30,17 +30,16 @@
             ];
           };
           postCreateHook = ''
-            pcrs=7+11
-            systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=$pcrs $device
+            systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11 $device
           '';
           askPassword = true;
           content = {
             type = "btrfs";
             extraArgs = [
-              "-f"
+              "-f" # Override existing partition
               "-L"
               "nixos"
-            ]; # Override existing partition
+            ];
             subvolumes = {
               "/root" = {
                 mountpoint = "/";
