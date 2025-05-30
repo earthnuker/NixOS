@@ -109,10 +109,12 @@ in {
           }
         '';
         "*.proxy.${hostname}.${tld.local}:80, *.proxy.${hostname}.${tld.ts.local}:80".extraConfig = ''
-          @hostnames header_regexp host Host ([0-9]+)\..*
-          handle @hostnames {
-            reverse_proxy 127.0.0.1:{http.regexp.host.1}
-          }
+            @hostnames header_regexp host Host ([0-9]+)\..*
+            handle @hostnames {
+              import auth talos user {
+                reverse_proxy 127.0.0.1:{http.regexp.host.1}
+              }
+            }
         '';
         "${hostname}.${tld.ts.local}:80, ${hostname}.${tld.local}:80".extraConfig =
           revProxy config.services.homepage-dashboard.listenPort;
