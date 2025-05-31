@@ -276,8 +276,6 @@ in rec {
         ./hosts/godwaker
         inputs.disko.nixosModules.disko
         inputs.nixos-facter-modules.nixosModules.facter
-        inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t470s
-        inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
         inputs.home-manager.nixosModules.home-manager
         inputs.stylix.nixosModules.stylix
         inputs.lanzaboote.nixosModules.lanzaboote
