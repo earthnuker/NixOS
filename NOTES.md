@@ -1,5 +1,18 @@
 # Notes
 
+## ZFS
+
+unmount pool
+
+```shell
+umount /mnt/data
+zpool export zpool
+udevadm trigger
+rm -rf /dev/disk/by-id/wwn-*
+zpool import -d /dev/disk/by-id -a
+udevadm trigger
+```
+
 ## TPM2
 
 ```shell

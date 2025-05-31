@@ -158,7 +158,7 @@
       "exfat"
     ];
     kernelModules = ["intel_rapl_common"];
-    zfs.devNodes = "/dev/disk/by-path";
+    zfs.devNodes = "/dev/disk/by-id";
     kernelParams = ["microcode.amd_sha_check=off"];
   };
   system.stateVersion = "24.05";
