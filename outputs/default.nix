@@ -62,7 +62,7 @@ in rec {
       };
     };
     deploy = let
-      deploy = lib.getExe inputs.deploy-rs.defaultPackage.${system};
+      deploy = lib.getExe inputs.deploy-rs.packages.${system}.default;
       nom = lib.getExe pkgs.nix-output-monitor;
       script = pkgs.writeShellScriptBin "deploy" ''
         #!/usr/bin/env bash
@@ -169,7 +169,7 @@ in rec {
         category = "linters";
       }
       {
-        package = inputs.deploy-rs.defaultPackage.${system};
+        package = inputs.deploy-rs.packages.${system}.default;
         category = "tools";
       }
       {
