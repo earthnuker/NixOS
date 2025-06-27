@@ -70,7 +70,7 @@ in {
         "go.akpain.net/caddy-tailscale-auth@v0.1.7"
         "github.com/enum-gg/caddy-discord@v1.2.0"
       ];
-      hash = "sha256-3yVK9WbAtKKUjW5mmjA7oIdFVK7lW9ZQi5wqAORs3bc=";
+      hash = "sha256-K6Uw+vo7RARF05veevyVPCgDIRBuMwq/O/TubGiTJM8=";
     };
     environmentFile = config.sops.secrets.caddy_env.path;
     logFormat = lib.mkForce ''

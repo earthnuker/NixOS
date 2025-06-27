@@ -7,6 +7,10 @@
     flake-utils.url = "github:numtide/flake-utils";
     nix-std.url = "github:chessai/nix-std";
     ucodenix.url = "github:e-tho/ucodenix";
+    nh = {
+      url = "github:nix-community/nh";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-topology = {
       url = "github:oddlama/nix-topology";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -12,7 +12,7 @@
       role = "server";
     };
     kmscon = {
-      enable = true;
+      enable = false;
       hwRender = false;
       useXkbConfig = true;
       fonts = [
