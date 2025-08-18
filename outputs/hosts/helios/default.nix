@@ -16,7 +16,7 @@
   };
   environment.systemPackages = with pkgs; [
     wget
-    evil-helix
+    helix
   ];
   programs.nix-ld = {
     enable = true;

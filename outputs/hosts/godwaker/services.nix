@@ -55,10 +55,10 @@
     picom.enable = false;
     devmon.enable = true;
 
-    logind = {
-      lidSwitch = "ignore";
-      lidSwitchDocked = "ignore";
-      lidSwitchExternalPower = "ignore";
+    logind.settings.Login = {
+      HandleLidSwitch = "ignore";
+      HandleLidSwitchDocked = "ignore";
+      HandleLidSwitchExternalPower = "ignore";
     };
     dbus = {
       enable = true;

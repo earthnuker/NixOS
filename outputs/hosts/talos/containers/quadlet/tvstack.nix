@@ -1,5 +1,4 @@
 {config, ...} @ inputs: let
-  inherit (config.virtualisation) quadlet;
   inherit (import ./lib.nix inputs) mkPod containerVolumes;
 in {
   virtualisation.quadlet = mkPod "tvstack" {
@@ -20,7 +19,7 @@ in {
         ];
         ports = [7878];
       };
-      lidarr = rec {
+      lidarr = {
         image = "youegraillot/lidarr-on-steroids";
         volumes = [
           "${containerVolumes.media}/music:/music"

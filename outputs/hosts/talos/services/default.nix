@@ -1,6 +1,6 @@
 {
   config,
-  pkgs,
+  users,
   ...
 }: {
   imports = [
@@ -20,16 +20,22 @@
     ./lldap.nix
     ./dns.nix
     ./glance.nix
+    ./gollum.nix
+    #./wikijs.nix
+    ./paperless.nix
+    #./tandoor.nix
+    users.coolbug
   ];
-  systemd.tmpfiles.rules = [
-    "v /.snapshots - - -"
-  ];
+
   hive.services = {
     tvstack = {
       enable = false;
     };
   };
 
+  systemd.tmpfiles.rules = [
+    "v /.snapshots - - -"
+  ];
   users.users.immich.extraGroups = [
     "video"
     "render"
@@ -43,13 +49,13 @@
       port = 2283;
       # mediaLocation = "/mnt/data/media/photos";
     };
+    ttyd = {
+      enable = true;
+      writeable = true;
+    };
     thelounge = {
       enable = true;
       port = 3333;
-      plugins = with pkgs.theLoungePlugins; [
-        # TODO: re-add themes
-        # themes.midnight
-      ];
       extraConfig = {
         defaults = {
           name = "BJZ";
@@ -85,10 +91,8 @@
         SUBVOLUME = "/";
         # create hourly snapshots
         TIMELINE_CREATE = true;
-
         # cleanup hourly snapshots after some time
         TIMELINE_CLEANUP = true;
-
         # limits for timeline cleanup
         TIMELINE_MIN_AGE = 1800;
         TIMELINE_LIMIT_HOURLY = 24;

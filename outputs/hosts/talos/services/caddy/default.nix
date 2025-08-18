@@ -66,11 +66,12 @@ in {
     adapter = "caddyfile";
     package = pkgs.caddy.withPlugins {
       plugins = [
+        "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc"
         "github.com/greenpau/caddy-security@v1.1.31"
-        "go.akpain.net/caddy-tailscale-auth@v0.1.7"
+        #"go.akpain.net/caddy-tailscale-auth@v0.1.7"
         "github.com/enum-gg/caddy-discord@v1.2.0"
       ];
-      hash = "sha256-K6Uw+vo7RARF05veevyVPCgDIRBuMwq/O/TubGiTJM8=";
+      hash = "sha256-N7acQ/8e/YyDkd/QeIdC3JKwiCwSyfKXw0eBMbfnSHE=";
     };
     environmentFile = config.sops.secrets.caddy_env.path;
     logFormat = lib.mkForce ''
@@ -85,19 +86,44 @@ in {
           search = {inherit (config.services.searx.settings.server) port;};
           prometheus = {inherit (config.services.prometheus) port;};
           photos = {inherit (config.services.immich) port;};
-          monitoring = {port = config.services.grafana.settings.server.http_port;};
+          monitoring = {
+            port = config.services.grafana.settings.server.http_port;
+          };
           cadvisor = {inherit (config.services.cadvisor) port;};
-          code = {port = config.services.forgejo.settings.server.HTTP_PORT;};
-          dc = {port = config.services.lldap.settings.http_port;};
+          code = {
+            port = config.services.forgejo.settings.server.HTTP_PORT;
+          };
+          dc = {
+            port = config.services.lldap.settings.http_port;
+          };
           lounge = {inherit (config.services.thelounge) port;};
+          tty = {inherit (config.services.ttyd) port;};
           glance = {inherit (config.services.glance.settings.server) port;};
+          wiki = {inherit (config.services.gollum) port;};
+          docs = {inherit (config.services.paperless) port;};
         }
         // (lib.optionalAttrs config.hive.services.tvstack.enable {
-          torrent = {port = 8080;};
-          sonarr = {port = 8989;};
-          radarr = {port = 7878;};
-          bazarr = {port = 6767;};
-          prowlarr = {port = 9696;};
+          torrent = {
+            port = 8080;
+          };
+          sonarr = {
+            port = 8989;
+          };
+          radarr = {
+            port = 7878;
+          };
+          lidarr = {
+            port = 8686;
+          };
+          deemix = {
+            port = 6595;
+          };
+          bazarr = {
+            port = 6767;
+          };
+          prowlarr = {
+            port = 9696;
+          };
         });
       extraHosts = {
         "${hostname}.${tld.ts.funnel}:80".extraConfig = ''
