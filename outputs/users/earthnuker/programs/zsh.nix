@@ -97,6 +97,9 @@
     shellAliases = {
       "lg" = "lazygit";
       "neofetch" = "fastfetch";
+      "catp" = "bat";
+      "cat" = "bat -pp";
+      "fd" = "noglob fd";
       "cp+" = "rsync -ah --progress";
       "sys" = "~/nixos/sys";
     };

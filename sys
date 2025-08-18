@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nh git jq sshpass deploy-rs ssh-to-age nix-output-monitor watchexec sops yq-go curl
+#! nix-shell -p just zsh nh git jq sshpass ssh-to-age nix-output-monitor watchexec sops yq-go curl
 # vi: set syntax=just:
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]
@@ -8,7 +8,7 @@ set unstable
 set export
 
 SOPS_FILE := "secrets.yml"
-SSHPASS:="toor"
+SSHPASS:="toor" # default installer passphrase
 
 alias rebuild := switch
 alias b := switch
@@ -19,7 +19,8 @@ alias p := provision
 alias d := deploy
 alias u := update
 
-_default: update stage fmt check switch deploy
+_default: update stage fmt check switch
+    @just --justfile {{ justfile() }} deploy talos
 
 # Show help
 help:
@@ -77,13 +78,14 @@ getkey *HOSTS: && rekey
         fi
     done
 
-# Deploy configuration to defined hosts
-deploy *args:
-    nix run -v -L --log-format bar-with-logs .#deploy -- -s {{args}} # we can skip checks here since they already run in the check command
+
+# # Deploy configuration to defined hosts
+# safe_deploy *args:
+#     nix run -v -L --log-format bar-with-logs .#deploy -- -s {{args}} # we can skip checks here since they already run in the check command
 
 # Deploy without automatic rollback
-unsafe_deploy host:
-    nixos-rebuild --flake ".#{{host}}" --build-host root@{{host}}.lan --target-host root@{{host}}.lan switch --use-remote-sudo -v --log-format internal-json |& nom --json
+deploy host:
+    nixos-rebuild --flake ".#{{host}}" --build-host root@{{host}}.lan --target-host root@{{host}}.lan switch --use-remote-sudo -v --log-format bar-with-logs
 
 # Build a bootable ISO
 build_iso:
@@ -139,7 +141,7 @@ stage:
 
 # Flake check
 check: fmt stage
-    nix flake check --verbose -L
+    nix flake check --verbose -L --log-format internal-json |& nom --json
 
 # Archive flake inputs
 fix: && switch

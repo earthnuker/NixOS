@@ -2,7 +2,8 @@
   description = "LocalNet system configurations";
   inputs = {
     nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixos-unstable";
+      url = "github:NixOS/nixpkgs/nixos-unstable-small";
+      # url = "github:NixOS/nixpkgs/20075955deac2583bb12f07151c2df830ef346b4";
     };
     flake-utils.url = "github:numtide/flake-utils";
     nix-std.url = "github:chessai/nix-std";
@@ -13,6 +14,10 @@
     };
     nix-topology = {
       url = "github:oddlama/nix-topology";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nox = {
+      url = "github:madsbv/nix-options-search";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     devshell = {
@@ -47,7 +52,6 @@
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
     };
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
@@ -82,10 +86,12 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    /*
     deploy-rs = {
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    */
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";

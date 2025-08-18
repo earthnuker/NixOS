@@ -4,6 +4,9 @@
   lib,
   inputs,
   config,
+  users,
+  root,
+  sources,
   ...
 }: {
   imports = [
@@ -17,7 +20,10 @@
     ./topology.nix
     ./limits.nix
     # ./power.nix
+    # users.earthnuker
+    users.coolbug
   ];
+
   facter.reportPath = ./facter.json;
   sops.secrets = {
     duckdns_token.restartUnits = [
@@ -47,8 +53,11 @@
 
   systemd.sleep.extraConfig = lib.mkForce "";
 
-  programs.nix-index-database.comma.enable = true;
-
+  programs = {
+    nix-index-database.comma.enable = true;
+    mosh.enable = true;
+    zsh.enable = true;
+  };
   nix = {
     settings = {
       experimental-features = [
@@ -82,7 +91,7 @@
     comma
     ripgrep
     tmux
-    evil-helix
+    helix
     inxi
     molly-guard
   ];
@@ -91,6 +100,7 @@
     enable = true;
     enableMotdInSSHD = true;
     order = [
+      "global"
       "banner"
       "uptime"
       "load_avg"
@@ -137,18 +147,33 @@
     };
   };
 
-  users.users.root = {
-    hashedPasswordFile = config.sops.secrets.talos_root_passwd.path;
-    openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQP9/reHoakHb/tcF9YDspdUE+epG/gmU8yLrA3Jh7d root@godwaker"
-    ];
-    extraGroups = [
-      "video"
-      "render"
-      "podman"
-      "docker"
-    ];
+  users.users = {
+    root = {
+      hashedPasswordFile = config.sops.secrets.talos_root_passwd.path;
+      openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQP9/reHoakHb/tcF9YDspdUE+epG/gmU8yLrA3Jh7d root@godwaker"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJG2CElVLBAG2MBde50PYg7y+BGV5y6fdvemFBuQiI1K earthnuker@godwaker"
+      ];
+      extraGroups = [
+        "video"
+        "render"
+        "podman"
+        "docker"
+      ];
+      shell = pkgs.zsh;
+    };
+    earthnuker.isNormalUser = true;
+  };
+  home-manager = {
+    extraSpecialArgs = {
+      inherit inputs sources root;
+      host-config = config;
+    };
+    useGlobalPkgs = false;
+    useUserPackages = true;
+    verbose = true;
+    backupFileExtension = "hm_bak";
   };
 
   boot = {

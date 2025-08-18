@@ -31,7 +31,7 @@ sudo -u weechat /nix/store/...-weechat-bin-env-x.y.z/bin/weechat --dir /var/lib/
 systemctl start weechat
 ```
 
-```shell
+```irc
 /mouse enable
 /set irc.look.server_buffer independent
 /set script.scripts.download_enabled on

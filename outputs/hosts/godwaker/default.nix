@@ -26,6 +26,7 @@
     ./backup.nix
     ./power.nix
     ./desktop
+    users.earthnuker
     #"${modulesPath}/installer/cd-dvd/iso-image.nix"
   ];
 
@@ -70,7 +71,13 @@
       flake = "${config.users.users.earthnuker.home}/nixos";
     };
     mosh.enable = true;
-    nix-index-database.comma.enable = true;
+    command-not-found.enable = false;
+    zsh.interactiveShellInit = ''
+      source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
+    '';
+    nix-index-database = {
+      comma.enable = true;
+    };
   };
 
   xdg.portal = {
@@ -79,24 +86,7 @@
     config.commmon.default = "*";
   };
 
-  users.users.earthnuker = {
-    isNormalUser = true;
-    description = "Earthnuker";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "docker"
-      "dialout"
-      "xrdp"
-      "video"
-      "audio"
-    ];
-    shell = pkgs.zsh;
-    openssh.authorizedKeys.keyFiles = [inputs.ssh-keys-earthnuker.outPath];
-  };
-
   home-manager = {
-    inherit users;
     extraSpecialArgs = {
       inherit inputs sources root;
       host-config = config;
@@ -116,7 +106,7 @@
       dates = ["09:00"];
     };
     settings = {
-      warn-dirty = true;
+      warn-dirty = false;
       allow-dirty = true;
       trusted-users = [
         "@wheel"
@@ -174,12 +164,5 @@
       ];
     };
   };
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.05";
 }

@@ -1,6 +1,7 @@
 _: {
   networking = {
     hostName = "talos";
+    useNetworkd = true;
     interfaces = {};
     firewall = {
       enable = true;

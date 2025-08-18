@@ -5,14 +5,8 @@
 } @ inputs: let
   system = "x86_64-linux";
   users = {
-    earthnuker = import ./users/earthnuker {
-      inherit
-        inputs
-        root
-        sources
-        pkgs
-        ;
-    };
+    earthnuker = ./users/earthnuker;
+    coolbug = ./users/coolbug;
   };
   sources = import ../npins;
   pkgs = import nixpkgs {
@@ -35,6 +29,13 @@
         })
         secrets
       );
+      # // {
+      #   lldap_user_pass = {
+      #     mode = "0400";
+      #     owner = "lldap";
+      #     group = "lldap";
+      #   };
+      # };
     };
   };
   vars = import "${root}/vars" (
@@ -61,33 +62,6 @@ in rec {
         description = "build WSL tarball";
       };
     };
-    deploy = let
-      deploy = lib.getExe inputs.deploy-rs.packages.${system}.default;
-      nom = lib.getExe pkgs.nix-output-monitor;
-      script = pkgs.writeShellScriptBin "deploy" ''
-        #!/usr/bin/env bash
-        set -exuo pipefail
-        ${deploy} $@ -- . -j auto -v --log-format internal-json |& ${nom} --json
-      '';
-    in {
-      type = "app";
-      program = "${lib.getExe script}";
-      meta = {
-        description = "Run deployment";
-      };
-    };
-  };
-  deploy.nodes = {
-    talos = rec {
-      hostname = "talos.lan";
-      sshUser = "root";
-      fastConnection = true;
-      remoteBuild = true;
-      profiles.system = {
-        user = sshUser;
-        path = inputs.deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.talos;
-      };
-    };
   };
   packages."${system}" = {
     installer-iso = nixosConfigurations.installer.config.system.build.isoImage;
@@ -109,87 +83,32 @@ in rec {
   };
 
   # checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
-  checks.${system} =
-    {
-      git-hooks = inputs.git-hooks.lib.${system}.run {
-        src = nixpkgs.lib.cleanSource root;
-        addGcRoot = true;
-        hooks = {
-          alejandra.enable = true;
-          deadnix.enable = true;
-          statix.enable = true;
-          ripsecrets.enable = true;
-          flake-checker.enable = true;
-          check-case-conflicts.enable = true;
-          check-executables-have-shebangs.enable = true;
-          check-merge-conflicts.enable = true;
-          check-shebang-scripts-are-executable.enable = true;
-          check-symlinks.enable = true;
-          lychee = {
-            enable = true;
-            types = ["markdown"];
-            settings.flags = "--cache --verbose";
-          };
-          markdownlint = {
-            enable = true;
-            settings.configuration.MD013 = false;
-          };
+  checks.${system} = {
+    git-hooks = inputs.git-hooks.lib.${system}.run {
+      src = nixpkgs.lib.cleanSource root;
+      addGcRoot = true;
+      hooks = {
+        alejandra.enable = true;
+        deadnix.enable = true;
+        statix.enable = true;
+        ripsecrets.enable = true;
+        flake-checker.enable = true;
+        check-case-conflicts.enable = true;
+        check-executables-have-shebangs.enable = true;
+        check-merge-conflicts.enable = true;
+        check-shebang-scripts-are-executable.enable = true;
+        check-symlinks.enable = true;
+        lychee = {
+          enable = true;
+          types = ["markdown"];
+          settings.flags = "--cache --verbose";
+        };
+        markdownlint = {
+          enable = true;
+          settings.configuration.MD013 = false;
         };
       };
-    }
-    // (inputs.deploy-rs.lib.${system}.deployChecks self.deploy);
-
-  devShells.${system}.default = pkgs.devshell.mkShell {
-    name = "Hive";
-    packages = with pkgs; [
-      just
-      zsh
-      nh
-      git
-      jq
-      sshpass
-      deploy-rs
-      ssh-to-age
-      watchexec
-      sops
-      yq-go
-      curl
-    ];
-    commands = [
-      {
-        package = pkgs.alejandra;
-        category = "formatters";
-      }
-      {
-        package = pkgs.deadnix;
-        category = "linters";
-      }
-      {
-        package = pkgs.statix;
-        category = "linters";
-      }
-      {
-        package = inputs.deploy-rs.packages.${system}.default;
-        category = "tools";
-      }
-      {
-        package = pkgs.sops;
-        category = "tools";
-      }
-      {
-        package = pkgs.ssh-to-age;
-        category = "tools";
-      }
-      {
-        package = pkgs.yq-go;
-        category = "tools";
-      }
-      {
-        package = "just";
-        category = "tools";
-      }
-    ];
-    # devshell.startup.git-hooks.text = self.checks.${system}.git-hooks.shellHook;
+    };
   };
 
   # The installer ISO configuration.
@@ -203,6 +122,7 @@ in rec {
       };
       modules = [
         ./installer
+        ../modules/common
         inputs.nix-topology.nixosModules.default
       ];
     };
@@ -215,6 +135,7 @@ in rec {
       };
       modules = [
         ./hosts/helios
+        ../modules/common
         inputs.nix-topology.nixosModules.default
         inputs.nixos-wsl.nixosModules.default
       ];
@@ -224,12 +145,19 @@ in rec {
     talos = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
-        inherit inputs nixpkgs;
+        inherit
+          inputs
+          nixpkgs
+          users
+          sources
+          root
+          ;
         vars = vars.talos;
       };
       modules = [
         ./util/revision.nix
         ./hosts/talos
+        ../modules/common
         inputs.disko.nixosModules.disko
         inputs.srvos.nixosModules.server
         inputs.srvos.nixosModules.mixins-terminfo
@@ -243,6 +171,7 @@ in rec {
         inputs.authentik-nix.nixosModules.default
         inputs.ucodenix.nixosModules.default
         (secrets vars.talos.secrets)
+        inputs.home-manager.nixosModules.home-manager
       ];
     };
 
@@ -254,6 +183,7 @@ in rec {
       };
       modules = [
         ./hosts/daedalus
+        ../modules/common
         inputs.nix-topology.nixosModules.default
       ];
     };
@@ -274,6 +204,7 @@ in rec {
       modules = [
         ./util/revision.nix
         ./hosts/godwaker
+        ../modules/common
         inputs.disko.nixosModules.disko
         inputs.nixos-facter-modules.nixosModules.facter
         inputs.home-manager.nixosModules.home-manager

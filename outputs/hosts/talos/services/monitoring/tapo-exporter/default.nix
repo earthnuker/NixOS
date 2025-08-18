@@ -10,7 +10,7 @@
       owner = "insomniacslk";
       repo = "prometheus-tapo-exporter";
       rev = "main";
-      sha256 = "sha256-iDAYIuVjYUyQTdP7eJ6xO55EPTZPA1LjI5XYxv8D6dw=";
+      sha256 = "sha256-DU8yb0e7WQU7QxHyb3WPQV59oIJyQU5ZIEUJsoKoGcA=";
     };
     vendorHash = "sha256-o5blx0dZgUZSwgFVVLXM2wHhcWMHfWcrBuTfUWuPvZ8=";
   };

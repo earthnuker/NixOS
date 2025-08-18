@@ -2,6 +2,7 @@
   config,
   vars,
   pkgs,
+  lib,
   ...
 }: {
   imports = [
@@ -14,11 +15,12 @@
     polarity = "dark";
     fonts.serif = config.stylix.fonts.sansSerif;
     enableReleaseChecks = false;
-    # base16Scheme = "${pkgs.base16-schemes}/share/themes/spacemacs.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-storm.yaml";
+    targets.qt.platform = lib.mkForce "kde";
   };
   environment.systemPackages = with pkgs;
     [
-      kitty
+      wezterm
     ]
     ++ (with pkgs.xorg; [
       libxcb

@@ -1,5 +1,5 @@
 {
-  systemd.extraConfig = "DefaultLimitNOFILE=1048576";
+  systemd.settings.Manager.DefaultLimitNOFILE = 1048576;
   security.pam.loginLimits = [
     {
       domain = "*";

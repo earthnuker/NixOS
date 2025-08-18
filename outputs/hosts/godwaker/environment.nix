@@ -16,7 +16,7 @@
       dive
       docker-compose
       tpm2-tss
-      greetd.tuigreet
+      tuigreet
       # Nix
       # home-manager
       npins

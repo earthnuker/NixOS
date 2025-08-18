@@ -11,20 +11,20 @@ in {
     enable = mkEnableOption "TVStack";
   };
   config = mkIf cfg.enable {
-    services.prometheus.exporters = {
-      exportarr-sonarr = {
-        enable = true;
-      };
-      exportarr-radarr = {
-        enable = true;
-      };
-      exportarr-bazarr = {
-        enable = true;
-      };
-    };
+    # services.prometheus.exporters = {
+    #   exportarr-sonarr = {
+    #     enable = true;
+    #   };
+    #   exportarr-radarr = {
+    #     enable = true;
+    #   };
+    #   exportarr-bazarr = {
+    #     enable = true;
+    #   };
+    # };
     virtualisation.arion.projects.tvstack.settings.services = {
       sonarr = mkService {
-        image = "hotio/sonarr:release";
+        image = "ghcr.io/hotio/sonarr:release";
         hostname = "sonarr";
         ports = [8989];
         volumes = [
@@ -33,7 +33,7 @@ in {
         ];
       };
       radarr = mkService {
-        image = "hotio/radarr:release";
+        image = "ghcr.io/hotio/radarr:release";
         hostname = "radarr";
         ports = [7878];
         volumes = [
@@ -41,13 +41,26 @@ in {
           "${containerVolumes.downloads}:/downloads"
         ];
       };
+      lidarr = mkService {
+        image = "youegraillot/lidarr-on-steroids";
+        hostname = "lidarr";
+        volumes = [
+          "${containerVolumes.media}/music:/music"
+          "${containerVolumes.config}/lidarr/deemix:/config_deemix"
+          "${containerVolumes.downloads}:/downloads"
+        ];
+        ports = [
+          8686
+          6595
+        ];
+      };
       prowlarr = mkService {
-        image = "hotio/prowlarr:release";
+        image = "ghcr.io/hotio/prowlarr:release";
         hostname = "prowlarr";
         ports = [9696];
       };
       bazarr = mkService {
-        image = "hotio/bazarr:release";
+        image = "ghcr.io/hotio/bazarr:release";
         hostname = "bazarr";
         ports = [6767];
         volumes = [
@@ -60,7 +73,7 @@ in {
         ports = [8191];
       };
       qbittorrent = mkService {
-        image = "hotio/qbittorrent:release";
+        image = "ghcr.io/hotio/qbittorrent:release";
         hostname = "qbittorrent";
         ports = [
           8080
