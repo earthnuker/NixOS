@@ -56,7 +56,7 @@
     devmon.enable = true;
 
     logind.settings.Login = {
-      HandleLidSwitch = "ignore";
+      HandleLidSwitch = "suspend";
       HandleLidSwitchDocked = "ignore";
       HandleLidSwitchExternalPower = "ignore";
     };

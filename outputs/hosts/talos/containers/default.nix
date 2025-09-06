@@ -1,8 +1,4 @@
-{
-  lib,
-  inputs,
-  ...
-}: let
+{inputs, ...}: let
   std = inputs.nix-std.lib;
 in {
   imports = [
@@ -29,10 +25,4 @@ in {
       "docker.io"
     ];
   };
-
-  networking.firewall.allowedTCPPorts = [
-    13100
-    13101
-    13102 # Ghidra
-  ];
 }

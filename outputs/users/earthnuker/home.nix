@@ -1,9 +1,4 @@
-{
-  pkgs,
-  sources,
-  root,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./programs
     ./packages.nix
@@ -25,16 +20,6 @@
       DIRENV_WARN_TIMEOUT = 0;
       NSEARCH_FZF_CMD = "fzf --multi";
     };
-  };
-  xdg.configFile = {
-    "awesome" = {
-      recursive = true;
-      source = "${root}/awesomewm";
-    };
-  };
-  home.file = {
-    ".config/awesome/lain".source = sources.lain.outPath;
-    ".config/awesome/layout-machi".source = sources."layout-machi".outPath;
   };
   services = {
     ssh-agent.enable = true;

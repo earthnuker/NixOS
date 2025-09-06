@@ -8,7 +8,6 @@
     earthnuker = ./users/earthnuker;
     coolbug = ./users/coolbug;
   };
-  sources = import ../npins;
   pkgs = import nixpkgs {
     inherit system;
     overlays = [
@@ -22,20 +21,21 @@
     sops = {
       defaultSopsFile = "${self}/secrets.yml";
       age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
-      secrets = builtins.listToAttrs (
-        map (name: {
-          inherit name;
-          value = {};
-        })
-        secrets
-      );
-      # // {
-      #   lldap_user_pass = {
-      #     mode = "0400";
-      #     owner = "lldap";
-      #     group = "lldap";
-      #   };
-      # };
+      secrets =
+        builtins.listToAttrs (
+          map (name: {
+            inherit name;
+            value = {};
+          })
+          secrets
+        )
+        // {
+          lldap_user_pass = {
+            mode = "0400";
+            owner = "lldap";
+            group = "lldap";
+          };
+        };
     };
   };
   vars = import "${root}/vars" (
@@ -89,7 +89,10 @@ in rec {
       addGcRoot = true;
       hooks = {
         alejandra.enable = true;
-        deadnix.enable = true;
+        deadnix = {
+          enable = true;
+          excludes = ["^npins/"];
+        };
         statix.enable = true;
         ripsecrets.enable = true;
         flake-checker.enable = true;
@@ -149,7 +152,6 @@ in rec {
           inputs
           nixpkgs
           users
-          sources
           root
           ;
         vars = vars.talos;
@@ -196,7 +198,6 @@ in rec {
           inputs
           nixpkgs
           users
-          sources
           root
           ;
         vars = vars.godwaker;

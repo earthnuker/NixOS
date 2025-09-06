@@ -85,8 +85,8 @@ getkey *HOSTS: && rekey
 
 # Deploy without automatic rollback
 deploy host:
-    nixos-rebuild --flake ".#{{host}}" --build-host root@{{host}}.lan --target-host root@{{host}}.lan switch --use-remote-sudo -v --log-format bar-with-logs
-
+    nh os switch -u -a -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan
+    
 # Build a bootable ISO
 build_iso:
     nom build --no-link ".#installer-iso"

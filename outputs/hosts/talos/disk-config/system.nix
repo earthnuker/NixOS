@@ -1,4 +1,4 @@
-{drive}: {
+{drive, ...}: {
   device = "/dev/disk/by-id/${drive}";
   type = "disk";
   content = {

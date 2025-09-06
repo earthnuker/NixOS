@@ -137,6 +137,8 @@
         root = "/";
         boot = "/boot";
         data = "/mnt/data";
+        backups = "/mnt/data/backup";
+        media = "/mnt/data/media";
       };
       memory = {
         swap_pos = "beside";
