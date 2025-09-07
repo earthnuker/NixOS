@@ -45,6 +45,69 @@
       inherit (pkgs) lib;
     }
   );
+  /*
+  Talos (NAS):
+    ./util/revision.nix
+    ./hosts/talos
+    ../modules/common
+    inputs.disko.nixosModules.disko
+    inputs.srvos.nixosModules.server
+    inputs.srvos.nixosModules.mixins-terminfo
+    inputs.srvos.nixosModules.mixins-systemd-boot
+    inputs.nixos-facter-modules.nixosModules.facter
+    # quadlet.nixosModules.quadlet
+    inputs.nix-index-database.nixosModules.nix-index
+    inputs.arion.nixosModules.arion
+    inputs.sops-nix.nixosModules.sops
+    inputs.nix-topology.nixosModules.default
+    inputs.authentik-nix.nixosModules.default
+    inputs.ucodenix.nixosModules.default
+    (secrets vars.talos.secrets)
+    inputs.home-manager.nixosModules.home-manager
+  Godwaker (Thinkpad T470):
+      ./util/revision.nix
+    ./hosts/godwaker
+    ../modules/common
+    inputs.disko.nixosModules.disko
+    inputs.nixos-facter-modules.nixosModules.facter
+    inputs.home-manager.nixosModules.home-manager
+    inputs.stylix.nixosModules.stylix
+    inputs.lanzaboote.nixosModules.lanzaboote
+    inputs.nix-index-database.nixosModules.nix-index
+    inputs.sops-nix.nixosModules.sops
+    inputs.nix-topology.nixosModules.default
+    inputs.ucodenix.nixosModules.default
+    (secrets vars.godwaker.secrets)
+  Daedalus (ODROID):
+    ./hosts/daedalus
+    ../modules/common
+    inputs.nix-topology.nixosModules.default
+  Helios (WSL):
+    ./hosts/helios
+    ../modules/common
+    inputs.nix-topology.nixosModules.default
+    inputs.nixos-wsl.nixosModules.default
+  */
+  roles = let roles = {
+    "common" = [
+      ../modules/common
+      inputs.nix-topology.nixosModules.default
+      inputs.disko.nixosModules.disko
+      inputs.nixos-facter-modules.nixosModules.facter
+    ];
+    "server" = [
+      inputs.ucodenix.nixosModules.default
+    ];
+    "" = [
+      inputs.ucodenix.nixosModules.default
+      inputs.home-manager.nixosModules.home-manager
+      inputs.stylix.nixosModules.stylix
+      inputs.lanzaboote.nixosModules.lanzaboote
+    ];
+    "wsl" = [];
+  };
+  in 
+  selected: pkgs.lib.lists.unique (builtins.concatLists (builtins.map (role: roles."${role}") ["common"] ++ selected));
 in rec {
   formatter.${system} = pkgs.alejandra;
   apps."${system}" = {
