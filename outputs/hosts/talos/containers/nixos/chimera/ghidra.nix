@@ -8,35 +8,6 @@ https://github.com/kristoff3r/ghidra-plugins-nix/blob/1bfae431deb5097f4119e34728
   config,
   ...
 }: let
-  /*
-  ghidra = pkgs.ghidra.overrideAttrs (old: {
-    version = "11.4";
-    versiondate = "20250620";
-    mitmCache = pkgs.gradle.fetchDeps {
-      inherit (old) pname;
-      data = ./ghidra-deps.json;
-    };
-    src = pkgs.fetchFromGitHub {
-      owner = "NationalSecurityAgency";
-      repo = "Ghidra";
-      tag = "Ghidra_11.4.1_build";
-      hash = "sha256-zrNxbLgsnUnag82Mp0H6VGEVrhcqhkge7jrLxi8ZIIQ=";
-      leaveDotGit = true;
-      postFetch = ''
-        cd "$out"
-        git rev-parse HEAD > $out/COMMIT
-        # 1970-Jan-01
-        date -u -d "@$(git log -1 --pretty=%ct)" "+%Y-%b-%d" > $out/SOURCE_DATE_EPOCH
-        # 19700101
-        date -u -d "@$(git log -1 --pretty=%ct)" "+%Y%m%d" > $out/SOURCE_DATE_EPOCH_SHORT
-        find "$out" -name .git -print0 | xargs -0 rm -rf
-      '';
-    };
-    patches = pkgs.lib.filter (
-      patch: !(pkgs.lib.hasInfix "0001-Use-protobuf-gradle-plugin" (builtins.baseNameOf patch))
-    ) (old.patches or []);
-  });
-  */
   inherit (pkgs) ghidra;
   directory = "ghidra";
   stateDir = "/var/lib/${directory}";

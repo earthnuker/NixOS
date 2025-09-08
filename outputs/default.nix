@@ -88,26 +88,29 @@
     inputs.nix-topology.nixosModules.default
     inputs.nixos-wsl.nixosModules.default
   */
-  roles = let roles = {
-    "common" = [
-      ../modules/common
-      inputs.nix-topology.nixosModules.default
-      inputs.disko.nixosModules.disko
-      inputs.nixos-facter-modules.nixosModules.facter
-    ];
-    "server" = [
-      inputs.ucodenix.nixosModules.default
-    ];
-    "" = [
-      inputs.ucodenix.nixosModules.default
-      inputs.home-manager.nixosModules.home-manager
-      inputs.stylix.nixosModules.stylix
-      inputs.lanzaboote.nixosModules.lanzaboote
-    ];
-    "wsl" = [];
-  };
-  in 
-  selected: pkgs.lib.lists.unique (builtins.concatLists (builtins.map (role: roles."${role}") ["common"] ++ selected));
+  /*
+  _  = let
+    roles = {
+      "common" = [
+        ../modules/common
+        inputs.nix-topology.nixosModules.default
+        inputs.disko.nixosModules.disko
+        inputs.nixos-facter-modules.nixosModules.facter
+      ];
+      "server" = [
+        inputs.ucodenix.nixosModules.default
+      ];
+      "" = [
+        inputs.ucodenix.nixosModules.default
+        inputs.home-manager.nixosModules.home-manager
+        inputs.stylix.nixosModules.stylix
+        inputs.lanzaboote.nixosModules.lanzaboote
+      ];
+      "wsl" = [];
+    };
+  in
+    selected: pkgs.lib.lists.unique (builtins.concatLists (builtins.map (role: roles."${role}") ["common"] ++ selected));
+  */
 in rec {
   formatter.${system} = pkgs.alejandra;
   apps."${system}" = {

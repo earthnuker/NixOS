@@ -26,6 +26,7 @@
           isReadOnly = true;
         };
       };
+      nixpkgs = inputs.nixpkgs;
       config = {...}: {
         imports = [
           ./ghidra.nix
@@ -49,7 +50,7 @@
           useHostResolvConf = lib.mkForce false;
         };
         services.resolved.enable = true;
-
+        system.autoUpgrade.enable = true;
         system.stateVersion = "24.05";
       };
     };
