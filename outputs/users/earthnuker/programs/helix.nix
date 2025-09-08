@@ -34,9 +34,25 @@ _: {
         other-lines = "error";
       };
       statusline = {
-        left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
+        left = [
+          "mode"
+          "spinner"
+          "file-name"
+          "file-type"
+          "total-line-numbers"
+          "file-encoding"
+        ];
         center = [];
-        right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+        right = [
+          "selections"
+          "primary-selection-length"
+          "position"
+          "position-percentage"
+          "spacer"
+          "diagnostics"
+          "workspace-diagnostics"
+          "version-control"
+        ];
       };
       mouse = true;
     };

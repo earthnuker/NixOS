@@ -26,5 +26,11 @@ in {
     recordsize = "512K";
     "com.sun:auto-snapshot" = "false";
   };
-  datasets = builtins.listToAttrs (builtins.map dataset ["data" "data/backup" "data/media"]);
+  datasets = builtins.listToAttrs (
+    builtins.map dataset [
+      "data"
+      "data/backup"
+      "data/media"
+    ]
+  );
 }

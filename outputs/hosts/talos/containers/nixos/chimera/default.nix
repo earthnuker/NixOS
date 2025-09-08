@@ -4,7 +4,11 @@
   inputs,
   ...
 }: {
-  networking.firewall.allowedTCPPorts = [13100 13101 13102];
+  networking.firewall.allowedTCPPorts = [
+    13100
+    13101
+    13102
+  ];
   containers = {
     chimera = {
       autoStart = true;

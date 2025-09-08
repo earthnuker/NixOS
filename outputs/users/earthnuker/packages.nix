@@ -17,7 +17,6 @@
     '';
   };
   my_pkgs = with pkgs; [
-    alejandra
     batmon
     btop
     dex
@@ -56,13 +55,9 @@
     dconf
     firefox
     vscode
-    i3lock-fancy
     eww
-    neovide
     tdesktop
-    xss-lock
     pavucontrol
-    networkmanager_dmenu
     # discord
   ];
 in {
