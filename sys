@@ -83,9 +83,13 @@ getkey *HOSTS: && rekey
 # safe_deploy *args:
 #     nix run -v -L --log-format bar-with-logs .#deploy -- -s {{args}} # we can skip checks here since they already run in the check command
 
+# Build but don't deploy
+dry_deploy host:
+    nh os switch -n -a -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
+
 # Deploy without automatic rollback
 deploy host:
-    nh os switch -u -a -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan
+    nh os switch -a -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
     
 # Build a bootable ISO
 build_iso:

@@ -11,6 +11,7 @@
   ];
   containers = {
     chimera = {
+      inherit (inputs) nixpkgs;
       autoStart = true;
       privateNetwork = true;
       hostAddress = "192.168.100.10";
@@ -30,7 +31,6 @@
           isReadOnly = true;
         };
       };
-      nixpkgs = inputs.nixpkgs;
       config = {...}: {
         imports = [
           ./ghidra.nix

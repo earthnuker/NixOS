@@ -19,6 +19,7 @@
       tld.ts.local
       tld.local
     ],
+    # service ? null,
     extraConfigPre ? {},
     extraConfigPost ? {},
     extraHosts ? {},
@@ -30,21 +31,24 @@
     }: "import auth talos ${group} {\n ${inner} \n}";
     mkHost = name: let
       app_info = apps.${name};
+      attrPath = [(app_info.service or "#")] ++ (lib.splitString "." (app_info.attr or "port"));
+      port = lib.attrByPath attrPath (app_info.port or (-1)) config.services;
       inner = lib.concatStringsSep "\n" [
         commonConfig
         (extraConfigPre.${name} or "")
-        "reverse_proxy http://127.0.0.1:${toString app_info.port}"
+        "reverse_proxy http://127.0.0.1:${toString port}"
         (extraConfigPost.${name} or "")
       ];
       group = app_info.auth or null;
-    in {
-      "${lib.concatStringsSep ", " (map (tld: "${name}.${hostname}.${tld}:80") suffixes)}" = {
-        extraConfig =
-          if group != null
-          then mkAuth {inherit inner group;}
-          else inner;
+    in
+      assert lib.assertMsg (port != -1) "invalid port for ${name} at ${lib.concatStringsSep "." attrPath}"; {
+        "${lib.concatStringsSep ", " (map (tld: "${name}.${hostname}.${tld}:80") suffixes)}" = {
+          extraConfig =
+            if group != null
+            then mkAuth {inherit inner group;}
+            else inner;
+        };
       };
-    };
   in
     (lib.mergeAttrsList (map mkHost (builtins.attrNames apps))) // extraHosts;
   glowingBearCaddy = ''
@@ -71,7 +75,7 @@ in {
         #"go.akpain.net/caddy-tailscale-auth@v0.1.7"
         "github.com/enum-gg/caddy-discord@v1.2.0"
       ];
-      hash = "sha256-N7acQ/8e/YyDkd/QeIdC3JKwiCwSyfKXw0eBMbfnSHE=";
+      hash = "sha256-egdtADK4wExu++q57LnntHHNIrLJMRz5n481hIgE43Q=";
     };
     environmentFile = config.sops.secrets.caddy_env.path;
     logFormat = lib.mkForce ''
@@ -83,24 +87,34 @@ in {
     virtualHosts = mkCaddy {
       apps =
         {
-          search = {inherit (config.services.searx.settings.server) port;};
-          prometheus = {inherit (config.services.prometheus) port;};
-          photos = {inherit (config.services.immich) port;};
-          monitoring = {
-            port = config.services.grafana.settings.server.http_port;
+          search = {
+            service = "searx";
+            attr = "settings.server.port";
           };
-          cadvisor = {inherit (config.services.cadvisor) port;};
+          prometheus = {service = "prometheus";};
+          photos = {service = "immich";};
+          monitoring = {
+            service = "grafana";
+            attr = "settings.server.http_port";
+          };
+          cadvisor = {service = "cadvisor";};
           code = {
-            port = config.services.forgejo.settings.server.HTTP_PORT;
+            service = "forgejo";
+            attr = "settings.server.HTTP_PORT";
           };
           dc = {
-            port = config.services.lldap.settings.http_port;
+            service = "lldap";
+            attr = "settings.http_port";
           };
-          lounge = {inherit (config.services.thelounge) port;};
-          tty = {inherit (config.services.ttyd) port;};
-          glance = {inherit (config.services.glance.settings.server) port;};
-          wiki = {inherit (config.services.gollum) port;};
-          docs = {inherit (config.services.paperless) port;};
+          lounge = {service = "thelounge";};
+          tty = {service = "ttyd";};
+          glance = {
+            service = "glance";
+            attr = "settings.server.port";
+          };
+          wiki = {service = "gollum";};
+          docs = {service = "paperless";};
+          yt = {service = "pinchflat";};
         }
         // (lib.optionalAttrs config.hive.services.tvstack.enable {
           torrent = {

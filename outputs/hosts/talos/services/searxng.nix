@@ -1,6 +1,6 @@
 {config, ...}: {
   services.searx = {
-    enable = true;
+    enable = false;
     redisCreateLocally = true;
     environmentFile = config.sops.secrets.searxng_env.path;
     settings.server = {
