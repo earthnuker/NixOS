@@ -30,7 +30,7 @@
     cargo-update
     zellij
     tmux
-    python3Full
+    python3
     starship
     qemu
     nixpacks

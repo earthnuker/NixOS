@@ -15,6 +15,7 @@
       inputs.devshell.overlays.default
     ];
   };
+
   inherit (pkgs) lib;
   root = ./..;
   secrets = secrets: {
@@ -49,7 +50,7 @@
   Talos (NAS):
     ./util/revision.nix
     ./hosts/talos
-    ../modules/common
+    ./modules/common
     inputs.disko.nixosModules.disko
     inputs.srvos.nixosModules.server
     inputs.srvos.nixosModules.mixins-terminfo
@@ -67,7 +68,7 @@
   Godwaker (Thinkpad T470):
       ./util/revision.nix
     ./hosts/godwaker
-    ../modules/common
+    ./modules/common
     inputs.disko.nixosModules.disko
     inputs.nixos-facter-modules.nixosModules.facter
     inputs.home-manager.nixosModules.home-manager
@@ -80,11 +81,11 @@
     (secrets vars.godwaker.secrets)
   Daedalus (ODROID):
     ./hosts/daedalus
-    ../modules/common
+    ./modules/common
     inputs.nix-topology.nixosModules.default
   Helios (WSL):
     ./hosts/helios
-    ../modules/common
+    ./modules/common
     inputs.nix-topology.nixosModules.default
     inputs.nixos-wsl.nixosModules.default
   */
@@ -92,7 +93,7 @@
   _  = let
     roles = {
       "common" = [
-        ../modules/common
+        ./modules/common
         inputs.nix-topology.nixosModules.default
         inputs.disko.nixosModules.disko
         inputs.nixos-facter-modules.nixosModules.facter
@@ -191,7 +192,7 @@ in rec {
       };
       modules = [
         ./installer
-        ../modules/common
+        ./modules/common
         inputs.nix-topology.nixosModules.default
       ];
     };
@@ -204,7 +205,7 @@ in rec {
       };
       modules = [
         ./hosts/helios
-        ../modules/common
+        ./modules/common
         inputs.nix-topology.nixosModules.default
         inputs.nixos-wsl.nixosModules.default
       ];
@@ -225,7 +226,7 @@ in rec {
       modules = [
         ./util/revision.nix
         ./hosts/talos
-        ../modules/common
+        ./modules/common
         inputs.disko.nixosModules.disko
         inputs.srvos.nixosModules.server
         inputs.srvos.nixosModules.mixins-terminfo
@@ -251,7 +252,7 @@ in rec {
       };
       modules = [
         ./hosts/daedalus
-        ../modules/common
+        ./modules/common
         inputs.nix-topology.nixosModules.default
       ];
     };
@@ -271,7 +272,7 @@ in rec {
       modules = [
         ./util/revision.nix
         ./hosts/godwaker
-        ../modules/common
+        ./modules/common
         inputs.disko.nixosModules.disko
         inputs.nixos-facter-modules.nixosModules.facter
         inputs.home-manager.nixosModules.home-manager

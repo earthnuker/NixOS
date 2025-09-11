@@ -137,7 +137,7 @@ provision flake host="nixos-installer.lan": check
 
 # Build and switch
 switch *args: check status && archive
-    nh os switch {{args}} -- -j auto
+    nh os switch {{args}} --build-host root@talos.lan -- -j auto
 
 # Stage all .nix files
 stage:
