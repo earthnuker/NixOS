@@ -1,6 +1,6 @@
 keys:
   - &earthnuker age1hf0avdess0rgg4t9ulr2zvuanu4l24a5ns2p25pwqrhj7c50ga4s5w5rk5
-  - &godwaker age144g8xpr2zgp5h4gt2u2pl3dh4h52vtna2fnpzsmsrcwjsjhnq4kq48us6k
+  - &godwaker age189fxupplvl3hm20guvedtmk4utekly9kp7zug5em6jf4yl2anu0q224zwh
   - &talos age1mpk8wz3u752pdy45vd2lq6tnk6r949mh9sswzyk6ka32d0qlx9ssnpxr29
 creation_rules:
   - path_regex: .*

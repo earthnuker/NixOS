@@ -18,25 +18,24 @@
 
   inherit (pkgs) lib;
   root = ./..;
+  secretOverrides = {
+    lldap_user_pass = {
+      mode = "0400";
+      owner = "lldap";
+      group = "lldap";
+    };
+  };
   secrets = secrets: {
     sops = {
       defaultSopsFile = "${self}/secrets.yml";
       age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
-      secrets =
-        builtins.listToAttrs (
-          map (name: {
-            inherit name;
-            value = {};
-          })
-          secrets
-        )
-        // {
-          lldap_user_pass = {
-            mode = "0400";
-            owner = "lldap";
-            group = "lldap";
-          };
-        };
+      secrets = builtins.listToAttrs (
+        map (name: {
+          inherit name;
+          value = secretOverrides."${name}" or {};
+        })
+        secrets
+      );
     };
   };
   vars = import "${root}/vars" (

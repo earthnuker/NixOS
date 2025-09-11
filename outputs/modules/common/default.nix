@@ -1,5 +1,5 @@
-{pkgs, ...}:let
-  tsFix = (old: {
+{pkgs, ...}: let
+  tsFix = old: {
     checkFlags =
       builtins.map (
         flag:
@@ -8,7 +8,7 @@
           else flag
       )
       old.checkFlags;
-  });
+  };
 in {
   networking.domain = "lan";
   services.tailscale.package = pkgs.tailscale.overrideAttrs tsFix;
