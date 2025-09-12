@@ -187,6 +187,7 @@
     kernelModules = ["intel_rapl_common"];
     zfs.devNodes = "/dev/disk/by-id";
     kernelParams = ["microcode.amd_sha_check=off"];
+    kernelPackages = pkgs.linuxPackages_latest;
   };
   system.stateVersion = "24.05";
 }
