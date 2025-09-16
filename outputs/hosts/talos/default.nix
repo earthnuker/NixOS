@@ -19,6 +19,7 @@
     ./quicksync.nix
     ./topology.nix
     ./limits.nix
+    ./shell.nix
     # ./power.nix
     # users.earthnuker
     users.coolbug
@@ -56,7 +57,6 @@
   programs = {
     nix-index-database.comma.enable = true;
     mosh.enable = true;
-    zsh.enable = true;
   };
   nix = {
     settings = {
@@ -163,7 +163,6 @@
         "podman"
         "docker"
       ];
-      shell = pkgs.zsh;
     };
     earthnuker.isNormalUser = true;
   };

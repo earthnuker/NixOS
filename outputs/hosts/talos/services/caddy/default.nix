@@ -115,6 +115,10 @@ in {
           wiki = {service = "gollum";};
           docs = {service = "paperless";};
           yt = {service = "pinchflat";};
+          auth = {
+            service = "keycloak";
+            attr = "settings.http-port";
+          };
         }
         // (lib.optionalAttrs config.hive.services.tvstack.enable {
           torrent = {

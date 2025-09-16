@@ -23,6 +23,7 @@
     ./pinchflat.nix
     ./paperless.nix
     ./samba.nix
+    ./keycloak.nix
     # ./kanidm.nix
     #./wikijs.nix
     #./tandoor.nix

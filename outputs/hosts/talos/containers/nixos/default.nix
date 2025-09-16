@@ -1,7 +1,7 @@
 {
   imports = [
     ./chimera
-    # ./tvstack
+    ./tvstack
   ];
   networking.nat = {
     enable = true;

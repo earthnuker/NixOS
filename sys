@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nh git jq sshpass ssh-to-age nix-output-monitor watchexec sops yq-go curl
+#! nix-shell -p just zsh nh git jq sshpass ssh-to-age nix-output-monitor watchexec sops yq-go curl fzf helix
 # vi: set syntax=just:
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]
@@ -37,6 +37,10 @@ shell:
 # Format nix files
 fmt:
     nix fmt .
+
+# Edit config
+edit:
+    hx $(fzf)
 
 # Update flake
 update:
@@ -85,11 +89,11 @@ getkey *HOSTS: && rekey
 
 # Build but don't deploy
 dry_deploy host:
-    nh os switch -n -a -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
+    nixos-rebuild dry-activate --flake .#{{host}} --builders root@{{host}}.lan --target-host root@{{host}}.lan -L --log-format internal-json |& nom --json
 
 # Deploy without automatic rollback
 deploy host:
-    nh os switch -a -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
+    nixos-rebuild switch --flake .#{{host}} --builders root@{{host}}.lan --target-host root@{{host}}.lan -L --log-format internal-json |& nom --json
     
 # Build a bootable ISO
 build_iso:
@@ -129,7 +133,7 @@ provision flake host="nixos-installer.lan": check
         root@{{host}}
     -ssh-keygen -R {{host}}
     just --justfile {{ justfile() }} getkey {{flake}}.lan
-    just --justfile {{ justfile() }} deploy .#{{flake}}
+    just --justfile {{ justfile() }} deploy {{flake}}
     just --justfile {{ justfile() }} --dump --dump-format=json | \
         jq -re .recipes.post_{{flake}} > /dev/null && \
         echo Running post-recipe for {{flake}} && \
