@@ -11,7 +11,6 @@
     ./monitoring
     ./nats.nix
     ./postgresql.nix
-    ./recyclarr
     ./searxng.nix
     ./printing.nix
     ./weechat.nix
@@ -20,13 +19,15 @@
     ./dns.nix
     ./glance.nix
     ./gollum.nix
-    ./pinchflat.nix
-    ./paperless.nix
+    # ./pinchflat.nix
+    # ./paperless.nix
     ./samba.nix
-    ./keycloak.nix
+    # ./keycloak.nix
+    ./thelounge.nix
+    ./audiobookshelf.nix
     # ./kanidm.nix
-    #./wikijs.nix
-    #./tandoor.nix
+    # ./wikijs.nix
+    # ./tandoor.nix
     users.coolbug
   ];
 
@@ -43,7 +44,6 @@
     "video"
     "render"
   ];
-
   services = {
     immich = {
       enable = true;
@@ -56,23 +56,13 @@
       enable = true;
       writeable = true;
     };
-    thelounge = {
-      enable = true;
-      port = 3333;
-      extraConfig = {
-        defaults = {
-          name = "BJZ";
-          host = "irc.bonerjamz.us";
-          port = 6697;
-        };
-      };
-    };
     ucodenix.enable = true;
     openssh.openFirewall = true;
     samba-wsdd = {
       enable = true;
       openFirewall = true;
     };
+    # copyparty.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
     tailscale = {

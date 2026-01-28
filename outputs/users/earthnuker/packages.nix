@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   host-config,
   ...
@@ -22,7 +21,6 @@
     dex
     iftop
     iotop
-    micromamba
     fastfetch
     pandoc
     rustup
@@ -46,7 +44,6 @@
     bat
     cachix
     weechat
-    inputs.nsearch.packages.${pkgs.system}.default
     nixdiff
     ffmpeg_7-full
     uutils-coreutils-noprefix
@@ -56,7 +53,7 @@
     firefox
     vscode
     eww
-    tdesktop
+    telegram-desktop
     pavucontrol
     # discord
   ];

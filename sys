@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nh git jq sshpass ssh-to-age nix-output-monitor watchexec sops yq-go curl fzf helix
+#! nix-shell -p just zsh nh nvd dix nix-diff git jq sshpass ssh-to-age nix-output-monitor watchexec sops yq-go curl fzf helix
 # vi: set syntax=just:
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]
@@ -93,7 +93,8 @@ dry_deploy host:
 
 # Deploy without automatic rollback
 deploy host:
-    nixos-rebuild switch --flake .#{{host}} --builders root@{{host}}.lan --target-host root@{{host}}.lan -L --log-format internal-json |& nom --json
+    nh os switch -d always -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
+    # nixos-rebuild switch --flake .#{{host}} --builders root@{{host}}.lan --target-host root@{{host}}.lan -L --log-format internal-json |& nom --json
     
 # Build a bootable ISO
 build_iso:
@@ -141,7 +142,7 @@ provision flake host="nixos-installer.lan": check
 
 # Build and switch
 switch *args: check status && archive
-    nh os switch {{args}} --build-host root@talos.lan -- -j auto
+    nh os switch {{args}} -d always --build-host root@talos.lan -- -j auto
 
 # Stage all .nix files
 stage:
@@ -151,7 +152,7 @@ stage:
 check: fmt stage
     nix flake check --verbose -L --log-format internal-json |& nom --json
 
-# Archive flake inputs
+# Check nix store for problems 
 fix: && switch
     nix-collect-garbage -d
     nix-store --verify --check-contents --repair
@@ -173,10 +174,10 @@ gca:
 # Clean nix-store and old generations (keep 10 or 1 week)
 gc:
     nh clean all -k 10 -K 1w
-    sudo /run/current-system/bin/switch-to-configuration boot
     nix store optimise
     git reflog expire --expire=now --all
     git gc --prune=now --aggressive
+    sudo /run/current-system/bin/switch-to-configuration boot
 
 # Git status
 status:

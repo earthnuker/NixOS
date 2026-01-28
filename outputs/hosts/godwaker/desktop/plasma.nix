@@ -5,19 +5,7 @@
   # vars,
   ...
 }: {
-  nixpkgs.overlays = [
-    # (_: prev: {
-    #   baloo = prev.baloo.overrideAttrs (_: {
-    #     postFixup =
-    #       (prev.postFixup or "")
-    #       + ''
-    #         wrapProgram $out/libexec/kf6/baloo_file_extractor --set QT_QPA_PLATFORM offscreen
-    #       '';
-    #   });
-    # })
-  ];
   environment.systemPackages = with pkgs; [
-    kde-rounded-corners
     kara
     kdePackages.krdp
     # Qt6 stuff

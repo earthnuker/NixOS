@@ -33,7 +33,7 @@
     hostName = "nixos-installer";
     tempAddresses = "disabled";
     networkmanager.enable = true;
-    wireless.enable = false;
+    wireless.enable = true;
   };
 
   users.users.root = {

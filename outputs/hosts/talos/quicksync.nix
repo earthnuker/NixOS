@@ -6,7 +6,7 @@
       intel-media-driver
       intel-compute-runtime
       libva
-      vaapiIntel
+      intel-vaapi-driver
       vpl-gpu-rt
     ];
   };

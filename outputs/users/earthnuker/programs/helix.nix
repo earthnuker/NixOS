@@ -1,8 +1,8 @@
-_: {
+{lib, ...}: {
   enable = true;
   defaultEditor = true;
   settings = {
-    # theme = lib.mkForce "dark_plus";
+    theme = lib.mkForce "dark_plus";
     editor = {
       true-color = true;
       color-modes = true;

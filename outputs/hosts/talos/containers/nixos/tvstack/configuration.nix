@@ -6,16 +6,21 @@
 }: {
   imports = [
     ./pia.nix
-    ./rtorrent.nix
+    # ./recyclarr
+    # ./rtorrent.nix
   ];
   boot.isContainer = true;
   services = {
-    # sonarr.enable = true;
-    # radarr.enable = true;
-    # lidarr.enable = true;
-    # bazarr.enable = true;
-    # prowlarr.enable = true;
-    # recyclarr.enable = true;
+    /*
+    sonarr.enable = true;
+    radarr.enable = true;
+    lidarr.enable = true;
+    bazarr.enable = true;
+    prowlarr.enable = true;
+    recyclarr.enable = true;
+    bitmagnet.enable = true;
+    rtorrent.enable = true;
+    */
   };
 
   pia = {
@@ -27,6 +32,8 @@
 
   environment.systemPackages = with pkgs; [
     cacert
+    aria2
+    rtorrent
   ];
 
   networking = {

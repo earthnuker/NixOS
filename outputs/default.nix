@@ -113,6 +113,7 @@
   */
 in rec {
   formatter.${system} = pkgs.alejandra;
+  # TODO: split into modules
   apps."${system}" = {
     wsl = let
       wsl-builder = nixosConfigurations.helios.config.system.build.tarballBuilder;
@@ -142,7 +143,7 @@ in rec {
         ];
       };
     in
-      pkgs.runCommandNoCC "topology" {} ''
+      pkgs.runCommand "topology" {} ''
         set +xeuo pipefail
         cp -R ${topology.config.output}/ $out
       '';
@@ -168,7 +169,7 @@ in rec {
         check-shebang-scripts-are-executable.enable = true;
         check-symlinks.enable = true;
         lychee = {
-          enable = true;
+          enable = false;
           types = ["markdown"];
           settings.flags = "--cache --verbose";
         };
@@ -195,7 +196,6 @@ in rec {
         inputs.nix-topology.nixosModules.default
       ];
     };
-
     helios = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
@@ -209,7 +209,6 @@ in rec {
         inputs.nixos-wsl.nixosModules.default
       ];
     };
-
     # This is the main system configuration for the Talos server.
     talos = nixpkgs.lib.nixosSystem {
       inherit system;
@@ -238,8 +237,9 @@ in rec {
         inputs.nix-topology.nixosModules.default
         inputs.authentik-nix.nixosModules.default
         inputs.ucodenix.nixosModules.default
-        (secrets vars.talos.secrets)
+        inputs.copyparty.nixosModules.default
         inputs.home-manager.nixosModules.home-manager
+        (secrets vars.talos.secrets)
       ];
     };
 

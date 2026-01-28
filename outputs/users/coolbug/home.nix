@@ -62,7 +62,6 @@
     sessionVariables = {
       EDITOR = "nano";
       ZSH_CACHE_DIR = "/home/coolbug/.cache/oh-my-zsh";
-      NSEARCH_FZF_CMD = "fzf --multi";
     };
   };
   services = {

@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     ./programs
     ./packages.nix
@@ -12,18 +16,18 @@
     enableNixpkgsReleaseCheck = false;
     shell.enableZshIntegration = true;
     sessionVariables = {
-      EDITOR = "hx";
-      VISUAL = "code -n -w";
+      EDITOR = lib.mkForce "hx";
+      VISUAL = lib.mkForce "code -n -w";
       ZSH_CACHE_DIR = "/home/earthnuker/.cache/oh-my-zsh";
       TERM = "wezterm";
       TERMINAL = "wezterm";
       DIRENV_WARN_TIMEOUT = 0;
-      NSEARCH_FZF_CMD = "fzf --multi";
     };
   };
   services = {
     ssh-agent.enable = true;
   };
+  stylix.enableReleaseChecks = false;
   /*
   stylix.targets = {
     nixcord.enable = false;

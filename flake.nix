@@ -7,6 +7,10 @@
     flake-utils.url = "github:numtide/flake-utils";
     nix-std.url = "github:chessai/nix-std";
     ucodenix.url = "github:e-tho/ucodenix";
+    copyparty = {
+      url = "github:9001/copyparty";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-pia-vpn = {
       url = "github:rcambrj/nix-pia-vpn";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,11 +62,9 @@
     };
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nsearch = {
-      url = "github:niksingh710/nsearch";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     authentik-nix = {
       url = "github:nix-community/authentik-nix";
@@ -104,5 +106,5 @@
       flake = false;
     };
   };
-  outputs = inputs: import ./outputs inputs;
+  outputs = i: import ./outputs i;
 }

@@ -46,12 +46,12 @@
         # cleanup hourly snapshots after some time
         TIMELINE_CLEANUP = true;
         # limits for timeline cleanup
-        TIMELINE_MIN_AGE = 1800;
-        TIMELINE_LIMIT_HOURLY = 24;
+        # TIMELINE_MIN_AGE = 1800;
+        TIMELINE_LIMIT_HOURLY = 12;
         TIMELINE_LIMIT_DAILY = 7;
         TIMELINE_LIMIT_WEEKLY = 4;
-        TIMELINE_LIMIT_MONTHLY = 12;
-        TIMELINE_LIMIT_YEARLY = 3;
+        TIMELINE_LIMIT_MONTHLY = 2;
+        TIMELINE_LIMIT_YEARLY = 0;
       };
     };
   };

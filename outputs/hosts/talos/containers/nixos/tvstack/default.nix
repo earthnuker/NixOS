@@ -17,6 +17,9 @@ in {
         "${config'.sops.secrets.pia_auth.path}" = {
           isReadOnly = true;
         };
+        "/mnt/data/media/torrents/" = {
+          isReadOnly = false;
+        };
       };
       config = {
         imports = [

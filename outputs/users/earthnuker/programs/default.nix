@@ -84,17 +84,23 @@
       enable = true;
       enableZshIntegration = false;
     };
-    git = {
+    difftastic = {
       enable = true;
-      lfs.enable = true;
-      userName = "earthnuker";
-      userEmail = "earthnuker@gmail.com";
-      difftastic = {
-        enable = true;
+      options = {
         display = "inline";
         background = "dark";
       };
-      extraConfig = {
+    };
+    git = {
+      enable = true;
+      lfs.enable = true;
+      settings = {
+        user = {
+          name = "earthnuker";
+          email = "earthnuker@gmail.com";
+        };
+      };
+      settings = {
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
         pull.rebase = true;

@@ -5,6 +5,8 @@
   ...
 }: let
   hostname = config.networking.hostName;
+  tvstack = config.containers.tvstack or {};
+  tvstack_config = tvstack.config.services or {};
   tld = {
     ts = {
       local = "ts";
@@ -33,10 +35,11 @@
       app_info = apps.${name};
       attrPath = [(app_info.service or "#")] ++ (lib.splitString "." (app_info.attr or "port"));
       port = lib.attrByPath attrPath (app_info.port or (-1)) config.services;
+      host = app_info.host or "127.0.0.1";
       inner = lib.concatStringsSep "\n" [
         commonConfig
         (extraConfigPre.${name} or "")
-        "reverse_proxy http://127.0.0.1:${toString port}"
+        "reverse_proxy http://${host}:${toString port}"
         (extraConfigPost.${name} or "")
       ];
       group = app_info.auth or null;
@@ -75,7 +78,7 @@ in {
         #"go.akpain.net/caddy-tailscale-auth@v0.1.7"
         "github.com/enum-gg/caddy-discord@v1.2.0"
       ];
-      hash = "sha256-egdtADK4wExu++q57LnntHHNIrLJMRz5n481hIgE43Q=";
+      hash = "sha256-EXZp3I0MGHdgRAcuG1ooscACs+fA6Vl7KTdsRsiN/pU=";
     };
     environmentFile = config.sops.secrets.caddy_env.path;
     logFormat = lib.mkForce ''
@@ -91,6 +94,12 @@ in {
             service = "searx";
             attr = "settings.server.port";
           };
+          baby = {
+            port = 8234;
+          };
+          notes = {
+            port = 5230;
+          };
           prometheus = {service = "prometheus";};
           photos = {service = "immich";};
           monitoring = {
@@ -102,6 +111,10 @@ in {
             service = "forgejo";
             attr = "settings.server.HTTP_PORT";
           };
+          # files = {
+          #   service = "copyparty";
+          #   attr = "p";
+          # };
           dc = {
             service = "lldap";
             attr = "settings.http_port";
@@ -114,33 +127,28 @@ in {
           };
           wiki = {service = "gollum";};
           docs = {service = "paperless";};
-          yt = {service = "pinchflat";};
-          auth = {
-            service = "keycloak";
-            attr = "settings.http-port";
-          };
+          # yt = {service = "pinchflat";};
+          podcasts = {service = "audiobookshelf";};
         }
-        // (lib.optionalAttrs config.hive.services.tvstack.enable {
+        // (lib.optionalAttrs (tvstack != {}) {
           torrent = {
-            port = 8080;
+            port = 5123;
+            host = tvstack.hostAddress;
           };
           sonarr = {
-            port = 8989;
+            inherit (tvstack_config.sonarr.settings.server) port;
           };
           radarr = {
-            port = 7878;
+            inherit (tvstack_config.radarr.settings.server) port;
           };
           lidarr = {
-            port = 8686;
-          };
-          deemix = {
-            port = 6595;
+            inherit (tvstack_config.lidarr.settings.server) port;
           };
           bazarr = {
-            port = 6767;
+            port = tvstack_config.bazarr.listenPort;
           };
           prowlarr = {
-            port = 9696;
+            inherit (tvstack_config.prowlarr.settings.server) port;
           };
         });
       extraHosts = {

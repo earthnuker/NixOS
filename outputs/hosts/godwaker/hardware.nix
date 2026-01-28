@@ -15,9 +15,8 @@
         intel-media-driver
         intel-vaapi-driver
         vpl-gpu-rt
-        vaapiVdpau
-        vaapiIntel
-        libvdpau-va-gl
+        libva-vdpau-driver
+        # libvdpau-va-gl
         # (vaapiIntel.overrideAttrs (_prev: {
         #   meta.priority = 1;
         # }))

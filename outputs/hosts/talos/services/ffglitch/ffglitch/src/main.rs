@@ -974,15 +974,14 @@ fn glitch_video(
         if !pict_types.contains(&frame.pict_type) {
             continue;
         }
-        if !rng.gen_bool(frame_prob) {
-            continue;
-        }
-        let frame = frame.pkt_pos..(frame.pkt_pos + frame.pkt_size);
-        let frame = &mut mm[frame];
-        for b in frame.iter_mut() {
-            for bit in 0..8 {
-                if rng.gen_bool(flip_prob) {
-                    *b ^= 1 << bit;
+        if rng.gen_bool(frame_prob) {
+            let frame = frame.pkt_pos..(frame.pkt_pos + frame.pkt_size);
+            let frame = &mut mm[frame];
+            for b in frame.iter_mut() {
+                for bit in 0..8 {
+                    if rng.gen_bool(flip_prob) {
+                        *b ^= 1 << bit;
+                    }
                 }
             }
         }
@@ -1058,7 +1057,7 @@ fn compute_dssim(res: &GlitchResult, mode: SSIMMode) -> Result<f64> {
         }
     }
 
-    let res = match mode {
+    let res = match mode { 
         SSIMMode::Chroma => u
             .into_iter()
             .zip(v)
@@ -1161,7 +1160,7 @@ fn compute_scores(res: &mut GlitchResult, window: usize) -> Result<()> {
             "[proc_2]tblend=all_mode=grainextract",
             "boxblur=3",
             "tmix=frames=3",
-            "sobel=scale=3",
+            "sobel=scale=1",
             "signalstats",
             "metadata@tstats=print:direct=1",
         ],
@@ -1299,23 +1298,26 @@ fn compute_scores(res: &mut GlitchResult, window: usize) -> Result<()> {
         msad.push(yuv_avg((y, u, v)));
     }
 
+    fn mean(data: &[f64]) -> f64 {
+        data.iter().sum::<f64>() / (data.len() as f64)
+    }
+
     fn wavg_max(data: &[f64], window: usize) -> f64 {
         data.windows(window)
-            .map(|w| w.iter().sum::<f64>() / (w.len() as f64))
+            .map(mean)
             .max_by(f64::total_cmp)
             .unwrap_or(0.0)
     }
 
+    
+
     fn wavg_min(data: &[f64], window: usize) -> f64 {
         data.windows(window)
-            .map(|w| w.iter().sum::<f64>() / (w.len() as f64))
+            .map(mean)
             .min_by(f64::total_cmp)
             .unwrap_or(0.0)
     }
 
-    fn mean(data: &[f64]) -> f64 {
-        data.iter().sum::<f64>() / data.len() as f64
-    }
 
     res.difference = wavg_max(&diff, window) / 255.0;
     res.temporal_information = wavg_max(&tstats, window) / 255.0;

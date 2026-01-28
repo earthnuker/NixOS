@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   services.avahi = {
-    enable = true;
+    enable = false;
     nssmdns4 = true;
     openFirewall = true;
     publish = {
@@ -9,7 +9,7 @@
     };
   };
   services.printing = {
-    enable = true;
+    enable = false;
     startWhenNeeded = false;
     drivers = with pkgs; [canon-capt];
     defaultShared = true;
@@ -21,5 +21,16 @@
       DefaultEncryption Never
       ServerAlias *
     '';
+  };
+  systemd.services.ccpd = {
+    enable = false;
+    description = "Canon CAPT Printer Daemon";
+    after = ["network.target" "cups.service"];
+    wantedBy = ["multi-user.target"];
+    serviceConfig = {
+      Type = "forking";
+      ExecStart = "${pkgs.canon-capt}/sbin/ccpd";
+      Restart = "always";
+    };
   };
 }

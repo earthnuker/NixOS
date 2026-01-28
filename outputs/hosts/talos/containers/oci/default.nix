@@ -5,6 +5,9 @@
       backend = "podman";
       containers = {
         silverbullet = import ./silverbullet.nix;
+        babybuddy = import ./babybuddy.nix;
+        # memos = import ./memos.nix;
+        # memogram = import ./memogram.nix;
         # watchtower = import ./watchtower.nix inputs;
         # p110-exporter = import ./p110-exporter.nix inputs;
         # tailscale = import ./tailscale.nix;

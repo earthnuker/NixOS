@@ -7,6 +7,7 @@
 }: {
   imports = [
     ./plasma.nix
+    # ./cosmic.nix
     # ./gnome.nix
   ];
   stylix = {
@@ -34,7 +35,6 @@
       xcbutilwm
       wayland-utils
       xwayland
-      kdePackages.xwaylandvideobridge
     ]);
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
@@ -65,7 +65,6 @@
     xrdp = {
       enable = false;
       openFirewall = true;
-      # defaultWindowManager = "startplasma-x11";
     };
     libinput = {
       enable = true;
