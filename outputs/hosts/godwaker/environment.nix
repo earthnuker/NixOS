@@ -33,6 +33,7 @@
       # nix-web
       nix-tree
       molly-guard
+      zzz
     ];
     variables = {
       EDITOR = "hx";

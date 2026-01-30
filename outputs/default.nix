@@ -181,7 +181,6 @@ in rec {
     };
   };
 
-  # The installer ISO configuration.
   nixosConfigurations = {
     # This is the installer ISO configuration.
     installer = nixpkgs.lib.nixosSystem {
@@ -230,7 +229,6 @@ in rec {
         inputs.srvos.nixosModules.mixins-terminfo
         inputs.srvos.nixosModules.mixins-systemd-boot
         inputs.nixos-facter-modules.nixosModules.facter
-        # quadlet.nixosModules.quadlet
         inputs.nix-index-database.nixosModules.nix-index
         inputs.arion.nixosModules.arion
         inputs.sops-nix.nixosModules.sops

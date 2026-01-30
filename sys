@@ -44,6 +44,7 @@ edit:
 
 # Update flake
 update:
+    #nix .#write-flake
     nix flake update -v -L --commit-lock-file --log-format internal-json |& nom --json
 
 # Set up automatic LUKS unlock
@@ -93,8 +94,7 @@ dry_deploy host:
 
 # Deploy without automatic rollback
 deploy host:
-    nh os switch -d always -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
-    # nixos-rebuild switch --flake .#{{host}} --builders root@{{host}}.lan --target-host root@{{host}}.lan -L --log-format internal-json |& nom --json
+    nh os switch -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
     
 # Build a bootable ISO
 build_iso:

@@ -1,6 +1,8 @@
 {
   description = "LocalNet system configurations";
   inputs = {
+    import-tree.url = "github:vic/import-tree";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-unstable-small";
     };
@@ -106,5 +108,20 @@
       flake = false;
     };
   };
-  outputs = i: import ./outputs i;
+  outputs = inputs @ {flake-parts, ...}:
+  # https://flake.parts/module-arguments.html
+    flake-parts.lib.mkFlake {inherit inputs;} (top: {
+      imports = [
+        # Optional: use external flake logic, e.g.
+        # inputs.foo.flakeModules.default
+      ];
+      flake = import ./outputs inputs;
+      systems = [
+        # systems for which you want to build the `perSystem` attributes
+        "x86_64-linux"
+        # ...
+      ];
+      perSystem = _: {};
+    });
+  # outputs = inputs: import ./outputs inputs;
 }
