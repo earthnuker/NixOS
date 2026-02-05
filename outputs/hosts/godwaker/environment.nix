@@ -3,7 +3,6 @@
     systemPackages = with pkgs; [
       git
       htop
-      neovim
       wget
       ripgrep
       direnv

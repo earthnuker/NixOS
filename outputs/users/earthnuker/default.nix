@@ -5,6 +5,13 @@
   ...
 }: {
   programs.nh.flake = "${config.users.users.earthnuker.home}/nixos";
+  # environment.systemPackages = with pkgs; [
+  #   iay
+  # ];
+  # programs.iay = {
+  #   enable = true;
+  #   minimalPrompt = false;
+  # };
   users.users.earthnuker = {
     isNormalUser = true;
     description = "Earthnuker";

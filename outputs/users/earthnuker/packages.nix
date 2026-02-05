@@ -6,13 +6,13 @@
   nixdiff = pkgs.writeShellApplication {
     name = "nixdiff";
     runtimeInputs = [
-      pkgs.nvd
+      pkgs.dix
       pkgs.nix-diff
     ];
     text = ''
       set -euxo pipefail
       nix-diff --word-oriented --skip-already-compared "$1" "$2"
-      nvd diff "$1" "$2"
+      dix "$1" "$2"
     '';
   };
   my_pkgs = with pkgs; [
@@ -45,6 +45,7 @@
     cachix
     weechat
     nixdiff
+    impala
     ffmpeg_7-full
     uutils-coreutils-noprefix
   ];

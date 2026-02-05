@@ -97,8 +97,8 @@
   ];
 
   programs.rust-motd = {
-    enable = true;
-    enableMotdInSSHD = true;
+    enable = false;
+    enableMotdInSSHD = false;
     order = [
       "global"
       "banner"
@@ -148,7 +148,9 @@
       };
     };
   };
-
+  programs.bash.interactiveShellInit = ''
+    ${lib.getExe pkgs.dfc} -l -p /dev,zpool -q name -T -d
+  '';
   users.users = {
     root = {
       hashedPasswordFile = config.sops.secrets.talos_root_passwd.path;

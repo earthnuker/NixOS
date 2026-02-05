@@ -12,6 +12,7 @@
       local = "ts";
       funnel = "possum-gila.ts.net";
     };
+    duckdns = "${builtins.elemAt config.services.duckdns.domains 0}.duckdns.org";
     local = "lan";
   };
   revProxy = port: "reverse_proxy 127.0.0.1:${toString port}";
@@ -153,6 +154,15 @@ in {
         });
       extraHosts = {
         "${hostname}.${tld.ts.funnel}:80".extraConfig = ''
+          respond "Hello from {hostport} to {header.X-Forwarded-For}"
+        '';
+        "${hostname}.${tld.ts.funnel}:443".extraConfig = ''
+          respond "Hello from {hostport} to {header.X-Forwarded-For}"
+        '';
+        "${tld.duckdns}:80".extraConfig = ''
+          respond "Hello from {hostport} to {header.X-Forwarded-For}"
+        '';
+        "${tld.duckdns}:443".extraConfig = ''
           respond "Hello from {hostport} to {header.X-Forwarded-For}"
         '';
         "auth-test.${hostname}.${tld.local}:80, auth-test.${hostname}.${tld.ts.local}:80".extraConfig = ''

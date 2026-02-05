@@ -24,7 +24,7 @@
     url = "https://www.privateinternetaccess.com/openvpn/${bundleName}.zip";
     stripRoot = false;
     # First build: leave this as lib.fakeSha256 and copy the “got:” hash
-    sha256 = "sha256-/zaZvrRz2+vqBxV3E35qhinmp4rxdFUfpLOXH3merao=";
+    sha256 = "sha256-TaXUBEd8r5GQ45LfD3SIuc+bSRGngMOs6LDNYdzCzgY=";
   };
 
   # Normalize region string into a case-insensitive filename regex:

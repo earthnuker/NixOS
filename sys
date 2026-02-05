@@ -19,8 +19,7 @@ alias p := provision
 alias d := deploy
 alias u := update
 
-_default: update stage fmt check switch
-    @just --justfile {{ justfile() }} deploy talos
+_default: update stage fmt check switch (deploy "talos")
 
 # Show help
 help:

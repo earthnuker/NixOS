@@ -49,7 +49,6 @@ in {
       cleanOnBoot = true;
     };
     kernelParams = [
-      # Silent Boot
       "quiet"
       "splash"
       "vga=current"
@@ -57,8 +56,9 @@ in {
       "rd.udev.log_level=3"
       "udev.log_priority=3"
       "microcode.amd_sha_check=off"
-      # Audit
-      # "audit=1"
+      # ACPI
+      "acpi=force"
+      "acpi_osi=Linux"
     ];
     consoleLogLevel = 0;
     initrd = {

@@ -3,6 +3,13 @@ _: {
     hostName = "talos";
     useNetworkd = true;
     interfaces = {};
+    networkmanager = {
+      enable = true;
+      wifi = {
+        macAddress = "stable";
+        backend = "iwd";
+      };
+    };
     firewall = {
       enable = true;
       allowPing = true;
