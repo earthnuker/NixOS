@@ -8,6 +8,12 @@
   environment.systemPackages = with pkgs; [
     kara
     kdePackages.krdp
+    kdePackages.kdf
+    kdePackages.kate
+    kdePackages.kalk
+    kdePackages.kcalc
+    kdePackages.ktrip
+    kdePackages.okular
     # Qt6 stuff
     qt6.qtbase # Qt6 core, includes xcb plugin
     qt6.qtwayland # Qt6 Wayland plugin (so “wayland” backend exists)

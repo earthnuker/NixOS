@@ -89,11 +89,11 @@ getkey *HOSTS: && rekey
 
 # Build but don't deploy
 dry_deploy host:
-    nixos-rebuild dry-activate --flake .#{{host}} --builders root@{{host}}.lan --target-host root@{{host}}.lan -L --log-format internal-json |& nom --json
+    nixos-rebuild dry-activate --flake .#{{host}} --build-host root@{{host}}.lan --builders root@{{host}}.lan --target-host root@{{host}}.lan -L --log-format internal-json |& nom --json
 
 # Deploy without automatic rollback
 deploy host:
-    nh os switch -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
+    nh os switch -H {{host}} --build-host root@{{host}}.lan --builders root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
     
 # Build a bootable ISO
 build_iso:
@@ -103,6 +103,10 @@ build_iso:
 # Generate network diagram
 diagram: check
     nom build .#diagram
+
+# Start nix repl
+repl host=`hostname`:
+    nixos-rebuild repl --flake .#{{host}}  
 
 [private]
 [script]

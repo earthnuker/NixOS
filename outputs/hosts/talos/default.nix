@@ -54,6 +54,15 @@
 
   systemd.sleep.extraConfig = lib.mkForce "";
 
+  documentation = {
+    enable = true;
+    dev.enable = true;
+    doc.enable = true;
+    info.enable = true;
+    man.enable = true;
+    nixos.enable = true;
+  };
+
   programs = {
     nix-index-database.comma.enable = true;
     mosh.enable = true;
