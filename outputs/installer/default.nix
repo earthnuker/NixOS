@@ -15,7 +15,7 @@
   };
   environment.systemPackages = with pkgs; [
     nixos-install-tools
-    inputs.nixos-facter.packages."x86_64-linux".nixos-facter
+    inputs.nixos-facter.packages.${pkgs.stdenv.hostPlatform.system}.nixos-facter
     disko
     sbctl
   ];

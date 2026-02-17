@@ -84,7 +84,7 @@
     nixos-facter = {
       url = "github:numtide/nixos-facter";
       inputs = {
-        nixpkgs.follows = "nixpkgs";
+        # nixpkgs.follows = "nixpkgs";
         disko.follows = "disko";
         flake-utils.follows = "flake-utils";
       };

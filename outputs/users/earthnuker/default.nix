@@ -4,7 +4,9 @@
   inputs,
   ...
 }: {
-  programs.nh.flake = "${config.users.users.earthnuker.home}/nixos";
+  programs.nh = {
+    flake = "${config.users.users.earthnuker.home}/nixos";
+  };
   # environment.systemPackages = with pkgs; [
   #   iay
   # ];

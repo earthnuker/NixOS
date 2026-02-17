@@ -52,7 +52,14 @@
     ];
   };
 
-  systemd.sleep.extraConfig = lib.mkForce "";
+  documentation = {
+    enable = true;
+    dev.enable = true;
+    doc.enable = true;
+    info.enable = true;
+    man.enable = true;
+    nixos.enable = true;
+  };
 
   programs = {
     nix-index-database.comma.enable = true;
@@ -85,7 +92,7 @@
     zfs
     fastfetch
     htop
-    nh
+    inputs.nh.packages.${pkgs.stdenv.hostPlatform.system}.nh
     podman-tui
     dive
     comma
@@ -94,8 +101,12 @@
     helix
     inxi
     molly-guard
+    bat
   ];
-
+  environment.shellAliases = {
+    "cat" = "bat -pp";
+    "zstatus" = "zpool status; zfs list -o name,used,usedbychildren,usedbydataset,usedbysnapshots,avail,refer";
+  };
   programs.rust-motd = {
     enable = false;
     enableMotdInSSHD = false;

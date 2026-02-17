@@ -61,7 +61,6 @@
   programs = {
     zsh.enable = true;
     ssh.startAgent = true;
-    light.enable = true;
     dconf.enable = true;
     nix-ld.enable = true;
     nh = {

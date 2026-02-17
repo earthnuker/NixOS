@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nh nvd dix nix-diff git jq sshpass ssh-to-age nix-output-monitor watchexec sops yq-go curl fzf helix
+#! nix-shell -p just zsh nvd dix nix-diff git jq sshpass ssh-to-age nix-output-monitor watchexec sops yq-go curl fzf helix
 # vi: set syntax=just:
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]
@@ -20,6 +20,9 @@ alias d := deploy
 alias u := update
 
 _default: update stage fmt check switch (deploy "talos")
+
+version:
+    nh --version
 
 # Show help
 help:
@@ -88,12 +91,9 @@ getkey *HOSTS: && rekey
 #     nix run -v -L --log-format bar-with-logs .#deploy -- -s {{args}} # we can skip checks here since they already run in the check command
 
 # Build but don't deploy
-dry_deploy host:
-    nixos-rebuild dry-activate --flake .#{{host}} --builders root@{{host}}.lan --target-host root@{{host}}.lan -L --log-format internal-json |& nom --json
-
 # Deploy without automatic rollback
-deploy host:
-    nh os switch -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
+deploy host *args:
+    nh os switch -e none {{args}} -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
     
 # Build a bootable ISO
 build_iso:
@@ -103,6 +103,10 @@ build_iso:
 # Generate network diagram
 diagram: check
     nom build .#diagram
+
+# Start nix repl
+repl host=`hostname`:
+    nixos-rebuild repl --flake .#{{host}}  
 
 [private]
 [script]
@@ -149,7 +153,7 @@ stage:
 
 # Flake check
 check: fmt stage
-    nix flake check --verbose -L --log-format internal-json |& nom --json
+    nix flake check --show-trace --verbose -L --log-format internal-json |& nom --json
 
 # Check nix store for problems 
 fix: && switch

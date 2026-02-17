@@ -36,7 +36,7 @@
     vim.xxd
     nnn
     just
-    mitmproxy
+    # mitmproxy
     bettercap
     sd
     rsync

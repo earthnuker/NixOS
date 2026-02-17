@@ -7,7 +7,7 @@
         interval = "*-*-1 23:00";
       };
       zed = {
-        enableMail = true;
+        enableMail = false;
         settings = {
           ZED_DEBUG_LOG = "/tmp/zed.debug.log";
 

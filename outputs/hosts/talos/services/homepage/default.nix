@@ -4,7 +4,7 @@
     settings = import ./settings.nix inputs;
     widgets = import ./widgets.nix inputs;
     enable = true;
-    environmentFile = config.sops.secrets.homepage_env.path;
+    environmentFiles = [config.sops.secrets.homepage_env.path];
     openFirewall = true;
     docker = {
       local = {

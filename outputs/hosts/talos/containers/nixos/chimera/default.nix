@@ -1,6 +1,5 @@
 {
   lib,
-  config,
   inputs,
   ...
 }: {
@@ -9,9 +8,13 @@
     13101
     13102
   ];
+  # sops.secrets.rescrap_runner_token= {
+  #   mode = "0444";
+  # };
   containers = {
     chimera = {
       inherit (inputs) nixpkgs;
+      # specialArgs = {inherit runnerTokenFile;};
       autoStart = true;
       privateNetwork = true;
       hostAddress = "192.168.100.10";
@@ -22,10 +25,14 @@
           hostPath = "/mnt/data/ghidra";
           isReadOnly = false;
         };
-        "/var/run/credentials/ts.auth" = {
-          hostPath = config.sops.secrets.rescrap_tailscale_auth.path;
-          isReadOnly = true;
-        };
+        # "/var/run/credentials/ts.auth" = {
+        #   hostPath = config.sops.secrets.rescrap_tailscale_auth.path;
+        #   isReadOnly = true;
+        # };
+        # "${runnerTokenFile}" = {
+        #   hostPath = config.sops.secrets.rescrap_runner_token.path;
+        #   isReadOnly = true;
+        # };
         "/var/run/dbus/system_bus_socket" = {
           hostPath = "/var/run/dbus/system_bus_socket";
           isReadOnly = true;
@@ -35,8 +42,10 @@
         imports = [
           ./ghidra.nix
           ./tailscale.nix
+          ./github-runner.nix
           # ./dns-server.nix
           ./topology.nix
+          # ./github-runner.nix
           inputs.nix-topology.nixosModules.default
         ];
         boot.isContainer = true;

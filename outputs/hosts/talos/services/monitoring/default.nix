@@ -39,6 +39,7 @@ in {
           cookie_secure = false;
           content_security_policy = true;
           strict_transport_security = true;
+          secret_key = "$__file(${config.sops.secrets.grafana_key.path})";
         };
         server = {
           enable_gzip = true;

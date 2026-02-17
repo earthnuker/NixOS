@@ -2,7 +2,6 @@
   config,
   vars,
   pkgs,
-  lib,
   ...
 }: {
   imports = [
@@ -17,25 +16,22 @@
     fonts.serif = config.stylix.fonts.sansSerif;
     enableReleaseChecks = false;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-storm.yaml";
-    targets.qt.platform = lib.mkForce "kde";
+    # targets.qt.platform = lib.mkForce "kde";
   };
-  environment.systemPackages = with pkgs;
-    [
-      wezterm
-    ]
-    ++ (with pkgs.xorg; [
-      libxcb
-      xcbproto
-      xcbutil
-      xcbutilcursor
-      xcbutilerrors
-      xcbutilimage
-      xcbutilkeysyms
-      xcbutilrenderutil
-      xcbutilwm
-      wayland-utils
-      xwayland
-    ]);
+  environment.systemPackages = with pkgs; [
+    wezterm
+    libxcb
+    xcbproto
+    xcbutil
+    xcbutilcursor
+    xcbutilerrors
+    xcbutilimage
+    xcbutilkeysyms
+    xcbutilrenderutil
+    xcbutilwm
+    wayland-utils
+    xwayland
+  ];
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     MOZ_ENABLE_WAYLAND = "1";

@@ -25,6 +25,8 @@
     # ./keycloak.nix
     ./thelounge.nix
     ./audiobookshelf.nix
+    # ./calibre.nix
+    # ./k3s.nix
     # ./kanidm.nix
     # ./wikijs.nix
     # ./tandoor.nix
@@ -50,7 +52,7 @@
       accelerationDevices = null;
       host = "127.0.0.1";
       port = 2283;
-      # mediaLocation = "/mnt/data/media/photos";
+      mediaLocation = "/mnt/data/media/photos/immich";
     };
     ttyd = {
       enable = true;

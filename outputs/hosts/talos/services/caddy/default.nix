@@ -16,13 +16,13 @@
     local = "lan";
   };
   revProxy = port: "reverse_proxy 127.0.0.1:${toString port}";
+  mkHostnames = {
+    name,
+    suffixes ? [tld.ts.local tld.local],
+  }:
+    lib.concatStringsSep ", " (map (tld: "${name}.${hostname}.${tld}:80") suffixes);
   mkCaddy = {
     apps ? {},
-    suffixes ? [
-      tld.ts.local
-      tld.local
-    ],
-    # service ? null,
     extraConfigPre ? {},
     extraConfigPost ? {},
     extraHosts ? {},
@@ -46,7 +46,7 @@
       group = app_info.auth or null;
     in
       assert lib.assertMsg (port != -1) "invalid port for ${name} at ${lib.concatStringsSep "." attrPath}"; {
-        "${lib.concatStringsSep ", " (map (tld: "${name}.${hostname}.${tld}:80") suffixes)}" = {
+        "${mkHostnames {inherit name;}}" = {
           extraConfig =
             if group != null
             then mkAuth {inherit inner group;}
@@ -74,12 +74,14 @@ in {
     adapter = "caddyfile";
     package = pkgs.caddy.withPlugins {
       plugins = [
-        "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc"
+        # "github.com/tailscale/caddy-tailscale@v0.0.0-20250508175905-642f61fea3cc"
         "github.com/greenpau/caddy-security@v1.1.31"
+        "github.com/mholt/caddy-l4@v0.0.0-20260127203130-040d25cc886a"
         #"go.akpain.net/caddy-tailscale-auth@v0.1.7"
         "github.com/enum-gg/caddy-discord@v1.2.0"
+        "github.com/mholt/caddy-webdav@v0.0.0-20260127042217-fa2f366b0d75"
       ];
-      hash = "sha256-EXZp3I0MGHdgRAcuG1ooscACs+fA6Vl7KTdsRsiN/pU=";
+      hash = "sha256-391j/1zTKZsbmLCzWiX6hNvHEsCEb/aTeBWyknTertQ=";
     };
     environmentFile = config.sops.secrets.caddy_env.path;
     logFormat = lib.mkForce ''
@@ -120,6 +122,14 @@ in {
             service = "lldap";
             attr = "settings.http_port";
           };
+          calibre = {
+            service = "calibre-server";
+            attr = "port";
+          };
+          books = {
+            service = "calibre-web";
+            attr = "listen.port";
+          };
           lounge = {service = "thelounge";};
           tty = {service = "ttyd";};
           glance = {
@@ -153,18 +163,6 @@ in {
           };
         });
       extraHosts = {
-        "${hostname}.${tld.ts.funnel}:80".extraConfig = ''
-          respond "Hello from {hostport} to {header.X-Forwarded-For}"
-        '';
-        "${hostname}.${tld.ts.funnel}:443".extraConfig = ''
-          respond "Hello from {hostport} to {header.X-Forwarded-For}"
-        '';
-        "${tld.duckdns}:80".extraConfig = ''
-          respond "Hello from {hostport} to {header.X-Forwarded-For}"
-        '';
-        "${tld.duckdns}:443".extraConfig = ''
-          respond "Hello from {hostport} to {header.X-Forwarded-For}"
-        '';
         "auth-test.${hostname}.${tld.local}:80, auth-test.${hostname}.${tld.ts.local}:80".extraConfig = ''
           import auth talos user {
             ${revProxy 31337}
@@ -175,6 +173,14 @@ in {
           handle @hostnames {
             import auth talos user {
               reverse_proxy 127.0.0.1:{http.regexp.host.1}
+            }
+          }
+        '';
+        "${mkHostnames {name = "files";}}".extraConfig = ''
+          route {
+            webdav /* {
+              root /mnt/data/
+              prefix /
             }
           }
         '';
