@@ -2,6 +2,14 @@
   config' = flake_inputs.config;
   inputs' = flake_inputs.inputs;
 in {
+  sops.secrets = {
+    radarr_api_key.restartUnits = [
+      "recyclarr.service"
+    ];
+    sonarr_api_key.restartUnits = [
+      "recyclarr.service"
+    ];
+  };
   containers = {
     tvstack = {
       inherit (inputs) nixpkgs;

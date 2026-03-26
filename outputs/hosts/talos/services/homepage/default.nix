@@ -1,4 +1,5 @@
 {config, ...} @ inputs: {
+  sops.secrets.homepage_env = {};
   services.homepage-dashboard = {
     services = import ./services.nix inputs;
     settings = import ./settings.nix inputs;

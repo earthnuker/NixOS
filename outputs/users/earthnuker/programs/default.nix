@@ -8,12 +8,11 @@
     ./starship.nix
     ./mpv.nix
     ./discord
+    ./jujutsu.nix
   ];
   programs = {
     home-manager.enable = true;
     lazygit.enable = true;
-    jujutsu.enable = true;
-    jjui.enable = true;
     topgrade.enable = true;
     nix-index.enable = true;
     fd.enable = true;

@@ -46,6 +46,10 @@
     "video"
     "render"
   ];
+  sops.secrets.tailscale_auth.restartUnits = [
+    "tailscaled.service"
+    "tailscaled-autoconnect.service"
+  ];
   services = {
     immich = {
       enable = true;

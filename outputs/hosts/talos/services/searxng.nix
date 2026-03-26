@@ -1,4 +1,8 @@
 {config, ...}: {
+  sops.secrets.searxng_env.restartUnits = [
+    "searx-init.service"
+    "searx"
+  ];
   services.searx = {
     enable = false;
     redisCreateLocally = true;

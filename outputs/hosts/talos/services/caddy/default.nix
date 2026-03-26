@@ -15,12 +15,12 @@
     duckdns = "${builtins.elemAt config.services.duckdns.domains 0}.duckdns.org";
     local = "lan";
   };
-  revProxy = port: "reverse_proxy 127.0.0.1:${toString port}";
   mkHostnames = {
     name,
     suffixes ? [tld.ts.local tld.local],
+    port ? 80,
   }:
-    lib.concatStringsSep ", " (map (tld: "${name}.${hostname}.${tld}:80") suffixes);
+    lib.concatStringsSep ", " (map (tld: "${name}.${hostname}.${tld}:${toString port}") suffixes);
   mkCaddy = {
     apps ? {},
     extraConfigPre ? {},
@@ -35,12 +35,13 @@
     mkHost = name: let
       app_info = apps.${name};
       attrPath = [(app_info.service or "#")] ++ (lib.splitString "." (app_info.attr or "port"));
+      proto = app_info.proto or "http";
       port = lib.attrByPath attrPath (app_info.port or (-1)) config.services;
       host = app_info.host or "127.0.0.1";
       inner = lib.concatStringsSep "\n" [
         commonConfig
         (extraConfigPre.${name} or "")
-        "reverse_proxy http://${host}:${toString port}"
+        "reverse_proxy ${proto}://${host}:${toString port}"
         (extraConfigPost.${name} or "")
       ];
       group = app_info.auth or null;
@@ -69,6 +70,7 @@
     }
   '';
 in {
+  sops.secrets.caddy_env = {};
   services.caddy = {
     enable = true;
     adapter = "caddyfile";
@@ -163,11 +165,6 @@ in {
           };
         });
       extraHosts = {
-        "auth-test.${hostname}.${tld.local}:80, auth-test.${hostname}.${tld.ts.local}:80".extraConfig = ''
-          import auth talos user {
-            ${revProxy 31337}
-          }
-        '';
         "*.proxy.${hostname}.${tld.local}:80, *.proxy.${hostname}.${tld.ts.local}:80".extraConfig = ''
           @hostnames header_regexp host Host ([0-9]+)\..*
           handle @hostnames {
@@ -184,8 +181,7 @@ in {
             }
           }
         '';
-        "${hostname}.${tld.ts.local}:80, ${hostname}.${tld.local}:80".extraConfig =
-          revProxy config.services.homepage-dashboard.listenPort;
+        "${hostname}.${tld.ts.local}:80, ${hostname}.${tld.local}:80".extraConfig = "reverse_proxy 127.0.0.1:${toString config.services.homepage-dashboard.listenPort}";
         "irc.${hostname}.${tld.ts.local}:80, irc.${hostname}.${tld.local}:80".extraConfig =
           glowingBearCaddy;
         "wc.${hostname}.${tld.ts.local}:80, wc.${hostname}.${tld.local}:80".extraConfig = weechatCaddy;

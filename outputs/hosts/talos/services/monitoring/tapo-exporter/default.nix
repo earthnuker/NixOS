@@ -15,6 +15,7 @@
     vendorHash = "sha256-o5blx0dZgUZSwgFVVLXM2wHhcWMHfWcrBuTfUWuPvZ8=";
   };
 in {
+  sops.secrets.tapo_exporter_json = {};
   systemd.services.prometheus-tapo-exporter = {
     description = "Prometheus exporter for TP-Link's Tapo P100/P110 smart plugs ";
     wantedBy = ["multi-user.target"];

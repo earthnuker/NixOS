@@ -110,21 +110,16 @@
   };
   outputs = inputs @ {flake-parts, ...}:
   # https://flake.parts/module-arguments.html
-    flake-parts.lib.mkFlake {inherit inputs;} (_: {
-      /*
-      top
-      */
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = [
+        "x86_64-linux"
+      ];
       imports = [
         # Optional: use external flake logic, e.g.
         # inputs.foo.flakeModules.default
       ];
       flake = import ./outputs inputs;
-      systems = [
-        # systems for which you want to build the `perSystem` attributes
-        "x86_64-linux"
-        # ...
-      ];
-      perSystem = _: {};
-    });
+      perSystem = {config,pkgs,...}: {};
+    };
   # outputs = inputs: import ./outputs inputs;
 }

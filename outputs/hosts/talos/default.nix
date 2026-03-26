@@ -9,6 +9,7 @@
   sources,
   ...
 }: {
+  sops.secrets.talos_root_passwd = {};
   imports = [
     "${modulesPath}/installer/scan/not-detected.nix"
     ./disk-config
@@ -26,32 +27,6 @@
   ];
 
   facter.reportPath = ./facter.json;
-  sops.secrets = {
-    duckdns_token.restartUnits = [
-      "duckdns.service"
-    ];
-    tailscale_auth.restartUnits = [
-      "tailscaled.service"
-      "tailscaled-autoconnect.service"
-    ];
-    radarr_api_key.restartUnits = [
-      "recyclarr.service"
-    ];
-    sonarr_api_key.restartUnits = [
-      "recyclarr.service"
-    ];
-    searxng_env.restartUnits = [
-      "searx-init.service"
-      "searx"
-    ];
-    vpn_env.restartUnits = [
-      "arion-tvstack.service"
-    ];
-    rescrap_tailscale_auth.restartUnits = [
-      "container@chimera.service"
-    ];
-  };
-
   documentation = {
     enable = true;
     dev.enable = true;

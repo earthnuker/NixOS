@@ -10,6 +10,7 @@
   environment.systemPackages = with pkgs; [
     brightnessctl
     fuzzel
+    playerctl
   ];
   programs = {
     ssh.startAgent = lib.mkForce false;

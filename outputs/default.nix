@@ -18,24 +18,10 @@
 
   inherit (pkgs) lib;
   root = ./..;
-  secretOverrides = {
-    lldap_user_pass = {
-      mode = "0400";
-      owner = "lldap";
-      group = "lldap";
-    };
-  };
-  secrets = secrets: {
+  sops = {
     sops = {
       defaultSopsFile = "${self}/secrets.yml";
       age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
-      secrets = builtins.listToAttrs (
-        map (name: {
-          inherit name;
-          value = secretOverrides."${name}" or {};
-        })
-        secrets
-      );
     };
   };
   vars = import "${root}/vars" (
@@ -237,7 +223,7 @@ in rec {
         inputs.ucodenix.nixosModules.default
         inputs.copyparty.nixosModules.default
         inputs.home-manager.nixosModules.home-manager
-        (secrets vars.talos.secrets)
+        sops
       ];
     };
 
@@ -279,7 +265,7 @@ in rec {
         inputs.sops-nix.nixosModules.sops
         inputs.nix-topology.nixosModules.default
         inputs.ucodenix.nixosModules.default
-        (secrets vars.godwaker.secrets)
+        sops
       ];
     };
   };

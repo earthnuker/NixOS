@@ -5,6 +5,7 @@
 }: let
   inherit (pkgs) lib;
 in {
+  sops.secrets.restic_password = {};
   services.restic.backups."${config.networking.hostName}" = {
     createWrapper = true;
     initialize = true;

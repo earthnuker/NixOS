@@ -8,9 +8,9 @@
     13101
     13102
   ];
-  # sops.secrets.rescrap_runner_token= {
-  #   mode = "0444";
-  # };
+  sops.secrets.rescrap_tailscale_auth.restartUnits = [
+    "container@chimera.service"
+  ];
   containers = {
     chimera = {
       inherit (inputs) nixpkgs;

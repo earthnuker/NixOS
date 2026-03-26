@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: let
-  domain = "idm.talos.lan";
+  domain = "auth.talos.lan";
   certDir = "/var/lib/certs";
   genCertsScript = pkgs.writeShellScript "gen-kanidm-certs" ''
     mkdir -p ${certDir}
@@ -11,16 +11,24 @@
     chown -R caddy:sso ${certDir}
     chmod 644 ${certDir}/*.pem
   '';
+  kani = pkgs.kanidmWithSecretProvisioning_1_8;
+  port = 8443;
 in {
+  sops.secrets.kanidm = {
+    owner = "kanidm";
+    group = "kanidm";
+  };
   users.groups.sso.members = ["caddy" "kanidm"];
-  environment.systemPackages = with pkgs; [
-    kanidmWithSecretProvisioning_1_7
+  environment.systemPackages = [
+    kani
   ];
-  services.caddy.virtualHosts."https://${domain}".extraConfig = ''
+  services.caddy.virtualHosts."${domain}:443".extraConfig = ''
     tls "${certDir}/fullchain.pem" "${certDir}/key.pem"
-    reverse_proxy https://127.0.0.1:8443 {
+    reverse_proxy https://127.0.0.1:${toString port} {
        transport http {
-         tls_server_name ${domain}
+        tls
+        tls_insecure_skip_verify
+        tls_server_name ${domain}
        }
     }
   '';
@@ -29,23 +37,28 @@ in {
     deps = [];
   };
   services.kanidm = {
-    package = pkgs.kanidmWithSecretProvisioning_1_7;
+    package = kani;
     enableServer = true;
     serverSettings = {
-      domain = "talos.lan"; # Your domain
+      domain = "${domain}"; # Your domain
       origin = "https://${domain}";
-      bindaddress = "[::]:8443";
+      bindaddress = "[::]:${toString port}";
       ldapbindaddress = "[::]:3636";
-      trust_x_forward_for = true;
       tls_key = "${certDir}/key.pem";
       tls_chain = "${certDir}/fullchain.pem";
     };
-
     enableClient = true;
-    clientSettings.uri = config.services.kanidm.serverSettings.origin;
+    clientSettings = {
+      uri = "https://127.0.0.1:${toString port}";
+      verify_ca = false;
+      verify_hostnames = false;
+    };
     provision = {
       enable = true;
       autoRemove = true;
+      acceptInvalidCerts = true;
+      adminPasswordFile = config.sops.secrets.kanidm.path;
+      idmAdminPasswordFile = config.sops.secrets.kanidm.path;
       groups = {
         admins = {};
         users = {};

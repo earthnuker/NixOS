@@ -22,6 +22,9 @@ in {
     #     enable = true;
     #   };
     # };
+    sops.secrets.vpn_env.restartUnits = [
+      "arion-tvstack.service"
+    ];
     virtualisation.arion.projects.tvstack.settings.services = {
       sonarr = mkService {
         image = "ghcr.io/hotio/sonarr:release";

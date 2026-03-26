@@ -1,4 +1,5 @@
 {config, ...}: {
+  sops.secrets.coolbug_passwd = {};
   users.users.coolbug = {
     isNormalUser = true;
     hashedPasswordFile = config.sops.secrets.coolbug_passwd.path;

@@ -1,4 +1,10 @@
 {config, ...}: {
+  sops.secrets.lldap_env = {};
+  sops.secrets.lldap_user_pass = {
+    mode = "0400";
+    owner = "lldap";
+    group = "lldap";
+  };
   users.groups.lldap = {};
   users.users.lldap = {
     isSystemUser = true;

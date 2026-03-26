@@ -22,6 +22,7 @@ in {
   systemd.tmpfiles.rules = lib.mkIf config.services.prometheus.exporters.scaphandre.enable [
     "Z /sys/devices/virtual/powercap - scaphandre-exporter scaphandre-exporter"
   ];
+  sops.secrets.grafana_key = {};
   services = {
     cadvisor = {
       enable = false;
