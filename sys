@@ -47,7 +47,7 @@ edit:
 # Update flake
 update:
     #nix .#write-flake
-    nix flake update -v -L --commit-lock-file --log-format internal-json |& nom --json
+    nix flake update -v -L --commit-lock-file
 
 # Set up automatic LUKS unlock
 [script]
@@ -153,7 +153,7 @@ stage:
 
 # Flake check
 check: fmt stage
-    nix flake check --show-trace --verbose -L --log-format internal-json |& nom --json
+    nix flake check --show-trace --verbose -L
 
 # Check nix store for problems 
 fix: && switch

@@ -12,6 +12,8 @@
   programs = {
     home-manager.enable = true;
     lazygit.enable = true;
+    jujutsu.enable = true;
+    jjui.enable = true;
     topgrade.enable = true;
     nix-index.enable = true;
     fd.enable = true;
@@ -100,6 +102,7 @@
           email = "earthnuker@gmail.com";
         };
       };
+      signing.format = "openpgp";
       settings = {
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
