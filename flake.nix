@@ -119,11 +119,7 @@
         # inputs.foo.flakeModules.default
       ];
       flake = import ./outputs inputs;
-      perSystem = {
-        config,
-        pkgs,
-        ...
-      }: {};
+      perSystem = _: {};
     };
   # outputs = inputs: import ./outputs inputs;
 }

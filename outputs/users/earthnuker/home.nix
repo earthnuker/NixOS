@@ -8,8 +8,11 @@
     ./programs
     ./packages.nix
   ];
-  nixpkgs.config = import ./nixpkgs-config.nix;
-  xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowUnfreePredicate = _: true;
+  };
+  # xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
   gtk.gtk4.theme = config.gtk.theme;
   home = {
     stateVersion = "24.05";
