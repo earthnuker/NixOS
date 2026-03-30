@@ -1,4 +1,4 @@
-_: {
+{
   services.thelounge = {
     enable = true;
     port = 3333;
