@@ -1,0 +1,31 @@
+lan:1053 {
+    bind 127.0.0.1
+    errors
+
+    rewrite stop {
+        name regex ^(?:[^.]+\.)*([^.]+)\.lan\.$ {1}.
+        answer auto
+    }
+
+    forward . 127.0.0.1:53
+}
+
+tail:1053 {
+    bind 127.0.0.1
+    errors
+
+    rewrite stop {
+        name regex ^(?:[^.]+\.)*([^.]+)\.tail\.$ {1}.
+        answer auto
+    }
+
+    forward . 100.100.100.100
+}
+
+
+100.in-addr.arpa:1053 {
+    bind 127.0.0.1
+    errors
+
+    forward . 100.100.100.100
+}

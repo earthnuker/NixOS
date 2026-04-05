@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nvd dix nix-diff git jq sshpass ssh-to-age nix-output-monitor watchexec sops yq-go curl fzf helix
+#! nix-shell -p just zsh nvd nh dix nix-diff git jq sshpass ssh-to-age rom watchexec sops yq-go curl fzf helix jujutsu jjui nix-eval-jobs nix-fast-build
 # vi: set syntax=just:
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]
@@ -8,7 +8,8 @@ set unstable
 set export
 
 SOPS_FILE := "secrets.yml"
-SSHPASS:="toor" # default installer passphrase
+SSHPASS := "toor" # default installer passphrase
+NH_FLAKE := justfile_directory()
 
 alias rebuild := switch
 alias b := switch
@@ -19,7 +20,7 @@ alias p := provision
 alias d := deploy
 alias u := update
 
-_default: update stage fmt check switch (deploy "talos")
+_default: update fmt check switch (deploy "talos")
 
 version:
     nh --version
@@ -29,12 +30,12 @@ help:
     @just --list --justfile {{ justfile() }}
 
 # Start lazygit
-git:
-    lazygit
+jj:
+    jjui
 
 # Spawn shell with tools
 shell:
-    nix develop .
+    zsh
 
 # Format nix files
 fmt:
@@ -47,7 +48,7 @@ edit:
 # Update flake
 update:
     #nix .#write-flake
-    nix flake update -v -L --commit-lock-file
+    nix flake update -v -L
 
 # Set up automatic LUKS unlock
 [script]
@@ -60,6 +61,9 @@ cryptenroll device="/dev/nvme0n1p2":
 # Rekey secrets
 rekey:
     sops updatekeys -y $SOPS_FILE
+# Run sops command
+sops *ARGS:
+    sops {{ARGS}}
 
 # Edit secrets
 secrets: && rekey
@@ -86,23 +90,22 @@ getkey *HOSTS: && rekey
     done
 
 
-# # Deploy configuration to defined hosts
-# safe_deploy *args:
-#     nix run -v -L --log-format bar-with-logs .#deploy -- -s {{args}} # we can skip checks here since they already run in the check command
-
 # Build but don't deploy
 # Deploy without automatic rollback
 deploy host *args:
-    nh os switch -e none {{args}} -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
+    nh os switch -L -e none {{args}} -H {{host}} --build-host root@{{host}}.lan --target-host root@{{host}}.lan -- -j auto
     
 # Build a bootable ISO
 build_iso:
-    nom build --no-link ".#installer-iso"
+    rom build --no-link ".#installer-iso"
     echo $(nix build --print-out-paths --no-link ".#installer-iso")
+
+wsl:
+    rom run .#wsl
 
 # Generate network diagram
 diagram: check
-    nom build .#diagram
+    rom build .#diagram
 
 # Start nix repl
 repl host=`hostname`:
@@ -147,12 +150,11 @@ provision flake host="nixos-installer.lan": check
 switch *args: check status && archive
     nh os switch {{args}} -d always --build-host root@talos.lan -- -j auto
 
-# Stage all .nix files
-stage:
-    git add **/*.nix
+qswitch *args:
+    nh os switch {{args}} -d always --build-host root@talos.lan -- -j auto
 
 # Flake check
-check: fmt stage
+check: fmt 
     nix flake check --show-trace --verbose -L
 
 # Check nix store for problems 
@@ -184,8 +186,7 @@ gc:
 
 # Git status
 status:
-    -git diff -U0 $(nixos-version --configuration-revision).. -- ':(exclude)*.lock'
-    git status -s --renames
+    jj st
 
 # Archive flake inputs
 archive:

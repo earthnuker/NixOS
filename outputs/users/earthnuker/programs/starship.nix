@@ -21,7 +21,7 @@
         style = "bg:color_aqua";
         format = "\n[$output]($style)";
         when = "${lib.getExe pkgs.jj-starship} detect";
-        shell = ["${lib.getExe pkgs.jj-starship}" "--no-color" "--no-symbol" "--no-jj-prefix" "--no-git-prefix"];
+        shell = ["${lib.getExe pkgs.jj-starship}" "--no-symbol" "--no-jj-prefix" "--no-git-prefix"];
       };
       nix_shell = {
         impure_msg = "[impure](bold red)";

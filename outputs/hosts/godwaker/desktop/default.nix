@@ -16,7 +16,7 @@
     polarity = "dark";
     fonts.serif = config.stylix.fonts.sansSerif;
     enableReleaseChecks = false;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-storm.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
     # targets.qt.platform = lib.mkForce "kde";
   };
   environment.systemPackages = with pkgs; [

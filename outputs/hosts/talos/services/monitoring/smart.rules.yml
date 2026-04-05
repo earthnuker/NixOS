@@ -1,0 +1,7 @@
+groups:
+  - name: smartctl.rules
+    interval: 1m
+    rules:
+      - record: smartctl_device_attribute:by_serial
+        expr: |
+          sum by (serial_number,attribute_name,attribute_value_type,instance_host,instance) (smartctl_device_attribute{}* on(device, instance_host) group_left(serial_number) smartctl_device)

@@ -15,8 +15,12 @@
     ./printing.nix
     ./weechat.nix
     ./forgejo.nix
+    ./scrutiny.nix
     ./lldap.nix
-    ./dns.nix
+    ./authentik.nix
+    # ./authelia.nix
+    # ./libvirt
+    ./coredns
     ./glance.nix
     ./gollum.nix
     # ./pinchflat.nix
@@ -25,8 +29,11 @@
     # ./keycloak.nix
     ./thelounge.nix
     ./audiobookshelf.nix
+    ./miniflux.nix
     # ./calibre.nix
     # ./k3s.nix
+    ./cloudflared.nix
+    ./tinyauth.nix
     # ./kanidm.nix
     # ./wikijs.nix
     # ./tandoor.nix
@@ -59,7 +66,7 @@
       mediaLocation = "/mnt/data/media/photos/immich";
     };
     ttyd = {
-      enable = true;
+      enable = false;
       writeable = true;
     };
     ucodenix.enable = true;
@@ -86,7 +93,6 @@
       user = "caddy";
       group = "caddy";
     };
-
-    resolved.enable = true;
   };
+  systemd.services.tailscaled.after = ["network-online.target"];
 }

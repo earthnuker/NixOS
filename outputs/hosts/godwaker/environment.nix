@@ -19,7 +19,7 @@
       # Nix
       # home-manager
       npins
-      nix-output-monitor
+      rom
       nix-prefetch
       nix-prefetch-git
       nix-prefetch-github

@@ -5,10 +5,11 @@
 }: {
   imports = [
     ./zsh.nix
+    ./fish.nix
     ./starship.nix
-    ./mpv.nix
     ./discord
     ./jujutsu.nix
+    ./mpv.nix
   ];
   programs = {
     home-manager.enable = true;
@@ -16,6 +17,11 @@
     topgrade.enable = true;
     nix-index.enable = true;
     fd.enable = true;
+    carapace = {
+      enable = true;
+      enableFishIntegration = true;
+      enableNushellIntegration = false;
+    };
     zathura = {
       enable = true;
       options = {
@@ -109,7 +115,7 @@
       };
     };
     neovim = {
-      enable = true;
+      enable = false;
       viAlias = true;
       vimAlias = true;
       withNodeJs = true;
@@ -126,14 +132,9 @@
     nushell = {
       enable = true;
     };
-    fish = {
+    noctalia = {
       enable = true;
-      plugins = [
-        {
-          name = "grc";
-          inherit (pkgs.fishPlugins.grc) src;
-        }
-      ];
+      systemd.enable = true;
     };
   };
 }

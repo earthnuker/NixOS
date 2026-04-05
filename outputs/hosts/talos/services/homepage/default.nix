@@ -1,6 +1,7 @@
 {config, ...}: {
   sops.secrets.homepage_env = {};
   services.homepage-dashboard = {
+    allowedHosts = "home.talos.lan,home.talos.ts,home.talos.possum-gila.ts";
     services = [
       {
         "System" = [
@@ -38,7 +39,6 @@
       }
     ];
     enable = true;
-    environmentFiles = [config.sops.secrets.homepage_env.path];
     openFirewall = true;
     docker = {
       local = {

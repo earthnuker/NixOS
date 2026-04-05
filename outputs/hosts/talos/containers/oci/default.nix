@@ -6,6 +6,7 @@
       containers = {
         silverbullet = import ./silverbullet.nix;
         babybuddy = import ./babybuddy.nix;
+        # calibre = import ./calibre.nix;
         # memos = import ./memos.nix;
         # memogram = import ./memogram.nix;
         # watchtower = import ./watchtower.nix inputs;

@@ -36,7 +36,7 @@ in rec {
   # TODO: split into modules
   apps."${system}" = {
     wsl = let
-      wsl-builder = nixosConfigurations.helios.config.system.build.tarballBuilder;
+      wsl-builder = nixosConfigurations.smirke.config.system.build.tarballBuilder;
       script = pkgs.writeShellScriptBin "wsl" ''
         #!/usr/bin/env bash
         set -exuo pipefail
@@ -53,8 +53,8 @@ in rec {
   packages."${system}" = {
     installer-iso = nixosConfigurations.installer.config.system.build.isoImage;
     sd-image = nixosConfigurations.daedalus.config.system.build.sdImage;
+    wsl = nixosConfigurations.smirke.config.system.build.tarballBuilder;
     diagram = let
-      # Gross hack
       topology = import inputs.nix-topology {
         inherit pkgs;
         modules = [
@@ -115,14 +115,14 @@ in rec {
         inputs.nix-topology.nixosModules.default
       ];
     };
-    helios = nixpkgs.lib.nixosSystem {
+    smirke = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = {
         inherit inputs nixpkgs;
-        vars = vars.helios or {};
+        vars = vars.smirke or {};
       };
       modules = [
-        ./hosts/helios
+        ./hosts/smirke
         ./modules/common
         inputs.nix-topology.nixosModules.default
         inputs.nixos-wsl.nixosModules.default
@@ -157,6 +157,7 @@ in rec {
         inputs.ucodenix.nixosModules.default
         inputs.copyparty.nixosModules.default
         inputs.home-manager.nixosModules.home-manager
+        inputs.imperative-containment.nixosModules.default
         sops
       ];
     };
@@ -199,6 +200,8 @@ in rec {
         inputs.sops-nix.nixosModules.sops
         inputs.nix-topology.nixosModules.default
         inputs.ucodenix.nixosModules.default
+        inputs.noctalia.nixosModules.default
+        inputs.noctalia-greeter.nixosModules.default
         sops
       ];
     };

@@ -21,12 +21,28 @@
       url = "github:nix-community/nh";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    rom = {
+      url = "github:manic-systems/rom";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-topology = {
       url = "github:oddlama/nix-topology";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nox = {
       url = "github:madsbv/nix-options-search";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    imperative-containment = {
+      url = "github:kodicw/imperative-containment";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     devshell = {
@@ -53,6 +69,10 @@
     arion = {
       url = "github:hercules-ci/arion";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    tt-schemes = {
+      url = "github:tinted-theming/schemes";
+      flake = false;
     };
     home-manager = {
       url = "github:nix-community/home-manager";

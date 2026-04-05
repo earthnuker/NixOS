@@ -1,11 +1,18 @@
 {
   pkgs,
-  config,
   inputs,
   ...
 }: {
-  programs.nh = {
-    flake = "${config.users.users.earthnuker.home}/nixos";
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set fish_greeting
+    '';
+    vendor = {
+      completions.enable = true;
+      config.enable = true;
+      functions.enable = true;
+    };
   };
   # environment.systemPackages = with pkgs; [
   #   iay
@@ -26,11 +33,11 @@
       "video"
       "audio"
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
     openssh.authorizedKeys = {
       keyFiles = [inputs.ssh-keys-earthnuker.outPath];
       keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJeIHgefF8KgH0xl9LgDU5pZZ3tef/G/+jKQmKEmkzen zdfd\seiller.d@L-01201"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJeIHgefF8KgH0xl9LgDU5pZZ3tef/G/+jKQmKEmkzen"
       ];
     };
   };

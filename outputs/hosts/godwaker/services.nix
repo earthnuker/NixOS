@@ -15,12 +15,6 @@
       enable = false;
       hwRender = false;
       useXkbConfig = true;
-      fonts = [
-        {
-          name = "FiraCode";
-          package = pkgs.nerd-fonts.fira-code;
-        }
-      ];
     };
     hardware = {
       bolt.enable = true;
@@ -66,4 +60,5 @@
     };
     seatd.enable = true;
   };
+  systemd.services.tailscaled.after = ["network-online.target"];
 }

@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{config, ...}: let
   mkScrapeConfig = name: port: {
     job_name = "${name}@${config.networking.hostName}";
     fallback_scrape_protocol = "PrometheusText1.0.0";
@@ -17,10 +13,7 @@
 in {
   imports = [
     # ./vodafone-station-exporter
-    ./tapo-exporter
-  ];
-  systemd.tmpfiles.rules = lib.mkIf config.services.prometheus.exporters.scaphandre.enable [
-    "Z /sys/devices/virtual/powercap - scaphandre-exporter scaphandre-exporter"
+    # ./tapo-exporter
   ];
   sops.secrets.grafana_key = {};
   services = {
@@ -66,11 +59,6 @@ in {
           password = "hackme";
           port = 9617;
         };
-        scaphandre = {
-          enable = false;
-          port = 9876;
-          telemetryPath = "metrics";
-        };
         # nats.enable = true;
         node = {
           enable = true;
@@ -80,6 +68,9 @@ in {
           ];
         };
       };
+      ruleFiles = [
+        ./smart.rules.yml
+      ];
       globalConfig.external_labels = {
         host = "${config.networking.hostName}";
       };
@@ -87,7 +78,6 @@ in {
         (mkScrapeConfig "node" config.services.prometheus.exporters.node.port)
         (mkScrapeConfig "zfs" config.services.prometheus.exporters.zfs.port)
         (mkScrapeConfig "smartctl" config.services.prometheus.exporters.smartctl.port)
-        # (mkScrapeConfig "scaphandre" config.services.prometheus.exporters.scaphandre.port)
         (mkScrapeConfig "pihole" config.services.prometheus.exporters.pihole.port)
         (mkScrapeConfig "blackbox" config.services.prometheus.exporters.blackbox.port)
         (mkScrapeConfig "tapo" 9105)

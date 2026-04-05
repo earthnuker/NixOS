@@ -29,7 +29,7 @@ in {
     #binfmt.emulatedSystems = ["aarch64-linux"];
     loader = {
       efi.canTouchEfiVariables = true;
-      timeout = lib.mkForce 0;
+      # timeout = lib.mkForce 0;
       systemd-boot = {
         enable = lib.mkForce false;
         configurationLimit = 10;
@@ -38,10 +38,13 @@ in {
         memtest86.enable = true;
         netbootxyz.enable = true;
       };
+      limine = {
+        enable = true;
+        secureBoot.enable = true;
+      };
     };
-
     lanzaboote = {
-      enable = true;
+      enable = false;
       pkiBundle = "/var/lib/sbctl";
     };
     tmp = {
@@ -59,15 +62,19 @@ in {
       # ACPI
       "acpi=force"
       "acpi_osi=Linux"
+      "acpi_backlight=native"
+      # Other
+      "i915.modeset=1"
     ];
     consoleLogLevel = 0;
     initrd = {
       systemd = {
-        enable = true;
         tpm2.enable = true;
       };
       # https://github.com/NixOS/nixpkgs/pull/108294
-      verbose = false;
+      kernelModules = [
+        "i915"
+      ];
       availableKernelModules = [
         "aesni_intel"
         "cryptd"

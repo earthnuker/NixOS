@@ -27,7 +27,7 @@ in {
     "com.sun:auto-snapshot" = "false";
   };
   datasets = builtins.listToAttrs (
-    builtins.map dataset [
+    map dataset [
       "data"
       "data/backup"
       "data/media"

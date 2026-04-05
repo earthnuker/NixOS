@@ -2,7 +2,7 @@
   enable = true;
   defaultEditor = true;
   settings = {
-    theme = lib.mkForce "dark_plus";
+    theme = lib.mkForce "catppuccin_mocha";
     editor = {
       true-color = true;
       color-modes = true;

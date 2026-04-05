@@ -3,33 +3,30 @@
   pkgs,
   ...
 }: {
-  services.displayManager.dms-greeter = {
-    enable = true;
-    compositor.name = "niri"; # Or "hyprland" or "sway"
-  };
   environment.systemPackages = with pkgs; [
     brightnessctl
     fuzzel
     playerctl
+    swaylock
   ];
+  services.power-profiles-daemon.enable = true;
   programs = {
     ssh.startAgent = lib.mkForce false;
     niri.enable = true;
-    dms-shell = {
+    noctalia = {
       enable = true;
-
-      systemd = {
-        enable = true; # Systemd service for auto-start
-        restartIfChanged = true; # Auto-restart dms.service when dms-shell changes
+      recommendedServices.enable = true;
+      systemd.enable = true;
+    };
+    noctalia-greeter = {
+      enable = true;
+      settings = {
+        cursor = {
+          theme = "Bibata-Modern-Ice";
+          size = 24;
+          path = "${pkgs.bibata-cursors}/share/icons";
+        };
       };
-
-      # Core features
-      enableSystemMonitoring = true; # System monitoring widgets (dgop)
-      enableVPN = true; # VPN management widget
-      enableDynamicTheming = true; # Wallpaper-based theming (matugen)
-      enableAudioWavelength = true; # Audio visualizer (cava)
-      enableCalendarEvents = true; # Calendar integration (khal)
-      enableClipboardPaste = true; # Pasting from the clipboard history (wtype)
     };
   };
 }

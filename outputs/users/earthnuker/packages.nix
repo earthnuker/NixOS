@@ -35,6 +35,7 @@
     nix-inspect
     vim.xxd
     nnn
+    fish
     just
     # mitmproxy
     bettercap

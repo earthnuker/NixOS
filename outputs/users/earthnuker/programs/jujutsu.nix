@@ -1,4 +1,11 @@
 {
+  lib,
+  pkgs,
+  ...
+}: {
+  home.packages = with pkgs; [
+    jj-vine
+  ];
   programs.jujutsu = {
     enable = true;
     settings = {
@@ -8,13 +15,19 @@
       };
       ui = {
         default-command = "status";
-        diff.format = "git";
+        diff-formatter = ["${lib.getExe pkgs.difftastic}" "--color=always" "--display=inline" "--skip-unchanged" "$left" "$right"];
       };
       snapshot = {
         auto-update-stale = true;
       };
+      revset = {
+        "log-graph-prioritize" = "trunk()";
+        "log" = "@ | ancestors(trunk()..(visible_heads() & mine()), 2) | trunk()";
+      };
+
       aliases = {
-        mr = ["util" "exec" "--" "jj-vine"];
+        mg = ["resolve" "--tool" "mergiraf"];
+        mr = ["util" "exec" "--" "${lib.getExe pkgs.jj-vine}"];
         tug = ["bookmark" "move" "--from" "heads(::@- & bookmarks())" "--to" "@-"];
         rebase-all = ["rebase" "-s" "all:roots(trunk()..mutable())" "-d" "trunk()"];
       };
@@ -45,6 +58,7 @@
       };
       template-aliases = {
         "in_branch(commit)" = "commit.contained_in(\"immutable_heads()..bookmarks()\")";
+        "format_timestamp(timestamp)" = "timestamp.ago()";
       };
     };
   };

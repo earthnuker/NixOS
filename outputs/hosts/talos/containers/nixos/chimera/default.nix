@@ -1,25 +1,42 @@
 {
   lib,
   inputs,
+  config,
+  pkgs,
   ...
-}: {
+}: let
+  name = "chimera";
+in {
+  networking.firewall.interfaces."ve-${name}".allowedTCPPorts = [
+    config.services.lldap.settings.ldap_port
+  ];
   networking.firewall.allowedTCPPorts = [
     13100
     13101
     13102
   ];
   sops.secrets.rescrap_tailscale_auth.restartUnits = [
-    "container@chimera.service"
+    "container@${name}.service"
   ];
   containers = {
-    chimera = {
+    "${name}" = {
       inherit (inputs) nixpkgs;
-      # specialArgs = {inherit runnerTokenFile;};
       autoStart = true;
       privateNetwork = true;
       hostAddress = "192.168.100.10";
       localAddress = "192.168.100.11";
       enableTun = true;
+      forwardPorts =
+        map
+        (p: {
+          hostPort = p;
+          containerPort = p;
+        })
+        [
+          13100
+          13101
+          13102
+        ];
       bindMounts = {
         "/var/lib/ghidra" = {
           hostPath = "/mnt/data/ghidra";
@@ -33,12 +50,13 @@
         #   hostPath = config.sops.secrets.rescrap_runner_token.path;
         #   isReadOnly = true;
         # };
-        "/var/run/dbus/system_bus_socket" = {
-          hostPath = "/var/run/dbus/system_bus_socket";
-          isReadOnly = true;
-        };
+        # "/var/run/dbus/system_bus_socket" = {
+        #   hostPath = "/var/run/dbus/system_bus_socket";
+        #   isReadOnly = true;
+        # };
       };
       config = {...}: {
+        environment.systemPackages = [pkgs.openldap];
         imports = [
           ./ghidra.nix
           ./tailscale.nix
@@ -56,6 +74,7 @@
               13100
               13101
               13102
+              # 80
             ];
           };
           # Use systemd-resolved inside the container

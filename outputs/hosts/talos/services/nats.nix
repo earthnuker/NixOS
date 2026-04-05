@@ -1,4 +1,5 @@
 {config, ...}: {
+  networking.firewall.allowedTCPPorts = [4222 8222];
   services.nats = {
     enable = true;
     validateConfig = true;

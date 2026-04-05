@@ -39,6 +39,14 @@
   programs = {
     nix-index-database.comma.enable = true;
     mosh.enable = true;
+    fish = {
+      enable = true;
+      vendor = {
+        completions.enable = true;
+        config.enable = true;
+        functions.enable = true;
+      };
+    };
   };
   nix = {
     settings = {
@@ -50,6 +58,16 @@
       trusted-users = [
         "@wheel"
         "root"
+      ];
+      extra-substituters = [
+        "https://nix-community.cachix.org"
+        "https://cache.lix.systems"
+        "https://noctalia.cachix.org"
+      ];
+      trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
+        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       ];
     };
     gc = {
@@ -67,7 +85,7 @@
     zfs
     fastfetch
     htop
-    inputs.nh.packages.${pkgs.stdenv.hostPlatform.system}.nh
+    nh
     podman-tui
     dive
     comma
@@ -77,10 +95,13 @@
     inxi
     molly-guard
     bat
+    carapace
+    btop
+    rom
   ];
   environment.shellAliases = {
     "cat" = "bat -pp";
-    "zstatus" = "zpool status; zfs list -o name,used,usedbychildren,usedbydataset,usedbysnapshots,avail,refer";
+    "zstatus" = "zpool status;zpool list; zfs list -o name,used,usedbychildren,usedbydataset,usedbysnapshots,avail,refer";
   };
   programs.rust-motd = {
     enable = false;
@@ -144,6 +165,7 @@
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQP9/reHoakHb/tcF9YDspdUE+epG/gmU8yLrA3Jh7d root@godwaker"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJG2CElVLBAG2MBde50PYg7y+BGV5y6fdvemFBuQiI1K earthnuker@godwaker"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJeIHgefF8KgH0xl9LgDU5pZZ3tef/G/+jKQmKEmkzen"
       ];
       extraGroups = [
         "video"
@@ -151,6 +173,7 @@
         "podman"
         "docker"
       ];
+      shell = pkgs.fish;
     };
     earthnuker.isNormalUser = true;
   };
@@ -172,7 +195,10 @@
       "exfat"
     ];
     kernelModules = ["intel_rapl_common"];
-    zfs.devNodes = "/dev/disk/by-id";
+    zfs = {
+      devNodes = "/dev/disk/by-id";
+      forceImportRoot = false;
+    };
     kernelParams = ["microcode.amd_sha_check=off"];
   };
   system.stateVersion = "24.05";

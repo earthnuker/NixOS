@@ -1,24 +1,17 @@
-_: {
+{
+  services.timesyncd.servers = [
+    "0.nixos.pool.ntp.org"
+    "1.nixos.pool.ntp.org"
+    "2.nixos.pool.ntp.org"
+    "3.nixos.pool.ntp.org"
+  ];
   networking = {
     hostName = "talos";
     useNetworkd = true;
     interfaces = {};
-    networkmanager = {
-      enable = true;
-      wifi = {
-        macAddress = "stable";
-        backend = "iwd";
-      };
-    };
     firewall = {
       enable = true;
       allowPing = true;
-      allowedTCPPorts = [
-        80
-        443
-        4242 # quassel
-        4222 # NATS
-      ];
     };
   };
 }

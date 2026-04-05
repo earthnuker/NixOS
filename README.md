@@ -5,7 +5,7 @@ This repository contains the NixOS configurations for my machines.
 - [godwaker](./outputs/hosts/godwaker/) (ThinkPad T470)
 - [talos](./outputs/hosts/talos/) (NAS (B760M-ITX/D4 WiFi, i5-13400, 32GB, 500GB NVMe, 3x12TB HDD))
 - [daedalus](./outputs/hosts/daedalus/) (ODROID C2)
-- [helios](./outputs/hosts/helios/) (WSL on Work Laptop)
+- [smirke](./outputs/hosts/smirke/) (WSL on Work Laptop)
 - tobit (old ASUS Laptop)
 
 ## Usage

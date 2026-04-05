@@ -3,7 +3,7 @@
     "duckdns.service"
   ];
   services.duckdns = {
-    enable = true;
+    enable = false;
     domains = ["earthnuker"];
     tokenFile = config.sops.secrets.duckdns_token.path;
   };
