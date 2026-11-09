@@ -7,12 +7,12 @@
     pname = "prometheus-tapo-exporter";
     version = "main";
     src = pkgs.fetchFromGitHub {
-      owner = "insomniacslk";
-      repo = "prometheus-tapo-exporter";
+      owner = "tess1o";
+      repo = "go-tapo-exporter";
       rev = "main";
-      sha256 = "sha256-DU8yb0e7WQU7QxHyb3WPQV59oIJyQU5ZIEUJsoKoGcA=";
+      sha256 = "sha256-d+RmzDKIXAJgOtQ30MsPkv7CeK12pv+ljaxj6Q8JsA0=";
     };
-    vendorHash = "sha256-o5blx0dZgUZSwgFVVLXM2wHhcWMHfWcrBuTfUWuPvZ8=";
+    vendorHash = "sha256-d1W9k5vDraIDy+qH3pr1GpBTDD4N+taCsBwgqk3z1dA=";
   };
 in {
   sops.secrets.tapo_exporter_json = {};

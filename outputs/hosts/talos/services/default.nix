@@ -19,7 +19,7 @@
     ./lldap.nix
     ./authentik.nix
     # ./authelia.nix
-    # ./libvirt
+    ./libvirt
     ./coredns
     ./glance.nix
     ./gollum.nix

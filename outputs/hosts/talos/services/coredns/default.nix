@@ -4,5 +4,5 @@
     config = lib.readFile ./Corefile;
   };
   # TODO: dnsmasqd
-  services.resolved.enable = false;
+  services.resolved.enable = true;
 }

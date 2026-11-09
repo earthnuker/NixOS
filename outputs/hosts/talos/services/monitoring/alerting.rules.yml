@@ -1,0 +1,155 @@
+groups:
+  - name: smartctl.rules
+    interval: 1m
+    rules:
+    - record: smartctl_device_attribute:by_serial
+      expr: |
+        sum by (serial_number, attribute_name, attribute_value_type, instance) (
+          smartctl_device_attribute * on (device, instance) group_left (serial_number) smartctl_device
+        )
+      labels:
+        host: "talos"
+  - name: base.rules
+    rules:
+      # 1. A service is down (scrape target is unreachable).
+      - alert: TargetDown
+        expr: up == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Target {{ $labels.job }} on {{ $labels.instance }} is down."
+          description: "The scrape target {{ $labels.instance }} (job: {{ $labels.job }}) has been unreachable for more than 3 minutes."
+
+      # 2. A systemd service has failed.
+      - alert: SystemdServiceFailed
+        expr: node_systemd_unit_state{state="failed"} == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Systemd service {{ $labels.name }} has failed on {{ $labels.instance }}."
+          description: "The systemd unit {{ $labels.name }} is in a failed state."
+
+      # 3. Filesystem is filling up.
+      - alert: DiskWillFillIn4Hours
+        expr: predict_linear(node_filesystem_free_bytes{fstype!~"tmpfs|overlay"}[1h], 4 * 3600) < 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk {{ $labels.mountpoint }} on {{ $labels.instance }} may fill in 4 hours."
+          description: "Based on recent usage trends, the filesystem {{ $labels.mountpoint }} is likely to run out of space within the next 4 hours."
+
+  - name: infrastructure.rules
+    rules:
+      # Always firing. If pushes to the watchdog topic ever stop -> alerting itself is broken.
+      - alert: Watchdog
+        expr: vector(1)
+        labels:
+          severity: none
+        annotations:
+          summary: "Heartbeat (deadman's switch)"
+
+      - alert: TargetDown
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.job }} down ({{ $labels.instance }})"
+          description: "Could not scrape {{ $labels.job }} at {{ $labels.instance }} for 5 minutes."
+
+      # --- Blackbox probes ---
+      - alert: ProbeFailed
+        expr: probe_success == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Probe {{ $labels.job }} failing for {{ $labels.instance }}"
+
+      - alert: TLSCertExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 14 * 24 * 3600
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "TLS cert for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
+
+      # --- Disks / hardware ---
+      - alert: SmartDeviceFailing
+        expr: smartctl_device_smart_status == 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "SMART health failing on {{ $labels.device }} ({{ $labels.instance }})"
+
+      - alert: SmartReallocatedSectors
+        expr: increase(smartctl_device_attribute{attribute_name="Reallocated_Sector_Count",attribute_value_type="raw"}[24h]) > 0
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Reallocated sectors growing on {{ $labels.device }} (+{{ $value }} in 24h)"
+
+      # verify label/metric against a live scrape of the zfs exporter
+      - alert: ZfsPoolNotOnline
+        expr: zfs_pool_state{state!="online"} == 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "ZFS pool {{ $labels.pool }} is {{ $labels.state }}"
+
+      - alert: FilesystemAlmostFull
+        expr: |
+          (
+            node_filesystem_avail_bytes{fstype!~"tmpfs|squashfs|overlay"} /
+            node_filesystem_size_bytes{fstype!~"tmpfs|squashfs|overlay"}
+          ) < 0.15
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.mountpoint }} has {{ $value | humanizePercentage }} free on {{ $labels.instance }}"
+
+      - alert: FilesystemCritical
+        expr: |
+          (
+            node_filesystem_avail_bytes{fstype!~"tmpfs|squashfs|overlay"} /
+            node_filesystem_size_bytes{fstype!~"tmpfs|squashfs|overlay"}
+          ) < 0.05
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.mountpoint }} has {{ $value | humanizePercentage }} free on {{ $labels.instance }}"
+
+      # --- Services ---
+      - alert: SystemdUnitFailed
+        expr: node_systemd_unit_state{state="failed"} == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "systemd unit {{ $labels.name }} failed on {{ $labels.instance }}"
+
+      # --- Monitor the monitor ---
+      # verify metric name against VM's own /metrics
+      - alert: VictoriaMetricsLowDisk
+        expr: vm_free_disk_space_bytes{path="/var/lib/victoriametrics"} < 10e9
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "VictoriaMetrics data dir has less than 10 GB free"
+      
+      - alert: SystemdUnitFlapping
+        expr: changes(node_systemd_unit_state{state="failed"}[1d]) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "systemd unit {{ $labels.name }} is flapping on {{ $labels.instance }}"
+          description: "{{ $labels.name }} has entered the failed state more than 2 times in the last 24h."

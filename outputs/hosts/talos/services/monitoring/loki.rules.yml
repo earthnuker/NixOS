@@ -1,0 +1,12 @@
+groups:
+  - name: logging.rules
+    interval: 1m
+    rules:
+      - alert: SystemdUnitFlapping
+        expr: changes(node_systemd_unit_state{state="failed"}[1d]) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "systemd unit {{ $labels.name }} is flapping on {{ $labels.instance }}"
+          description: "{{ $labels.name }} has entered the failed state more than 2 times in the last 24h."

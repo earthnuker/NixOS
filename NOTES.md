@@ -1,5 +1,17 @@
 # Notes
 
+## Network
+
+Static IPs
+
+```csv
+58:11:22:B8:D3:0C,192.168.0.17,Nightmaregreen
+f8:34:41:21:18:7b,192.168.0.15,godwaker
+54:e1:ad:8d:1f:5a,192.168.0.16,godwaker
+ec:75:0c:5f:c2:d1,192.168.0.3,p110
+9c:6b:00:83:62:a1,192.168.0.10,talos
+```
+
 ## ZFS
 
 unmount pool

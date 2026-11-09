@@ -9,6 +9,7 @@ https://github.com/kristoff3r/ghidra-plugins-nix/blob/1bfae431deb5097f4119e34728
   ...
 }: let
   inherit (pkgs) ghidra;
+  jdkPkg = pkgs.jdk25;
   directory = "ghidra";
   stateDir = "/var/lib/${directory}";
   ghidraHome = "${ghidra}/lib/ghidra";
@@ -47,7 +48,7 @@ in {
   users.groups.ghidra = {};
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "ghidra-svrAdmin" ''
-      exec ${pkgs.jdk}/bin/java \
+      exec ${jdkPkg}/bin/java \
         -cp ${pkgs.ghidra}/lib/ghidra/Ghidra/Framework/Utility/lib/Utility.jar \
         -Djava.system.class.loader=ghidra.GhidraClassLoader \
         -Dfile.encoding=UTF8 \
@@ -67,17 +68,17 @@ in {
       wantedBy = ["multi-user.target"];
       after = ["network.target"];
       serviceConfig = {
-        ExecStart = "${pkgs.jdk}/bin/java -classpath ${classPath} ${mainClass} ${args}";
+        ExecStart = "${jdkPkg}/bin/java -classpath ${classPath} ${mainClass} ${args}";
         User = "ghidra";
         Group = "ghidra";
         SuccessExitStatus = 143;
-        StateDirectory = stateDir;
+        StateDirectory = directory;
         WorkingDirectory = stateDir;
         StateDirectoryMode = "0770";
         PrivateTmp = true;
         NoNewPrivileges = true;
         Environment = [
-          "JAVA_HOME=${pkgs.jdk}"
+          "JAVA_HOME=${jdkPkg}"
           "GHIDRA_HOME=${ghidra}/lib/ghidra"
         ];
       };

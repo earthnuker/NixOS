@@ -1,19 +1,27 @@
-{
-  services.cockpit = {
-    enable = false;
-    openFirewall = true;
+{pkgs, ...}: {
+  virtualisation.libvirtd = {
+    enable = true;
+    dbus.enable = true;
+    qemu.swtpm.enable = true; # TPM 2.0 for Windows 11
   };
-  services.imperativeContainment = {
-    "windows" = {
-      enable = false;
-      osType = "windows";
-      cores = 4;
-      memoryMiB = 4 * 1024;
-      createDiskIfMissing = true;
-      diskSize = "100G";
-      isoPath = "/mnt/data/Windows/Win10_22H2_EnglishInternational_x64v1.iso";
-      graphics = "spice";
-      enableTPM = true;
+
+  services.cockpit = {
+    enable = true;
+    port = 9093;
+    openFirewall = false;
+
+    plugins = [
+      pkgs.cockpit-machines
+    ];
+
+    allowed-origins = [
+      "https://cockpit.talos.lan"
+      "https://cockpit.talos.ts"
+    ];
+
+    settings.WebService = {
+      AllowUnencrypted = true;
+      ProtocolHeader = "X-Forwarded-Proto";
     };
   };
 }

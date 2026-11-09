@@ -24,11 +24,12 @@
     ],
     ports ? [80],
   }:
-    lib.concatStringsSep ", " (map (
-        tld:
-          lib.concatStringsSep ", " (map (port: "${name}.${hostname}.${tld}:${toString port}") ports)
+    lib.concatStringsSep ", " (
+      map (
+        tld: lib.concatStringsSep ", " (map (port: "${name}.${hostname}.${tld}:${toString port}") ports)
       )
-      suffixes);
+      suffixes
+    );
   mkCaddy = {
     apps ? {},
     extraConfigPre ? {},
@@ -103,8 +104,7 @@
     name = lib.head parts;
     attr = lib.concatStringsSep ":" (lib.tail parts);
   in
-    {service = name;}
-    // lib.optionalAttrs (attr != "") {inherit attr;};
+    {service = name;} // lib.optionalAttrs (attr != "") {inherit attr;};
 
   # `simple 31337`              -> { port = 31337; }
   # `simple "test.lan:31337"`   -> { host = "test.lan"; port = 31337; }
@@ -136,7 +136,14 @@
   '';
 in {
   sops.secrets.caddy_env = {};
-  networking.firewall.allowedTCPPorts = [80 443];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
+  systemd.services.caddy.serviceConfig = {
+    UMask = "007"; # Ensures new files are created with group read/write permissions
+    LogsDirectoryMode = "750"; # Ensures the log directory is group-readable and executable
+  };
   users.users.caddy.extraGroups = [config.services.tailscaleAuth.group];
   services.caddy = {
     enable = true;
@@ -151,7 +158,7 @@ in {
         "github.com/caddy-dns/cloudflare@v0.2.4"
         "github.com/mholt/caddy-webdav@v0.0.0-20260127042217-fa2f366b0d75"
       ];
-      hash = "sha256-HoyMiTx3K/IQsLAwxVW4fsekWaLNkohYZywEqPGhst0=";
+      hash = "sha256-0DybfKEA/V/ACqGqrY7coVnnrKaUcbJ+NMXtir+3kcw=";
     };
     environmentFile = config.sops.secrets.caddy_env.path;
     logFormat = lib.mkForce ''
@@ -167,10 +174,14 @@ in {
           baby = container "babybuddy:8234";
           news = simple 8752;
           disks = service "scrutiny:settings.web.listen.port";
-          prometheus = service "prometheus";
-          photos = service "immich";
+          metrics = service "prometheus";
+          vm = simple 8428;
           monitoring = service "grafana:settings.server.http_port";
+          logs = simple 9080;
+          # logs = service "loki:configuration.server.http_listen_port";
+          photos = service "immich";
           cadvisor = service "cadvisor";
+          cockpit = service "cockpit";
           code = service "forgejo:settings.server.HTTP_PORT";
           # files = service "copyparty:p";
           ldap = service "lldap:settings.http_port";

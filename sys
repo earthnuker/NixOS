@@ -1,6 +1,6 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i "just --justfile" --quiet
-#! nix-shell -p just zsh nvd nh dix nix-diff git jq sshpass ssh-to-age rom watchexec sops yq-go curl fzf helix jujutsu jjui nix-eval-jobs nix-fast-build
+#! nix-shell -p just zsh nvd nh deploy-rs dix nix-diff git jq sshpass ssh-to-age rom watchexec sops yq-go curl fzf helix jujutsu jjui nix-eval-jobs nix-fast-build
 # vi: set syntax=just:
 set shell := ["zsh", "-cu"]
 set script-interpreter := ["zsh", "-u"]

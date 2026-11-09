@@ -14,9 +14,9 @@
   services.cloudflare-dyndns = {
     enable = true;
     apiTokenFile = config.sops.secrets.cf_token.path;
-    domains = ["*.earthnuker.xyz"];
+    domains = ["home.earthnuker.xyz"];
     ipv4 = true;
-    ipv6 = true;
+    ipv6 = false;
     proxied = false; # grey cloud: direct to your home IP
   };
 }

@@ -62,22 +62,29 @@ in {
     openssh
     oyui
     starship
-    terraform
+    opentofu
+    opentofu-ls
     wget
     ansible-language-server
     nh
   ];
-  programs.nix-ld = {
-    enable = true;
+  programs = {
+    nix-ld = {
+      enable = true;
+    };
+    git = {
+      enable = true;
+      config.user = {
+        name = "Daniel Seiller";
+        email = "daniel.seiller@zdf.digital";
+      };
+    };
+    bash.interactiveShellInit = ''
+      if [[ $- == *i* && $EUID -ne 0 && -z "''${NIX_WSL_NO_NU:-}" ]]; then
+        export NIX_WSL_NO_NU=1
+        exec ${pkgs.nushell}/bin/nu --config ${nuConfig}
+      fi
+    '';
   };
-  programs.git = {
-    enable = true;
-  };
-  programs.bash.interactiveShellInit = ''
-    if [[ $- == *i* && $EUID -ne 0 && -z "''${NIX_WSL_NO_NU:-}" ]]; then
-      export NIX_WSL_NO_NU=1
-      exec ${pkgs.nushell}/bin/nu --config ${nuConfig}
-    fi
-  '';
   system.stateVersion = "24.05";
 }

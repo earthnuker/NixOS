@@ -1,7 +1,52 @@
 modules:
+  # --- HTTP: follow redirects, accept any 2xx, force IPv4 (default is ip6!) ---
   http_2xx:
     prober: http
     timeout: 5s
     http:
       method: GET
-      valid_status_codes: []
+      valid_status_codes: []      # [] = any 2xx
+      follow_redirects: true
+      preferred_ip_protocol: ip4
+
+  # --- HTTPS: never skip TLS verification, alert on bad certs ---
+  https_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      follow_redirects: true
+      preferred_ip_protocol: ip4
+      fail_if_not_ssl: true
+      tls_config:
+        insecure_skip_verify: false
+        # ca_file: "/etc/ssl/certs/ca-certificates.crt"  # for internal CAs
+
+  # --- ICMP ping (works thanks to CAP_NET_RAW from the NixOS module) ---
+  icmp:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: ip4
+
+  # --- DNS A query over UDP ---
+  dns_a:
+    prober: dns
+    timeout: 5s
+    dns:
+      query_name: "example.com"
+      query_type: "A"
+      valid_rcodes: [NOERROR]
+      preferred_ip_protocol: ip4
+
+  # --- DNS over TCP (optional, e.g. large answers) ---
+  dns_a_tcp:
+    prober: dns
+    timeout: 5s
+    dns:
+      transport_protocol: tcp
+      query_name: "example.com"
+      query_type: "A"
+      valid_rcodes: [NOERROR]
+      preferred_ip_protocol: ip4
+

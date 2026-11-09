@@ -2,7 +2,10 @@ auto_https disable_redirects
 grace_period 10s
 order authenticate before respond
 order authorize before basicauth
-
+metrics {
+    per_host
+    observe_catchall_hosts
+}
 security {
     ldap identity store talos.lan {
         realm talos.lan
