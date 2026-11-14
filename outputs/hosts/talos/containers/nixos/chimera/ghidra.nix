@@ -2,6 +2,7 @@
 https://git.lain.faith/haskal/dragnpkgs/src/branch/main/modules/ghidra-server/default.nix
 https://github.com/kristoff3r/ghidra-plugins-nix/blob/1bfae431deb5097f4119e347288dde65f0e76631/nixos/default.nix
 */
+# TODO: Fix certificate enforcement (https://github.com/vringar/nixos-setup/blob/a7e70597fd49f69837d3801f2787f71768fdc486/modules/ghidra-server.nix#L26)
 {
   pkgs,
   lib,

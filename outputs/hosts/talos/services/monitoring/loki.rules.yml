@@ -1,12 +1,16 @@
 groups:
   - name: logging.rules
-    interval: 1m
     rules:
-      - alert: SystemdUnitFlapping
-        expr: changes(node_systemd_unit_state{state="failed"}[1d]) > 2
-        for: 5m
-        labels:
-          severity: warning
+      - alert: KernelOOMKill
+        expr: sum by (host) (count_over_time({job="systemd-journal", transport="kernel"} |~ "Out of memory|oom-kill" [5m])) > 0
+        labels: { severity: warning }
         annotations:
-          summary: "systemd unit {{ $labels.name }} is flapping on {{ $labels.instance }}"
-          description: "{{ $labels.name }} has entered the failed state more than 2 times in the last 24h."
+          summary: "OOM kill detected on {{ $labels.host }}"
+          description: "Kernel logged {{ $value }} OOM / oom-kill events in the last 5 minutes."
+      - alert: CaddyHigh5xx
+        expr: sum by (host) (rate({job="caddy"} | json | status >= 500 [5m])) > 0.1
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "Caddy returning 5xx on {{ $labels.host }}"
+          description: "{{ $value | humanize }} responses with status 500 or higher per second over the last 5 minutes." 

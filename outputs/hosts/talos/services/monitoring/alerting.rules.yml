@@ -1,155 +1,334 @@
+# Host/hardware alerts adapted from the original multi-host ruleset for this
+# single-host NixOS stack (Prometheus -> VictoriaMetrics, local Alertmanager -> Telegram).
+# Depends on the recording rule smartctl_device_attribute:by_serial from alerting.rules.yml
+# (evaluated by the same Prometheus, so the join targets exist regardless of file order).
+# Annotations are plain text: no raw <, >, & (they reach Telegram with parse_mode HTML).
 groups:
-  - name: smartctl.rules
-    interval: 1m
+  - name: CPU
     rules:
-    - record: smartctl_device_attribute:by_serial
-      expr: |
-        sum by (serial_number, attribute_name, attribute_value_type, instance) (
-          smartctl_device_attribute * on (device, instance) group_left (serial_number) smartctl_device
-        )
-      labels:
-        host: "talos"
-  - name: base.rules
+      # without iowait: waiting for disks isn't CPU use (HighIOWait); a CPU that is truly maxed
+      # out and has tasks waiting for it is CriticalCPUPressure. The "Top processes" sentence
+      # needs a process exporter (namedprocess_namegroup_*); without one it always reads
+      # "none known" and lights up if you ever add one.
+      - alert: HighCPUUsage
+        expr: 100 * (1 - sum by (instance) (rate(node_cpu_seconds_total{mode=~"idle|iowait"}[5m])) / count by (instance) (node_cpu_seconds_total{mode="idle"})) > 90
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          description: >-
+            CPU usage is above 90% on {{ $labels.instance }} (current: {{ printf "%.2f%%" $value }}).
+            Top processes (CPU over 5 min, 100% = one core): {{ range $i, $s := query (printf `topk(5, sum by (groupname) (rate(namedprocess_namegroup_cpu_seconds_total{host="%s"}[5m])))` $labels.host) }}{{ if $i }}, {{ end }}{{ $s.Labels.groupname }} {{ humanizePercentage $s.Value }}{{ else }}none found{{ end }}
+
+      - alert: HighIOWait
+        expr: (avg by (instance) (rate(node_cpu_seconds_total{mode="iowait"}[1m])) * 100) > 80
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          description: 'CPU iowait is above 80% on {{ $labels.instance }} (current: {{ printf "%.2f%%" $value }})'
+
+  - name: CPU pressure
     rules:
-      # 1. A service is down (scrape target is unreachable).
-      - alert: TargetDown
-        expr: up == 0
-        for: 3m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Target {{ $labels.job }} on {{ $labels.instance }} is down."
-          description: "The scrape target {{ $labels.instance }} (job: {{ $labels.job }}) has been unreachable for more than 3 minutes."
-
-      # 2. A systemd service has failed.
-      - alert: SystemdServiceFailed
-        expr: node_systemd_unit_state{state="failed"} == 1
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Systemd service {{ $labels.name }} has failed on {{ $labels.instance }}."
-          description: "The systemd unit {{ $labels.name }} is in a failed state."
-
-      # 3. Filesystem is filling up.
-      - alert: DiskWillFillIn4Hours
-        expr: predict_linear(node_filesystem_free_bytes{fstype!~"tmpfs|overlay"}[1h], 4 * 3600) < 0
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Disk {{ $labels.mountpoint }} on {{ $labels.instance }} may fill in 4 hours."
-          description: "Based on recent usage trends, the filesystem {{ $labels.mountpoint }} is likely to run out of space within the next 4 hours."
-
-  - name: infrastructure.rules
-    rules:
-      # Always firing. If pushes to the watchdog topic ever stop -> alerting itself is broken.
-      - alert: Watchdog
-        expr: vector(1)
-        labels:
-          severity: none
-        annotations:
-          summary: "Heartbeat (deadman's switch)"
-
-      - alert: TargetDown
-        expr: up == 0
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "{{ $labels.job }} down ({{ $labels.instance }})"
-          description: "Could not scrape {{ $labels.job }} at {{ $labels.instance }} for 5 minutes."
-
-      # --- Blackbox probes ---
-      - alert: ProbeFailed
-        expr: probe_success == 0
-        for: 3m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Probe {{ $labels.job }} failing for {{ $labels.instance }}"
-
-      - alert: TLSCertExpiringSoon
-        expr: probe_ssl_earliest_cert_expiry - time() < 14 * 24 * 3600
-        for: 1h
-        labels:
-          severity: warning
-        annotations:
-          summary: "TLS cert for {{ $labels.instance }} expires in {{ $value | humanizeDuration }}"
-
-      # --- Disks / hardware ---
-      - alert: SmartDeviceFailing
-        expr: smartctl_device_smart_status == 0
-        labels:
-          severity: critical
-        annotations:
-          summary: "SMART health failing on {{ $labels.device }} ({{ $labels.instance }})"
-
-      - alert: SmartReallocatedSectors
-        expr: increase(smartctl_device_attribute{attribute_name="Reallocated_Sector_Count",attribute_value_type="raw"}[24h]) > 0
-        for: 1h
-        labels:
-          severity: warning
-        annotations:
-          summary: "Reallocated sectors growing on {{ $labels.device }} (+{{ $value }} in 24h)"
-
-      # verify label/metric against a live scrape of the zfs exporter
-      - alert: ZfsPoolNotOnline
-        expr: zfs_pool_state{state!="online"} == 1
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: "ZFS pool {{ $labels.pool }} is {{ $labels.state }}"
-
-      - alert: FilesystemAlmostFull
-        expr: |
-          (
-            node_filesystem_avail_bytes{fstype!~"tmpfs|squashfs|overlay"} /
-            node_filesystem_size_bytes{fstype!~"tmpfs|squashfs|overlay"}
-          ) < 0.15
+      # How much of the time tasks wait for a CPU (PSI "some"), averaged over 30 minutes.
+      # Replaces load average alerts: load also counts tasks waiting for disks (backups would
+      # fire it every evening); slow disks are HighIOWait's business.
+      - alert: HighCPUPressure
+        expr: max by (instance) (rate(node_pressure_cpu_waiting_seconds_total[30m])) > 0.2
         for: 30m
         labels:
           severity: warning
         annotations:
-          summary: "{{ $labels.mountpoint }} has {{ $value | humanizePercentage }} free on {{ $labels.instance }}"
+          description: >-
+            Tasks on {{ $labels.instance }} waited for a CPU {{ humanizePercentage $value }} of the last
+            30 minutes. Top processes (CPU over 5 min, 100% = one core): {{ range $i, $s := query (printf `topk(5, sum by (groupname) (rate(namedprocess_namegroup_cpu_seconds_total{host="%s"}[5m])))` $labels.host) }}{{ if $i }}, {{ end }}{{ $s.Labels.groupname }} {{ humanizePercentage $s.Value }}{{ else }}none found{{ end }}
 
-      - alert: FilesystemCritical
-        expr: |
-          (
-            node_filesystem_avail_bytes{fstype!~"tmpfs|squashfs|overlay"} /
-            node_filesystem_size_bytes{fstype!~"tmpfs|squashfs|overlay"}
-          ) < 0.05
+      - alert: CriticalCPUPressure
+        expr: max by (instance) (rate(node_pressure_cpu_waiting_seconds_total[30m])) > 0.5
         for: 15m
         labels:
           severity: critical
         annotations:
-          summary: "{{ $labels.mountpoint }} has {{ $value | humanizePercentage }} free on {{ $labels.instance }}"
+          description: >-
+            Tasks on {{ $labels.instance }} waited for a CPU {{ humanizePercentage $value }} of the last
+            30 minutes. Top processes (CPU over 5 min, 100% = one core): {{ range $i, $s := query (printf `topk(5, sum by (groupname) (rate(namedprocess_namegroup_cpu_seconds_total{host="%s"}[5m])))` $labels.host) }}{{ if $i }}, {{ end }}{{ $s.Labels.groupname }} {{ humanizePercentage $s.Value }}{{ else }}none found{{ end }}
 
-      # --- Services ---
-      - alert: SystemdUnitFailed
-        expr: node_systemd_unit_state{state="failed"} == 1
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "systemd unit {{ $labels.name }} failed on {{ $labels.instance }}"
-
-      # --- Monitor the monitor ---
-      # verify metric name against VM's own /metrics
-      - alert: VictoriaMetricsLowDisk
-        expr: vm_free_disk_space_bytes{path="/var/lib/victoriametrics"} < 10e9
+      # fallback for hosts without PSI figures (metric missing -> no suppression): the 15 min
+      # load per CPU, averaged over an hour. On this host PSI exists, so this stays quiet.
+      - alert: HighLoadAverage
+        expr: >-
+          max by (instance) (avg_over_time(node_load15[1h]))
+            / on(instance) count by (instance) (node_cpu_seconds_total{mode="idle"})
+          > 1.5
+          unless on(instance) max by (instance) (node_pressure_cpu_waiting_seconds_total)
         for: 30m
         labels:
           severity: warning
         annotations:
-          summary: "VictoriaMetrics data dir has less than 10 GB free"
-      
-      - alert: SystemdUnitFlapping
-        expr: changes(node_systemd_unit_state{state="failed"}[1d]) > 2
+          description: 'Load on {{ $labels.instance }} has been {{ printf "%.2f" $value }} per CPU for over an hour'
+
+  - name: Memory
+    rules:
+      # 90% - early warning, 90 and 95 only when the host is also short of memory (more than 1%
+      # of the time a task waits for it, PSI). Without PSI figures the percentage alone alerts;
+      # 98% always does.
+      - alert: HighMemoryUsage90
+        expr: >-
+          avg by (instance) (
+            (
+              node_memory_MemTotal_bytes
+              - node_memory_MemFree_bytes
+              - node_memory_Buffers_bytes
+              - node_memory_Cached_bytes
+              - node_memory_SReclaimable_bytes
+            ) / node_memory_MemTotal_bytes * 100
+          ) > 90
+          unless on(instance) rate(node_pressure_memory_waiting_seconds_total[10m]) < 0.01
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          description: 'Memory usage above 90% on {{ $labels.instance }} ({{ printf "%.2f%%" $value }})'
+
+      # 95% - react faster
+      - alert: HighMemoryUsage95
+        expr: >-
+          avg by (instance) (
+            (
+              node_memory_MemTotal_bytes
+              - node_memory_MemFree_bytes
+              - node_memory_Buffers_bytes
+              - node_memory_Cached_bytes
+              - node_memory_SReclaimable_bytes
+            ) / node_memory_MemTotal_bytes * 100
+          ) > 95
+          unless on(instance) rate(node_pressure_memory_waiting_seconds_total[10m]) < 0.01
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          description: 'Memory usage above 95% on {{ $labels.instance }} ({{ printf "%.2f%%" $value }})'
+
+      # 98% - react immediately
+      - alert: HighMemoryUsage98
+        expr: >-
+          avg by (instance) (
+            (
+              node_memory_MemTotal_bytes
+              - node_memory_MemFree_bytes
+              - node_memory_Buffers_bytes
+              - node_memory_Cached_bytes
+              - node_memory_SReclaimable_bytes
+            ) / node_memory_MemTotal_bytes * 100
+          ) > 98
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          description: 'Memory usage above 98% on {{ $labels.instance }} ({{ printf "%.2f%%" $value }})'
+
+  - name: Disk
+    rules:
+      # full within a day at the rate of the last 6 hours; only below 25% free, so a big copy
+      # onto an empty disk stays quiet. Complements DiskWillFillIn4Hours (fast fill, 1h window)
+      # and FilesystemCritical (slow creep to 95% used) in alerting.rules.yml.
+      - alert: DiskFillingUp
+        expr: >-
+          avg by (instance, mountpoint) (predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs|squashfs|overlay"}[6h], 24 * 3600)) < 0
+          and on(instance,mountpoint)
+          avg by (instance, mountpoint) (node_filesystem_avail_bytes{fstype!~"tmpfs|squashfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|squashfs|overlay"}) < 0.25
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          description: >-
+            {{ $labels.instance }} {{ $labels.mountpoint }} will be full within a day at the rate of the last
+            6 hours ({{ with printf `node_filesystem_avail_bytes{instance="%s",mountpoint="%s"}` $labels.instance $labels.mountpoint | query }}{{ . | first | value | humanize1024 }}B{{ end }} free)
+
+  - name: SMART
+    rules:
+      # Normalized value dropped to/below vendor threshold (thresh 0 = "never fails")
+      - alert: SmartAttributeBelowThreshold
+        expr: >-
+          smartctl_device_attribute{attribute_value_type="value"}
+            <= ignoring(attribute_value_type)
+          smartctl_device_attribute{attribute_value_type="thresh"}
+          and ignoring(attribute_value_type)
+          smartctl_device_attribute{attribute_value_type="thresh"} > 0
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          description: 'SMART attribute {{ $labels.attribute_name }} of {{ $labels.device }} on {{ $labels.instance }} is at/below vendor threshold'
+
+      # Change-based: alert when the count grows, tolerate a small stable number of bad sectors.
+      # Plain subtraction instead of increase(): these are gauges, and pending sectors may
+      # legitimately decrease (increase() would treat that as a counter reset). Compared against
+      # 24h ago via the by-serial record, so a disk that gets another sdX name keeps its history;
+      # the current device name is joined back from smartctl_device for the message.
+      # The original also silenced reallocation growth while over 30% reserve space remained
+      # (attribute 232, normal SSD wear) - that needs a second recording rule not present here.
+      - alert: DiskBadSectorsGrowing
+        expr: >-
+          (
+            (
+              smartctl_device_attribute:by_serial{attribute_name=~"Current_Pending_Sector|Offline_Uncorrectable|Reported_Uncorrect",attribute_value_type="raw"}
+              - smartctl_device_attribute:by_serial{attribute_name=~"Current_Pending_Sector|Offline_Uncorrectable|Reported_Uncorrect",attribute_value_type="raw"} offset 24h
+            ) > 0
+            or
+            (
+              smartctl_device_attribute:by_serial{attribute_name=~"Reallocated_Sector_Ct|Reallocated_Sector_Count",attribute_value_type="raw"}
+              - smartctl_device_attribute:by_serial{attribute_name=~"Reallocated_Sector_Ct|Reallocated_Sector_Count",attribute_value_type="raw"} offset 24h
+            ) > 0
+          )
+          * on (instance, serial_number) group_left (device) max by (instance, serial_number, device) (smartctl_device)
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          description: '{{ $labels.attribute_name }} of {{ $labels.device }} on {{ $labels.instance }} grew by {{ $value }} in the last 24h'
+
+      # Disk is actively degrading
+      - alert: DiskDegradingFast
+        expr: >-
+          (
+            (
+              smartctl_device_attribute:by_serial{attribute_name=~"Current_Pending_Sector|Offline_Uncorrectable",attribute_value_type="raw"}
+              - smartctl_device_attribute:by_serial{attribute_name=~"Current_Pending_Sector|Offline_Uncorrectable",attribute_value_type="raw"} offset 24h
+            ) > 5
+            or
+            (
+              smartctl_device_attribute:by_serial{attribute_name="Reallocated_Sector_Ct",attribute_value_type="raw"}
+              - smartctl_device_attribute:by_serial{attribute_name="Reallocated_Sector_Ct",attribute_value_type="raw"} offset 24h
+            ) > 5
+          )
+          * on (instance, serial_number) group_left (device) max by (instance, serial_number, device) (smartctl_device)
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          description: '{{ $labels.attribute_name }} of {{ $labels.device }} on {{ $labels.instance }} grew by {{ $value }} in 24h - replace disk'
+
+      # Absolute backstop: catches slow creep that never trips the 24h growth rules.
+      # Tune thresholds above the values of your known "stable but damaged" disks.
+      - alert: DiskBadSectorsHigh
+        expr: >-
+          (
+            smartctl_device_attribute:by_serial{attribute_name=~"Reallocated_Sector_Ct|Reallocated_Sector_Count",attribute_value_type="raw"} > 200
+            or
+            smartctl_device_attribute:by_serial{attribute_name=~"Current_Pending_Sector|Offline_Uncorrectable",attribute_value_type="raw"} > 20
+          )
+          * on (instance, serial_number) group_left (device) max by (instance, serial_number, device) (smartctl_device)
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          description: 'Disk {{ $labels.device }} on {{ $labels.instance }}: {{ $labels.attribute_name }} = {{ $value }} - consider replacing'
+
+      # Cable/backplane problem, not the disk itself (growth over 1h)
+      - alert: DiskCRCErrors
+        expr: >-
+          (
+            smartctl_device_attribute:by_serial{attribute_name="UDMA_CRC_Error_Count",attribute_value_type="raw"}
+            - smartctl_device_attribute:by_serial{attribute_name="UDMA_CRC_Error_Count",attribute_value_type="raw"} offset 1h
+            > 0
+          )
+          * on (instance, serial_number) group_left (device) max by (instance, serial_number, device) (smartctl_device)
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "systemd unit {{ $labels.name }} is flapping on {{ $labels.instance }}"
-          description: "{{ $labels.name }} has entered the failed state more than 2 times in the last 24h."
+          description: 'CRC errors increasing on {{ $labels.device }} ({{ $labels.instance }}) - check cable/backplane'
+
+      # --- NVMe / SSD wear (plain smartctl_exporter metrics) ---
+      - alert: NvmeCriticalWarning
+        expr: smartctl_device_critical_warning > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          description: 'NVMe {{ $labels.device }} on {{ $labels.instance }} reports critical warning flags ({{ $value }})'
+
+      - alert: NvmeMediaErrors
+        expr: smartctl_device_media_errors > 5
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          description: 'NVMe {{ $labels.device }} on {{ $labels.instance }} has {{ $value }} media/data integrity errors'
+
+      - alert: NvmeSpareLow
+        expr: smartctl_device_available_spare <= on(device, instance) smartctl_device_available_spare_threshold * 1.5
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          description: 'NVMe {{ $labels.device }} on {{ $labels.instance }} spare capacity down to {{ $value }}%'
+
+      - alert: SsdWearHigh
+        expr: smartctl_device_percentage_used > 100
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          description: 'SSD {{ $labels.device }} on {{ $labels.instance }} has used {{ $value }}% of rated endurance'
+
+      # Exit status bits 0-1: command line / device open failed
+      - alert: SmartctlReadFailed
+        expr: smartctl_device_smartctl_exit_status % 4 > 0
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          description: 'smartctl cannot read {{ $labels.device }} on {{ $labels.instance }} (exit status {{ $value }})'
+
+  - name: Systemd
+    rules:
+      # A service in a restart loop is mostly between "active" and "activating", so "failed"
+      # never shows up and SystemdUnitFlapping (failed-state changes) stays quiet: count the
+      # changes (3 restarts in 30 min), or the share of time when it fails too fast to be seen
+      # as active. Oneshot services are "activating" for as long as they run.
+      # The double backslash is PromQL escaping: the regex is .+\.service
+      - alert: ServiceRestartLoop
+        expr: >-
+          changes(node_systemd_unit_state{state="activating",type!="oneshot",name=~".+\\.service",name!~"user@.+"}[30m]) >= 6
+          or
+          avg_over_time(node_systemd_unit_state{state="activating",type!="oneshot",name=~".+\\.service",name!~"user@.+"}[15m]) > 0.5
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          description: '{{ $labels.name }} on {{ $labels.instance }} keeps restarting or never finishes starting. See: journalctl -u {{ $labels.name }} -n 60'
+
+  - name: Reboots
+    rules:
+      # A host with a new boot time, for 15 minutes from when Prometheus first sees it: compared
+      # with the newest boot time it had 15 minutes earlier (back to 7 days), so a reboot while
+      # Prometheus was down is noticed when it's back. > 60: NTP can shift the boot time by a
+      # second. Value: the time since the boot.
+      - record: instance:node_rebooted:uptime_seconds
+        expr: >-
+          (node_time_seconds - node_boot_time_seconds)
+          and (node_boot_time_seconds - max_over_time(node_boot_time_seconds[7d] offset 15m) > 60)
+
+      # The original also classified clean/unclean via a boot-report textfile metric
+      # (node_boot_previous_shutdown_clean) that this stack does not have; here every reboot
+      # is informational.
+      - alert: HostRebooted
+        expr: instance:node_rebooted:uptime_seconds
+        labels:
+          severity: info
+        annotations:
+          description: '{{ $labels.instance }} was rebooted {{ $value | humanizeDuration }} ago'
+
+  - name: Temperature
+    rules:
+      # node_exporter hwmon collector; job name carries the hostname suffix ("node@<host>").
+      # 95 is the fallback crit threshold for sensors that do not report one.
+      - alert: Temperature Critical
+        expr: (node_hwmon_temp_celsius{job=~"node@.+"} > (node_hwmon_temp_crit_celsius{job=~"node@.+"} or (node_hwmon_temp_celsius{job=~"node@.+"} * 0 + 95))) * on(chip,instance) group_left(chip_name) node_hwmon_chip_names{job=~"node@.+"}
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          description: '{{ $labels.chip }} {{ $labels.chip_name }} Temperature of {{ printf "%.2f °C" $value }} is critical on {{ $labels.instance }}'

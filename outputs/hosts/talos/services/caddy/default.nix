@@ -178,10 +178,10 @@ in {
           vm = simple 8428;
           monitoring = service "grafana:settings.server.http_port";
           logs = simple 9080;
+          alerts = simple 9093;
           # logs = service "loki:configuration.server.http_listen_port";
           photos = service "immich";
           cadvisor = service "cadvisor";
-          cockpit = service "cockpit";
           code = service "forgejo:settings.server.HTTP_PORT";
           # files = service "copyparty:p";
           ldap = service "lldap:settings.http_port";

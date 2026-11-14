@@ -1,12 +1,12 @@
 {pkgs, ...}: {
   virtualisation.libvirtd = {
-    enable = true;
-    dbus.enable = true;
-    qemu.swtpm.enable = true; # TPM 2.0 for Windows 11
+    enable = false;
+    dbus.enable = false;
+    qemu.swtpm.enable = false; # TPM 2.0 for Windows 11
   };
 
   services.cockpit = {
-    enable = true;
+    enable = false;
     port = 9093;
     openFirewall = false;
 

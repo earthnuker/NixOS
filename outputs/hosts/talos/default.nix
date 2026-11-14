@@ -98,6 +98,7 @@
     carapace
     btop
     rom
+    dix
   ];
   environment.shellAliases = {
     "cat" = "bat -pp";

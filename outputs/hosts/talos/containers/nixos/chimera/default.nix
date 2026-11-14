@@ -6,15 +6,18 @@
   ...
 }: let
   name = "chimera";
-in {
-  networking.firewall.interfaces."ve-${name}".allowedTCPPorts = [
-    config.services.lldap.settings.ldap_port
-  ];
-  networking.firewall.allowedTCPPorts = [
+  ports = [
     13100
     13101
     13102
   ];
+in {
+  networking.firewall.interfaces."ve-${name}".allowedTCPPorts =
+    [
+      config.services.lldap.settings.ldap_port
+    ]
+    ++ ports;
+  networking.firewall.allowedTCPPorts = ports;
   sops.secrets.rescrap_tailscale_auth.restartUnits = [
     "container@${name}.service"
   ];
@@ -65,6 +68,7 @@ in {
           ./topology.nix
           # ./github-runner.nix
           inputs.nix-topology.nixosModules.default
+          {networking.firewall.allowedTCPPorts = ports;}
         ];
         boot.isContainer = true;
         networking = {

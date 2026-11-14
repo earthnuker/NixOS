@@ -44,6 +44,7 @@ in {
     ./tapo-exporter
   ];
   sops.secrets.grafana_key = {};
+  sops.secrets.alerts_env = {};
 
   services = {
     cadvisor = {
@@ -100,14 +101,77 @@ in {
       enableReload = true;
       listenAddress = "127.0.0.1";
       extraFlags = ["--web.enable-admin-api"];
+      webExternalUrl = "http://metrics.talos.ts";
       remoteWrite = [
         {
-          url = "http://127.0.0.1:8428/api/v1/write";
+          url = "http://${config.services.victoriametrics.listenAddress}/api/v1/write";
         }
       ];
+      alertmanager = {
+        enable = true;
+        port = 9093;
+        environmentFile = config.sops.secrets.alerts_env.path;
+        configuration = {
+          global = {
+            resolve_timeout = "5m";
+          };
+          route = {
+            group_by = ["alertname"];
+            group_wait = "30s";
+            group_interval = "5m";
+            repeat_interval = "4h";
+            receiver = "telegram-receiver";
+          };
+          receivers = [
+            {
+              name = "telegram-receiver";
+              telegram_configs = [
+                {
+                  # Use a sops secret for the token (recommended)
+                  bot_token = "$TELEGRAM_BOT_TOKEN";
+                  # Your chat ID (can be a private chat or a group)
+                  chat_id = 98313273; # Replace with your actual chat ID
+                  # Optional: parse_mode can be "HTML" or "MarkdownV2"
+                  parse_mode = "HTML";
+                  send_resolved = true;
+                  message = ''
+                    {{ if gt (len .Alerts.Firing) 0 }}🔥 <b>Alerts Firing ({{ len .Alerts.Firing }})</b>{{ range .Alerts.Firing }}
+
+                    <b>{{ .Labels.alertname }}</b> [{{ .Labels.severity }}]
+                    {{ with .Annotations.summary }}{{ . }}
+                    {{ end }}{{ with .Annotations.description }}{{ . }}
+                    {{ end }}Labels:
+                    {{ range .Labels.SortedPairs }}  - {{ .Name }} = {{ .Value }}
+                    {{ end }}Source: <a href="{{ .GeneratorURL }}">open</a>{{ end }}{{ end }}{{ if gt (len .Alerts.Resolved) 0 }}
+
+                    ✅ <b>Alerts Resolved ({{ len .Alerts.Resolved }})</b>{{ range .Alerts.Resolved }}
+
+                    <b>{{ .Labels.alertname }}</b>
+                    {{ with .Annotations.summary }}{{ . }}
+                    {{ end }}{{ with .Annotations.description }}{{ . }}
+                    {{ end }}Labels:
+                    {{ range .Labels.SortedPairs }}  - {{ .Name }} = {{ .Value }}
+                    {{ end }}Source: <a href="{{ .GeneratorURL }}">open</a>{{ end }}{{ end }}
+                  '';
+                }
+              ];
+            }
+          ];
+        };
+      };
       exporters = {
         zfs.enable = true;
         smartctl.enable = true;
+        process = {
+          enable = true;
+          settings.process_names = [
+            # Remove nix store path from process name
+            {
+              name = "{{.Comm}}";
+              cmdline = [".+"];
+            }
+          ];
+        };
         blackbox = {
           enable = true;
           configFile = ./blackbox.yml;
@@ -118,7 +182,6 @@ in {
           password = "hackme";
           port = 9617;
         };
-        # nats.enable = true;
         node = {
           enable = true;
           enabledCollectors = [
@@ -140,12 +203,17 @@ in {
       scrapeConfigs = [
         (mkScrapeConfig "node" config.services.prometheus.exporters.node.port)
         (mkScrapeConfig "zfs" config.services.prometheus.exporters.zfs.port)
+        (mkScrapeConfig "process" config.services.prometheus.exporters.process.port)
         (mkScrapeConfig "smartctl" config.services.prometheus.exporters.smartctl.port)
         # (mkScrapeConfig "pihole" config.services.prometheus.exporters.pihole.port)
         (mkScrapeConfig "blackbox" config.services.prometheus.exporters.blackbox.port)
         (mkScrapeConfig "victoriametrics" 8428)
         (mkScrapeConfig "tapo" 9105)
         (mkScrapeConfig "caddy" 2019)
+        (mkScrapeConfig "alloy" 9080)
+        (mkScrapeConfig "loki" 3100)
+        (mkScrapeConfig "alertsmanager" 9093)
+        (mkScrapeConfig "prometheus" 9090)
         (
           (mkScrapeConfig "speedtest" config.services.prometheus.exporters.speedtest.port)
           // {
@@ -202,6 +270,8 @@ in {
           };
           rule_path = "/var/lib/loki/rules-temp"; # scratch space for the ruler
           alertmanager_url = "http://127.0.0.1:9093";
+          external_url = "http://monitoring.talos.ts";
+          datasource_uid = "loki";
           enable_alertmanager_v2 = true;
         };
         schema_config.configs = [
@@ -231,7 +301,7 @@ in {
         };
         limits_config = {
           reject_old_samples = true;
-          reject_old_samples_max_age = "168h";
+          reject_old_samples_max_age = "720h";
           allow_structured_metadata = false;
           retention_period = "365d"; # pick your horizon
         };
@@ -260,85 +330,132 @@ in {
     "podman"
   ];
   environment.etc."loki/rules/fake/systemd.yml".text = lib.readFile ./loki.rules.yml;
+  # syntax: grafana-alloy
   environment.etc."alloy/config.alloy".text = ''
-    // Relabel rules to extract useful labels from journal metadata.
     loki.relabel "journal" {
-        forward_to = []
+      forward_to = []
 
-        rule {
-            source_labels = ["__journal__systemd_unit"]
-            target_label  = "unit"
-        }
+      rule {
+        source_labels = ["__journal__systemd_unit"]
+        target_label  = "unit"
+      }
 
-        rule {
-            source_labels = ["__journal__hostname"]
-            target_label  = "hostname"
-        }
+      rule {
+        source_labels = ["__journal__hostname"]
+        target_label  = "hostname"
+      }
+
+      rule {
+        source_labels = ["__journal_syslog_identifier"]
+        target_label  = "syslog_identifier"
+      }
+
+      rule {
+        source_labels = ["__journal__transport"]
+        target_label  = "transport"
+      }
+
+      // Kernel entries are shipped by loki.source.journal "kernel" instead.
+      rule {
+        source_labels = ["__journal__transport"]
+        regex         = "kernel"
+        action        = "drop"
+      }
     }
 
     loki.source.journal "read" {
-        forward_to    = [loki.write.local.receiver]
-        relabel_rules = loki.relabel.journal.rules
-        max_age       = "12h"
+      forward_to    = [loki.write.local.receiver]
+      relabel_rules = loki.relabel.journal.rules
+      max_age       = "720h"
 
-        labels = {
-            job  = "systemd-journal",
-            host = "${config.networking.hostName}",
-        }
+      labels = {
+        job  = "systemd-journal",
+        host = "${config.networking.hostName}",
+      }
+    }
+
+    // Kernel messages (dmesg / journalctl -k) as a dedicated stream.
+    loki.source.journal "kernel" {
+      forward_to = [loki.write.local.receiver]
+      matches    = "_TRANSPORT=kernel"
+      max_age    = "720h"
+
+      labels = {
+        job  = "kernel",
+        host = "${config.networking.hostName}",
+      }
+    }
+
+    loki.relabel "kernel" {
+      forward_to = []
+
+      rule {
+        source_labels = ["__journal_priority"]
+        regex         = "[0-3]"
+        target_label  = "level"
+        replacement   = "critical"
+      }
+
+      rule {
+        source_labels = ["__journal_priority"]
+        regex         = "[4-7]"
+        target_label  = "level"
+        replacement   = "info"
+      }
     }
 
     // Caddy access logs written to files.
     loki.source.file "caddy" {
-        targets = [
-          {
-              __path__ = "/var/log/caddy/*.log",
-              job  = "caddy",
-              host = "${config.networking.hostName}",
-          },
-        ]
+      targets = [
+        {
+          __path__ = "/var/log/caddy/*.log",
+          job      = "caddy",
+          host     = "${config.networking.hostName}",
+        },
+      ]
 
-       file_match {
-         enabled = true
-       }
+      file_match {
+        enabled = true
+      }
 
-       forward_to = [loki.write.local.receiver]
+      forward_to = [loki.write.local.receiver]
     }
 
     // Discover containers through Podman's Docker-compatible API.
     discovery.docker "podman" {
-        host = "unix:///run/podman/podman.sock"
+      host = "unix:///run/podman/podman.sock"
     }
 
     // Extract useful labels from container metadata.
     discovery.relabel "podman_logs" {
-        targets = []
+      targets = []
 
-        rule {
-            source_labels = ["__meta_docker_container_name"]
-            regex         = "/(.*)"
-            target_label  = "container"
-        }
+      rule {
+        source_labels = ["__meta_docker_container_name"]
+        regex         = "/(.*)"
+        target_label  = "container"
+      }
     }
 
     // Collect container stdout/stderr.
     loki.source.docker "podman" {
-        host          = "unix:///run/podman/podman.sock"
-        targets       = discovery.docker.podman.targets
-        relabel_rules = discovery.relabel.podman_logs.rules
+      host          = "unix:///run/podman/podman.sock"
+      targets       = discovery.docker.podman.targets
+      relabel_rules = discovery.relabel.podman_logs.rules
 
-        labels = {
-            job  = "podman",
-            host = "${config.networking.hostName}",
-        }
+      labels = {
+        job  = "podman",
+        host = "${config.networking.hostName}",
+      }
 
-        forward_to = [loki.write.local.receiver]
+      forward_to = [loki.write.local.receiver]
     }
 
     // Send logs to the local Loki instance.
     loki.write "local" {
-        endpoint {
-            url = "http://127.0.0.1:3100/loki/api/v1/push"
-        }
+      endpoint {
+        url = "http://127.0.0.1:3100/loki/api/v1/push"
+      }
     }
   '';
 }
